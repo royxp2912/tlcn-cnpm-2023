@@ -1,5 +1,6 @@
-import express from "express";
+import cors from "cors";
 import dotenv from "dotenv";
+import express from "express";
 import cookieParser from "cookie-parser";
 import authRoute from "./routes/auth.js";
 import cartRoute from "./routes/cart.js";
@@ -21,6 +22,15 @@ dotenv.config();
 // middleware
 app.use(cookieParser());
 app.use(express.json());
+
+app.use(
+    cors({
+        credentials: true,
+        origin: true,
+    }),
+);
+
+app.options('*', cors({ credentials: true, origin: true }));
 
 // Route API
 app.use("/cart", cartRoute);
