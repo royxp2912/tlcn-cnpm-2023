@@ -1,8 +1,21 @@
 import Product from "../models/Product.js";
 import { checkedNull, checkedNullAndFormatData } from "../utils/handel_null.js";
-import { createList, deleteListVarByProID, getListVarByProID } from "./variant.service.js";
+import { deleteAllByProID } from "./comment.service.js";
+import {
+    createList,
+    getListVarByProID,
+    deleteListVarByProID,
+} from "./variant.service.js";
 
-export const { create, getById, getAll, deleteById, update } = {
+export const {
+    create,
+    getAll,
+    update,
+    getById,
+    deleteById,
+    getAllByCateID,
+} = {
+
     update: async (proID, body) => {
         try {
             const savedProduct = await Product.findByIdAndUpdate(
@@ -30,8 +43,19 @@ export const { create, getById, getAll, deleteById, update } = {
             const deletedProduct = await Product.findByIdAndDelete(proID);
             const result = checkedNull(deletedProduct, "Product doesn't exist !!!");
 
-            const { success, status, message } = await deleteListVarByProID(proID);
-            if (!success) return { success, status, message };
+            const deletedVariants = await deleteListVarByProID(proID);
+            if (!deletedVariants.success) return {
+                success: deletedVariants.success,
+                status: deletedVariants.status,
+                message: deletedVariants.message,
+            };
+
+            const deletedComments = await deleteAllByProID(proID);
+            if (!deletedComments.success) return {
+                success: deletedComments.success,
+                status: deletedComments.status,
+                message: deletedComments.message,
+            };
 
             return {
                 success: true,
@@ -73,7 +97,6 @@ export const { create, getById, getAll, deleteById, update } = {
                 success: true,
                 status: 200,
                 message: "Create New Product Successful!!!",
-                data: savedProduct,
             }
         } catch (err) {
             return {
@@ -91,6 +114,7 @@ export const { create, getById, getAll, deleteById, update } = {
             // Lấy variants thuộc product
             const { success, status, message, data } = await getListVarByProID(proID);
             if (!success) return { success, status, message };
+
             // lấy các thông tin cần thiết của variant
             const variants = data.map((item) => {
                 const { product, createdAt, updatedAt, __v, ...others } = item._doc;
@@ -119,6 +143,26 @@ export const { create, getById, getAll, deleteById, update } = {
     getAll: async () => {
         try {
             const listProduct = await Product.find();
+            return {
+                success: true,
+                status: 200,
+                message: "Get All Product Successful!!!",
+                data: checkedNull(listProduct, "Resource doesn't exist !!!"),
+            }
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message,
+            }
+        }
+    },
+
+    getAllByCateID: async (cateID) => {
+        try {
+            const listProduct = await Product.find({ category: cateID }).select({
+                _id: 1, name: 1, brand: 1, price: 1, rating: 1, sold: 1
+            });
             return {
                 success: true,
                 status: 200,

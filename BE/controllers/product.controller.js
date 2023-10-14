@@ -1,7 +1,14 @@
 import { createError } from "../utils/createError.js";
 import { extractPublicId } from 'cloudinary-build-url';
 import cloudinary from "../utils/cloudinary_config.js";
-import { create, getAll, getById, deleteById, update } from "../services/product.service.js";
+import {
+    create,
+    update,
+    getAll,
+    getById,
+    deleteById,
+    getAllByCateID,
+} from "../services/product.service.js";
 
 export const updateProduct = async (req, res, next) => {
     try {
@@ -54,6 +61,22 @@ export const getByIdProduct = async (req, res, next) => {
     }
 }
 
+export const getAllProductByCategory = async (req, res, next) => {
+    try {
+        const { success, message, data, status } = await getAllByCateID(req.params.cateID);
+        if (!success) return next(createError(status, message));
+
+        res.status(status).json({
+            success: success,
+            message: message,
+            total: data.length,
+            data: data
+        });
+    } catch (err) {
+        next(err);
+    }
+}
+
 export const getAllProduct = async (req, res, next) => {
     try {
         const { success, message, data, status } = await getAll();
@@ -74,7 +97,7 @@ export const createProduct = async (req, res, next) => {
     const images = req.files.map((image) => image.path);
 
     try {
-        const { success, message, data, status } = await create(req.body, images);
+        const { success, message, status } = await create(req.body, images);
         if (!success) {
             // Xóa tất cả các ảnh nếu create thất bại !!!
             const listPublicId = images.map((path) => extractPublicId(path));
@@ -87,7 +110,6 @@ export const createProduct = async (req, res, next) => {
         res.status(status).json({
             success: success,
             message: message,
-            data: data
         });
     } catch (err) {
         next(err);

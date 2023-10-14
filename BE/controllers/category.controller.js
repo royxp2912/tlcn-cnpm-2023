@@ -1,8 +1,14 @@
-import Category from "../models/Category.js";
 import { createError } from "../utils/createError.js";
 import cloudinary from "../utils/cloudinary_config.js";
 import { extractPublicId } from 'cloudinary-build-url';
-import { create, deleteById, getAll, getById, updateImage, updateName } from "../services/category.service.js";
+import {
+    create,
+    getAll,
+    getById,
+    updateName,
+    deleteById,
+    updateImage,
+} from "../services/category.service.js";
 
 export const getAllCategory = async (req, res, next) => {
     try {

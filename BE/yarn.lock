@@ -2,6 +2,13 @@
 # yarn lockfile v1
 
 
+"@babel/runtime@^7.21.0":
+  version "7.23.1"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.23.1.tgz#72741dc4d413338a91dcb044a86f3c0bc402646d"
+  integrity sha512-hC2v6p8ZSI/W0HUzh3V8C5g+NwSKzKPtJwSpTjwl0o297GP9+ZLQSkdvHz46CM3LqyoXxq+5G9komY+eSqSO0g==
+  dependencies:
+    regenerator-runtime "^0.14.0"
+
 "@cld-apis/utils@^0.2.0":
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/@cld-apis/utils/-/utils-0.2.0.tgz#2a98d77f546bc968b6234959dec804b9953dbb94"
@@ -257,6 +264,13 @@ crypto@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/crypto/-/crypto-1.0.1.tgz#2af1b7cad8175d24c8a1b0778255794a21803037"
   integrity sha512-VxBKmeNcqQdiUQUW2Tzq0t377b54N2bMtXO/qiLa+6eRRmmC4qT3D4OnTGoT/U6O9aklQ/jTwbOtRMTTY8G0Ig==
+
+date-fns@^2.30.0:
+  version "2.30.0"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.30.0.tgz#f367e644839ff57894ec6ac480de40cae4b0f4d0"
+  integrity sha512-fnULvOpxnC5/Vg3NCiWelDsLiUc9bRwAPs/+LfTLNvetFCtCTN+yQz15C/fs4AwX1R9K5GLtLfn8QW+dWisaAw==
+  dependencies:
+    "@babel/runtime" "^7.21.0"
 
 debug@2.6.9:
   version "2.6.9"
@@ -768,6 +782,11 @@ no-case@^3.0.4:
     lower-case "^2.0.2"
     tslib "^2.0.3"
 
+nodemailer@^6.9.6:
+  version "6.9.6"
+  resolved "https://registry.yarnpkg.com/nodemailer/-/nodemailer-6.9.6.tgz#5a38a2a4d9fb1e349542a138f9e2d5c760a663ed"
+  integrity sha512-s7pDtWwe5fLMkQUhw8TkWB/wnZ7SRdd9HRZslq/s24hlZvBP3j32N/ETLmnqTpmj4xoBZL9fOWyCIZ7r2HORHg==
+
 nodemon@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/nodemon/-/nodemon-3.0.1.tgz#affe822a2c5f21354466b2fc8ae83277d27dadc7"
@@ -924,6 +943,11 @@ redis@3.1.2:
     redis-commands "^1.7.0"
     redis-errors "^1.2.0"
     redis-parser "^3.0.0"
+
+regenerator-runtime@^0.14.0:
+  version "0.14.0"
+  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.14.0.tgz#5e19d68eb12d486f797e15a3c6a918f7cec5eb45"
+  integrity sha512-srw17NI0TUWHuGa5CFGGmhfNIeja30WMBfbslPNhf6JrqQlLN5gcrvig1oqPxiVaXb0oW0XRKtH6Nngs5lKCIA==
 
 safe-buffer@5.2.1, safe-buffer@^5.0.1:
   version "5.2.1"
