@@ -13,13 +13,11 @@ const ProductSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    category: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Category"
-            // require: true,
-        }
-    ],
+    category: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Category"
+        // require: true,
+    },
     brand: {
         type: String,
         enum: ['Adidas', 'Nike', 'Vans', 'Balenciaga', 'Converse', 'Puma'],

@@ -1,14 +1,20 @@
 import express from "express";
 import uploadCloud from "../middlewares/multerCloudinary.js";
 import {
-    createProduct, deleteProduct, getAllProduct, getByIdProduct, updateProduct
+    createProduct,
+    updateProduct,
+    deleteProduct,
+    getAllProduct,
+    getByIdProduct,
+    getAllProductByCategory,
 } from "../controllers/product.controller.js";
 
 const router = express.Router();
 
 // GET ALL
-router.get("/all", getAllProduct);
-router.get("/get/:proId", getByIdProduct);
+router.get("/", getAllProduct);
+router.get("/:proId", getByIdProduct);
+router.get("/category/:cateID", getAllProductByCategory);
 
 // CREATE NEW PRODUCT
 router.post("/create", uploadCloud.array("images"), createProduct);

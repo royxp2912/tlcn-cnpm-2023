@@ -9,7 +9,7 @@ import orderRoute from "./routes/order.js";
 import addressRoute from "./routes/address.js";
 import productsRoute from "./routes/products.js";
 import commentsRoute from "./routes/comments.js";
-import categoryRoute from "./routes/category.js";
+import categoryRoute from "./routes/categories.js";
 import variantsRoute from "./routes/variants.js";
 // import client from "./connections/redis.js";
 
@@ -33,14 +33,14 @@ app.use(
 app.options('*', cors({ credentials: true, origin: true }));
 
 // Route API
-app.use("/cart", cartRoute);
+app.use("/carts", cartRoute);
 app.use("/auth", authRoute);
-app.use("/order", orderRoute);
+app.use("/orders", orderRoute);
 app.use("/users", usersRoute);
 app.use("/address", addressRoute);
 app.use("/products", productsRoute);
 app.use("/comments", commentsRoute);
-app.use("/category", categoryRoute);
+app.use("/categories", categoryRoute);
 app.use("/variants", variantsRoute);
 
 // middleware handel error
@@ -60,3 +60,4 @@ app.listen(process.env.PORT_BE, () => {
     mongoDB();
     console.log("Connect to backend done!");
 });
+

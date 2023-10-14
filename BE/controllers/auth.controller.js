@@ -1,7 +1,30 @@
-import Auth from "../models/Authentication.js";
-import decrypt from "../helpers/crypto/decrypt.js";
 import { createError } from "../utils/createError.js";
-import { createListToken, loginService, registerService, addNewToken, getTokenLastest, lockAllToken, refreshAccessTokenService, logoutService } from "../services/auth.service.js";
+import {
+    addNewToken,
+    loginService,
+    lockAllToken,
+    logoutService,
+    registerService,
+    getTokenLastest,
+    createListToken,
+    sendCodeToEmail,
+    refreshAccessTokenService,
+} from "../services/auth.service.js";
+
+export const sendCode = async (req, res, next) => {
+    try {
+        const { success, status, message, code } = await sendCodeToEmail(req.body.email);
+        if (!success) return next(createError(status, message));
+
+        return res.status(status).json({
+            success,
+            message,
+            code,
+        })
+    } catch (err) {
+        next(err);
+    }
+}
 
 export const lockedToken = async (req, res, next) => {
     try {

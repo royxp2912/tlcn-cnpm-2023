@@ -1,15 +1,30 @@
+import Product from "../models/Product.js";
 import Variant from "../models/Variant.js";
 import { checkedNull, checkedNullAndFormatData } from "../utils/handel_null.js";
 import { getById } from "./product.service.js";
 
-export const { createOne, createList, updateVarByID, deleteVarByID, deleteListVarByProID, getListVarByProID, getVarByID } = {
+export const {
+    createOne,
+    createList,
+    getVarByID,
+    updateVarByID,
+    deleteVarByID,
+    getListVarByProID,
+    deleteListVarByProID,
+} = {
+
     createOne: async (proID, variant) => {
         try {
-            const { success, status, message } = await getById(proID);
-            if (!success) return { success, status, message };
+            const existProduct = await Product.findById(proID);
+            if (!existProduct) return {
+                success: false,
+                status: 404,
+                message: "Product don't exist !!!",
+            };
 
             const newVariant = new Variant({
                 product: proID,
+                color: variant.color,
                 size: variant.size,
                 quantity: variant.quantity
             });
@@ -33,12 +48,17 @@ export const { createOne, createList, updateVarByID, deleteVarByID, deleteListVa
 
     createList: async (proID, listVariant) => {
         try {
-            const { success, status, message } = await getById(proID);
-            if (!success) return { success, status, message };
+            const existProduct = await Product.findById(proID);
+            if (!existProduct) return {
+                success: false,
+                status: 404,
+                message: "Product don't exist !!!",
+            };
 
             const result = await Promise.all(listVariant.map((variant) => {
                 let newVariant = new Variant({
                     product: proID,
+                    color: variant.color,
                     size: variant.size,
                     quantity: variant.quantity
                 });
@@ -82,7 +102,7 @@ export const { createOne, createList, updateVarByID, deleteVarByID, deleteListVa
 
     getListVarByProID: async (proID) => {
         try {
-            const listVariant = await Variant.find({ product: proID });
+            const listVariant = await Variant.find({ product: proID }).select("-product -createdAt -updatedAt -__v");
             if (listVariant.length === 0) return {
                 success: false,
                 status: 404,
@@ -94,7 +114,6 @@ export const { createOne, createList, updateVarByID, deleteVarByID, deleteListVa
                 message: "Get List Variant Successful !!!",
                 data: listVariant,
             }
-
         } catch (err) {
             return {
                 success: false,

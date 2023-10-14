@@ -1,7 +1,27 @@
 import { createError } from "../utils/createError.js";
 import {
-    createOne, deleteVarByID, getVarByID, updateVarByID
+    createOne,
+    getVarByID,
+    updateVarByID,
+    deleteVarByID,
+    getListVarByProID,
 } from "../services/variant.service.js";
+
+export const getAllVarByProID = async (req, res, next) => {
+    try {
+        const { success, status, message, data } = await getListVarByProID(req.params.proID);
+        if (!success) return next(createError(status, message));
+
+        res.status(status).send({
+            success,
+            message,
+            total: data.length,
+            data
+        });
+    } catch (err) {
+        next(err);
+    }
+}
 
 export const getVariantByID = async (req, res, next) => {
     try {

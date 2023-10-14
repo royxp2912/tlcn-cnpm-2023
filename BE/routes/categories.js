@@ -2,17 +2,22 @@ import express from "express";
 import uploadCloud from "../middlewares/multerCloudinary.js";
 import verifyAccessToken from "../middlewares/auth/verifyAccessToken.js";
 import {
-    createCategory, deleteCategory, getAllCategory, getByIdCategory, updateImageCategory, updateNameCategory
+    createCategory,
+    deleteCategory,
+    getAllCategory,
+    getByIdCategory,
+    updateNameCategory,
+    updateImageCategory,
 } from "../controllers/category.controller.js";
 
 const router = express.Router();
 
 // GET
 router.get("/get/:cateId", getByIdCategory);
-router.get("/all", getAllCategory);
+router.get("/", getAllCategory);
 
 // CREATE
-router.post("/create", uploadCloud.single("image"), createCategory);
+router.post("/", uploadCloud.single("image"), createCategory);
 
 // UPDATE
 // test verify

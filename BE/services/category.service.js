@@ -1,7 +1,14 @@
 import Category from "../models/Category.js";
 import { checkedNull } from "../utils/handel_null.js";
 
-export const { create, updateName, updateImage, deleteById, getById, getAll } = {
+export const {
+    getAll,
+    create,
+    getById,
+    deleteById,
+    updateName,
+    updateImage,
+} = {
     create: async (body, image) => {
         try {
             const newCate = new Category({ ...body, image });

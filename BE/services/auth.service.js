@@ -2,11 +2,38 @@ import bcrypt from "bcryptjs";
 import User from "../models/User.js";
 import Auth from "../models/Authentication.js";
 import { findByEmail } from "./user.service.js";
-import decrypt from "../helpers/crypto/decrypt.js";
 import generateToken from "../helpers/jwt/generateTokens.js";
+import sendCodeEmail from "../utils/emailservice_config.js";
 
-export const { registerService, loginService, getTokenLastest,
-    lockAllToken, createListToken, addNewToken, refreshAccessTokenService, logoutService } = {
+export const {
+    addNewToken,
+    loginService,
+    lockAllToken,
+    logoutService,
+    getTokenLastest,
+    sendCodeToEmail,
+    createListToken,
+    registerService,
+    refreshAccessTokenService,
+} = {
+
+    sendCodeToEmail: async (email) => {
+        try {
+            const { success, status, message, code } = await sendCodeEmail(email);
+            return {
+                success,
+                status,
+                message,
+                code,
+            };
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message,
+            }
+        }
+    },
 
     registerService: async (body) => {
         try {
