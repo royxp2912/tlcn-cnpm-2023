@@ -1,0 +1,32 @@
+import mongoose from "mongoose";
+
+const OrderSchema = new mongoose.Schema({
+    items: [
+        {
+            productID: { type: mongoose.Schema.Types.ObjectId, ref: "products", require: true, },
+            image: { type: String, require: true, },
+            name: { type: String, require: true, },
+            size: { type: String, require: true, },
+            quantity: { type: Number, require: true, },
+            price: { type: Number, require: true, },
+        }
+    ],
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+    },
+    total: {
+        type: Number,
+        default: 0,
+    },
+    status: {
+        type: String,
+        enum: ["Confirmming", "Delivering", "Successful", "Cancel", "Return"],
+        default: "Confirmming",
+    },
+},
+    { timestamps: true }
+)
+
+export default mongoose.model("Order", OrderSchema)
