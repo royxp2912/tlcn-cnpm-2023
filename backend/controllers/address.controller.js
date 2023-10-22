@@ -156,5 +156,4 @@ export const createAddress = async (req, res, next) => {
         });
     } catch (err) {
         next(err);
-    }
 }

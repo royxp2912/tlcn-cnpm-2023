@@ -139,6 +139,7 @@ export const {
             const listProduct = await Product.find()
                 .populate({ path: 'category', select: 'name' })
                 .select("-createdAt -updatedAt -__v");
+
             return {
                 success: true,
                 status: 200,
