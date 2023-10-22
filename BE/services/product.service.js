@@ -40,22 +40,14 @@ export const {
 
     deleteById: async (proID) => {
         try {
-            const deletedProduct = await Product.findByIdAndDelete(proID);
-            const result = checkedNull(deletedProduct, "Product doesn't exist !!!");
+            const result = await Product.findByIdAndDelete(proID);
+            checkedNull(result, "Product doesn't exist !!!");
 
             const deletedVariants = await deleteListVarByProID(proID);
-            if (!deletedVariants.success) return {
-                success: deletedVariants.success,
-                status: deletedVariants.status,
-                message: deletedVariants.message,
-            };
+            if (!deletedVariants.success) return deletedVariants;
 
             const deletedComments = await deleteAllByProID(proID);
-            if (!deletedComments.success) return {
-                success: deletedComments.success,
-                status: deletedComments.status,
-                message: deletedComments.message,
-            };
+            if (!deletedComments.success) return deletedComments;
 
             return {
                 success: true,
@@ -109,7 +101,9 @@ export const {
 
     getById: async (proID) => {
         try {
-            const getedProduct = await Product.findById(proID);
+            const result = await Product.findById(proID)
+                .populate({ path: 'category', select: 'name' })
+                .select("-createdAt -updatedAt -__v");
 
             // Lấy variants thuộc product
             const { success, status, message, data } = await getListVarByProID(proID);
@@ -120,7 +114,7 @@ export const {
                 const { product, createdAt, updatedAt, __v, ...others } = item._doc;
                 return others;
             })
-            const result = checkedNullAndFormatData(getedProduct, "Product doesn't exist !!!");
+            checkedNull(result, "Product doesn't exist !!!");
 
             return {
                 success: true,
@@ -142,7 +136,9 @@ export const {
 
     getAll: async () => {
         try {
-            const listProduct = await Product.find();
+            const listProduct = await Product.find()
+                .populate({ path: 'category', select: 'name' })
+                .select("-createdAt -updatedAt -__v");
             return {
                 success: true,
                 status: 200,
@@ -166,7 +162,7 @@ export const {
             return {
                 success: true,
                 status: 200,
-                message: "Get All Product Successful!!!",
+                message: "Get All Product Of Category Successful!!!",
                 data: checkedNull(listProduct, "Resource doesn't exist !!!"),
             }
         } catch (err) {

@@ -1,5 +1,6 @@
 import User from "../models/User.js";
 import { checkedNull } from "../utils/handel_null.js";
+import { deleteAllByUserID } from "./address.service.js";
 
 export const {
     lockUser,
@@ -17,7 +18,10 @@ export const {
         try {
             const deletedUser = await User.findByIdAndDelete(userID);
             checkedNull(deletedUser, "User don't exist !!!");
+
             // delete Address of User
+            await deleteAllByUserID(userID);
+
             return {
                 success: true,
                 status: 200,
