@@ -1,16 +1,63 @@
-import Cart from "../models/Cart.js"
+import { createError } from "../utils/createError.js";
+import {
+    addToCart,
+    create,
+    getByUserID,
+    removeFromCart,
+} from "../services/cart.service.js";
 
-export const createCart = async (req, res) => {
-    const newCart = new Cart(req.body);
-
+export const getCartByUserID = async (req, res, next) => {
     try {
-        const savedCart = await newCart.save();
-        res.status(200).send({
-            success: true,
-            message: "Tạo Cart Mới Thành Công!",
-            data: savedCart
+        const { success, status, message, data } = await getByUserID(req.params.userID);
+        if (!success) return next(createError(status, message));
+
+        res.status(status).send({
+            success,
+            message,
+            data,
         });
     } catch (err) {
-        res.status(404).json(err);
+        next(err);
     }
+}
+
+export const removeItemFromCart = async (req, res, next) => {
+    try {
+        const { success, status, message } = await removeFromCart(req.params.userID, req.params.proID);
+        if (!success) return next(createError(status, message));
+
+        res.status(status).send({
+            success,
+            message,
+        });
+    } catch (err) {
+        next(err);
+    }
+}
+
+export const addItemToCart = async (req, res, next) => {
+    try {
+        const { success, status, message } = await addToCart(req.params.userID, req.body);
+        if (!success) return next(createError(status, message));
+
+        res.status(status).send({
+            success,
+            message,
+        });
+    } catch (err) {
+        next(err);
+    }
+}
+
+export const createCart = async (req, res, next) => {
+    try {
+        const { success, status, message } = await create(req.body.user);
+        if (!success) return next(createError(status, message));
+
+        res.status(status).send({
+            success,
+            message,
+        });
+    } catch (err) {
+        next(err);
 }
