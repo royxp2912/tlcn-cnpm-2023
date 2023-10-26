@@ -5,6 +5,7 @@ import { findByEmail } from "./user.service.js";
 import generateToken from "../helpers/jwt/generateTokens.js";
 import sendCodeEmail from "../utils/emailservice_config.js";
 import { checkedNull } from "../utils/handel_null.js";
+import { checkedObjectId } from "../utils/checkedOthers.js";
 
 export const {
     addNewToken,
@@ -72,6 +73,7 @@ export const {
 
     logoutService: async (userID) => {
         try {
+            checkedObjectId(userID, "User ID");
             const deletedAuth = await Auth.findOneAndDelete({ user: userID });
             if (!deletedAuth)
                 return {

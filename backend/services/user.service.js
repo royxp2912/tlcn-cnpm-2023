@@ -1,6 +1,7 @@
 import User from "../models/User.js";
 import { checkedNull } from "../utils/handel_null.js";
 import { deleteAllByUserID } from "./address.service.js";
+import { checkedObjectId } from "../utils/checkedOthers.js";
 
 export const {
     lockUser,
@@ -16,6 +17,7 @@ export const {
 
     deleteUserByID: async (userID) => {
         try {
+            checkedObjectId(userID, "User ID");
             const deletedUser = await User.findByIdAndDelete(userID);
             checkedNull(deletedUser, "User don't exist !!!");
 
@@ -39,6 +41,7 @@ export const {
 
     updateAvatar: async (userID, image) => {
         try {
+            checkedObjectId(userID, "User ID");
             const updatedUser = await User.findByIdAndUpdate(
                 userID,
                 { $set: { avatar: image } }
@@ -62,6 +65,8 @@ export const {
 
     unlockUser: async (userID) => {
         try {
+            checkedObjectId(userID, "User ID");
+
             const updatedUser = await User.findById(userID);
             checkedNull(updatedUser, "User don't exist !!!");
 
@@ -90,6 +95,8 @@ export const {
 
     lockUser: async (userID) => {
         try {
+            checkedObjectId(userID, "User ID");
+
             const updatedUser = await User.findById(userID);
             checkedNull(updatedUser, "User don't exist !!!");
 
@@ -118,6 +125,8 @@ export const {
 
     updateUserByID: async (userID, body) => {
         try {
+            checkedObjectId(userID, "User ID");
+
             const updatedUser = await User.findByIdAndUpdate(
                 userID,
                 { $set: body },
@@ -179,6 +188,8 @@ export const {
 
     getUserByID: async (userID) => {
         try {
+            checkedObjectId(userID, "User ID");
+
             const existUser = await User.findById(userID).select("-password -role -status -createdAt -updatedAt -__v");
 
             return {
