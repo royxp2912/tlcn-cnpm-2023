@@ -8,6 +8,7 @@ import {
     getAllOrderByUserID,
     paymentConfirmOrder,
 } from "../controllers/order.controller.js";
+import createPaymentUrl from "../utils/createPaymentUrl.js";
 
 const router = express.Router();
 
@@ -23,5 +24,12 @@ router.post("/", createOrder);
 router.patch("/:orderID", updateOrderStatus);
 router.patch("/:orderID/cancel", cancelOrderByID);
 router.patch("/:orderID/paid", paymentConfirmOrder);
+
+// create vnpay url
+router.post('/create_payment_url', function (req, res, next) {
+    const vnpUrl = createPaymentUrl(req);
+
+    res.status(200).json({ vnpUrl });
+});
 
 export default router

@@ -8,7 +8,10 @@ import {
     unlockUserByID,
     uploadAvatarByID,
     deleteUserByUserID,
+    isExistUser,
+    testUploadAvatarByID,
 } from "../controllers/user.controller.js";
+import sharp from "sharp";
 
 const router = express.Router();
 
@@ -20,7 +23,8 @@ router.get("/:userID", findUserByID);
 router.put("/:userID", editUserByID);
 router.patch("/lock/:userID", lockUserByID);
 router.patch("/unlock/:userID", unlockUserByID);
-router.patch("/upload-avatar/:userID", uploadCloud.single("avatar"), uploadAvatarByID);
+router.patch("/upload-avatar/:userID", isExistUser, uploadCloud.single("avatar"), uploadAvatarByID);
+router.patch("/upload-avatar/test/:userID", isExistUser, testUploadAvatarByID);
 
 // Delete User By User ID
 router.delete("/:userID", deleteUserByUserID);

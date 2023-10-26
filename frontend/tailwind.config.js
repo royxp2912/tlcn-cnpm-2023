@@ -30,7 +30,7 @@ module.exports = {
                 pink: '#d081a5',
                 money: '#FF952D',
                 bg_sell: '#f6f6f6',
-                gray: '#E5E8EA',
+                gray2: '#E5E8EA',
                 blue: '#33a0ff',
                 star: '#E4E4E4',
                 rv: '#C1C8CE',

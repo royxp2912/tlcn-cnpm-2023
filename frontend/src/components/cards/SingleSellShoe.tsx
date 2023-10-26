@@ -10,7 +10,7 @@ const SingleSellShoe = () => {
                 <Image src="/left1.png" alt="Left Arrow" width={25} height={41} />
             </div>
             <div className="flex gap-2">
-                <div className="border-2 border-border_sell w-max rounded-md p-1">
+                <div className="border-2 border-gray2 w-max rounded-md p-1">
                     {/* Single Product */}
                     <div className="bg-bg_sell rounded-md">
                         <Image src="/nike.png" alt="Nike" width={292} height={236} />
