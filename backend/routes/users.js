@@ -10,6 +10,7 @@ import {
     deleteUserByUserID,
     isExistUser,
     testUploadAvatarByID,
+    findUserByKeyword,
 } from "../controllers/user.controller.js";
 import sharp from "sharp";
 
@@ -18,6 +19,7 @@ const router = express.Router();
 // Find User By ID
 router.get("/", findAllUser);
 router.get("/:userID", findUserByID);
+router.get("/search/keyword", findUserByKeyword);
 
 // Edit User By ID
 router.put("/:userID", editUserByID);

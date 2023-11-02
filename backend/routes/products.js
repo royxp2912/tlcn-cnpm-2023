@@ -7,6 +7,8 @@ import {
     getAllProduct,
     getByIdProduct,
     getAllProductByCategory,
+    findProductByKeyword,
+    findProductByColor,
 } from "../controllers/product.controller.js";
 
 const router = express.Router();
@@ -15,6 +17,10 @@ const router = express.Router();
 router.get("/", getAllProduct);
 router.get("/:proId", getByIdProduct);
 router.get("/category/:cateID", getAllProductByCategory);
+
+// find
+router.get("/search/keyword", findProductByKeyword);
+router.get("/search/color", findProductByColor);
 
 // CREATE NEW PRODUCT
 router.post("/create", uploadCloud.array("images"), createProduct);

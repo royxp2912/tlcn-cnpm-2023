@@ -10,10 +10,27 @@ import {
     deleteUserByID,
     updateUserByID,
     getAllUserByStatus,
+    findByKeyword,
 } from "../services/user.service.js";
-import sharp from "sharp";
-import got from "got";
 
+export const findUserByKeyword = async (req, res, next) => {
+    try {
+        const pageSize = 10;
+        const pageNumber = req.query.pageNumber || 1;
+
+        const { success, status, message, data } = await findByKeyword(req.body.keyword, pageSize, pageNumber);
+        if (!success) return next(createError(status, message));
+
+        res.status(status).json({
+            success,
+            message,
+            total: data.length,
+            data,
+        })
+    } catch (err) {
+        next(err);
+    }
+}
 
 export const deleteUserByUserID = async (req, res, next) => {
     try {
@@ -111,24 +128,29 @@ export const editUserByID = async (req, res, next) => {
 
 export const findAllUser = async (req, res, next) => {
     try {
+        const pageSize = 10;
         const userStatus = req.query.status;
-        if (userStatus === "Locked" || userStatus === "Available") {
-            const { success, status, message, data } = await getAllUserByStatus(req.query.status);
-            if (!success) return next(createError(status, message));
-            res.status(status).json({
-                success,
-                message,
-                total: data.length,
-                data,
-            })
-        } else {
-            res.status(404).json({
-                success: false,
-                message: `Status <${userStatus}> don't exist !!!`,
-            })
+        const pageNumber = req.query.pageNumber || 1;
+
+        if (userStatus) {
+            if (userStatus === "Locked" || userStatus === "Available") {
+                const { success, status, message, data } = await getAllUserByStatus(req.query.status, pageSize, pageNumber);
+                if (!success) return next(createError(status, message));
+                res.status(status).json({
+                    success,
+                    message,
+                    total: data.length,
+                    data,
+                })
+            } else {
+                res.status(404).json({
+                    success: false,
+                    message: `Status <${userStatus}> don't exist !!!`,
+                })
+            }
         }
 
-        const { success, status, message, data } = await getAllUser();
+        const { success, status, message, data } = await getAllUser(pageSize, pageNumber);
         if (!success) return next(createError(status, message));
 
         res.status(status).json({
