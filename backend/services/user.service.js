@@ -10,10 +10,43 @@ export const {
     getUserByID,
     findByEmail,
     updateAvatar,
+    findByKeyword,
     deleteUserByID,
     updateUserByID,
     getAllUserByStatus,
 } = {
+
+    findByKeyword: async (keyword, pageSize, pageNumber) => {
+        try {
+            const result = await User.find({
+                $or: [
+                    { email: { $regex: keyword, $options: 'i' } },
+                    { fullName: { $regex: keyword, $options: 'i' } },
+                    { gender: { $regex: keyword, $options: 'i' } },
+                    { phone: { $regex: keyword, $options: 'i' } },
+                    { status: { $regex: keyword, $options: 'i' } },
+                    { role: { $regex: keyword, $options: 'i' } },
+                ]
+            })
+                .limit(pageSize)
+                .skip(pageSize * (pageNumber - 1))
+                .select("-password -createdAt -updatedAt -__v");
+
+            if (!result) return false;
+            return {
+                success: true,
+                status: 200,
+                message: "Find Successful !!!",
+                data: result,
+            }
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong in User Service !!!",
+            }
+        }
+    },
 
     deleteUserByID: async (userID) => {
         try {
@@ -148,9 +181,12 @@ export const {
         }
     },
 
-    getAllUserByStatus: async (status) => {
+    getAllUserByStatus: async (status, pageSize, pageNumber) => {
         try {
-            const listUser = await User.find({ status: status }).select("-password -createdAt -updatedAt -__v");
+            const listUser = await User.find({ status: status })
+                .limit(pageSize)
+                .skip(pageSize * (pageNumber - 1))
+                .select("-password -createdAt -updatedAt -__v");
 
             return {
                 success: true,
@@ -167,9 +203,12 @@ export const {
         }
     },
 
-    getAllUser: async () => {
+    getAllUser: async (pageSize, pageNumber) => {
         try {
-            const listUser = await User.find().select("-password -createdAt -updatedAt -__v");
+            const listUser = await User.find()
+                .limit(pageSize)
+                .skip(pageSize * (pageNumber - 1))
+                .select("-password -createdAt -updatedAt -__v");
 
             return {
                 success: true,
@@ -190,7 +229,8 @@ export const {
         try {
             checkedObjectId(userID, "User ID");
 
-            const existUser = await User.findById(userID).select("-password -role -status -createdAt -updatedAt -__v");
+            const existUser = await User.findById(userID)
+                .select("-password -role -status -createdAt -updatedAt -__v");
 
             return {
                 success: true,
@@ -209,7 +249,8 @@ export const {
 
     findByEmail: async (email) => {
         try {
-            const existUser = await User.findOne({ email: email });
+            const existUser = await User.findOne({ email: email })
+                .select("-password -role -status -createdAt -updatedAt -__v");;
 
             if (!existUser) return false;
             return {

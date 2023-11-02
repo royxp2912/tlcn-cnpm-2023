@@ -1,10 +1,12 @@
 import Product from "../models/Product.js";
+import Category from "../models/Category.js";
 import { checkedNull, checkedNullAndFormatData } from "../utils/handel_null.js";
 import { deleteAllByProID } from "./comment.service.js";
 import {
     createList,
     getListVarByProID,
     deleteListVarByProID,
+    findProIDByColor,
 } from "./variant.service.js";
 
 export const {
@@ -13,8 +15,245 @@ export const {
     update,
     getById,
     deleteById,
+    findByColor,
+    findByKeyword,
     getAllByCateID,
+    findByColorAndSort,
+    findByKeywordAndSort,
 } = {
+
+    findByColorAndSort: async (color, pageSize, pageNumber, sort) => {
+        try {
+            const listProduct = await findProIDByColor(color);
+            let limitResult = [];
+            if (sort === "pDESC") {
+                const result = await Promise.all(listProduct.map((pro) =>
+                    Product.findById(pro.product)
+                        .populate({ path: 'category', select: 'name' })
+                        .select("-status -createdAt -updatedAt -__v"))
+                );
+
+                limitResult = result.slice((pageNumber - 1) * pageSize, pageNumber * pageSize)
+                    .sort((a, b) => b.price - a.price);
+            }
+
+            if (sort === "pASC") {
+                const result = await Promise.all(listProduct.map((pro) =>
+                    Product.findById(pro.product)
+                        .populate({ path: 'category', select: 'name' })
+                        .select("-status -createdAt -updatedAt -__v"))
+                );
+
+                limitResult = result.slice((pageNumber - 1) * pageSize, pageNumber * pageSize)
+                    .sort((a, b) => a.price - b.price);
+            }
+
+            if (sort === "rDESC") {
+                const result = await Promise.all(listProduct.map((pro) =>
+                    Product.findById(pro.product)
+                        .populate({ path: 'category', select: 'name' })
+                        .select("-status -createdAt -updatedAt -__v"))
+                );
+
+                limitResult = result.slice((pageNumber - 1) * pageSize, pageNumber * pageSize)
+                    .sort((a, b) => b.rating - a.rating);
+            }
+
+            if (sort === "rASC") {
+                const result = await Promise.all(listProduct.map((pro) =>
+                    Product.findById(pro.product)
+                        .populate({ path: 'category', select: 'name' })
+                        .select("-status -createdAt -updatedAt -__v"))
+                );
+
+                limitResult = result.slice((pageNumber - 1) * pageSize, pageNumber * pageSize)
+                    .sort((a, b) => a.rating - b.rating);
+            }
+
+            if (sort === "HOT") {
+                const result = await Promise.all(listProduct.map((pro) =>
+                    Product.findById(pro.product)
+                        .populate({ path: 'category', select: 'name' })
+                        .select("-status -createdAt -updatedAt -__v"))
+                );
+
+                limitResult = result.slice((pageNumber - 1) * pageSize, pageNumber * pageSize)
+                    .sort((a, b) => b.sold - a.sold);
+            }
+
+            if (!limitResult) return false;
+            return {
+                success: true,
+                status: 200,
+                message: "Find Successful !!!",
+                data: limitResult,
+            }
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong in User Service !!!",
+            }
+        }
+    },
+
+    findByColor: async (color, pageSize, pageNumber) => {
+        try {
+            const listProduct = await findProIDByColor(color);
+
+            const result = await Promise.all(listProduct.map((pro) =>
+                Product.findById(pro.product)
+                    .populate({ path: 'category', select: 'name' })
+                    .select("-status -createdAt -updatedAt -__v"))
+            );
+
+            const limitResult = result.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+
+            if (!result) return false;
+            return {
+                success: true,
+                status: 200,
+                message: "Find Product By Color Successful !!!",
+                data: limitResult,
+            }
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong in User Service !!!",
+            }
+        }
+    },
+
+    findByKeywordAndSort: async (keyword, pageSize, pageNumber, sort) => {
+        try {
+            let result = [];
+            if (sort === "pDESC") {
+                result = await Product.find({
+                    $or: [
+                        { name: { $regex: keyword, $options: 'i' } },
+                        { desc: { $regex: keyword, $options: 'i' } },
+                        { brand: { $regex: keyword, $options: 'i' } },
+                        { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
+                    ]
+                })
+                    .limit(pageSize)
+                    .skip(pageSize * (pageNumber - 1))
+                    .populate({ path: 'category', select: 'name' })
+                    .select("-status -createdAt -updatedAt -__v")
+                    .sort({ price: -1 });
+            }
+
+            if (sort === "pASC") {
+                result = await Product.find({
+                    $or: [
+                        { name: { $regex: keyword, $options: 'i' } },
+                        { desc: { $regex: keyword, $options: 'i' } },
+                        { brand: { $regex: keyword, $options: 'i' } },
+                        { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
+                    ]
+                })
+                    .limit(pageSize)
+                    .skip(pageSize * (pageNumber - 1))
+                    .populate({ path: 'category', select: 'name' })
+                    .select("-status -createdAt -updatedAt -__v")
+                    .sort({ price: 1 });
+            }
+
+            if (sort === "rDESC") {
+                result = await Product.find({
+                    $or: [
+                        { name: { $regex: keyword, $options: 'i' } },
+                        { desc: { $regex: keyword, $options: 'i' } },
+                        { brand: { $regex: keyword, $options: 'i' } },
+                        { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
+                    ]
+                })
+                    .limit(pageSize)
+                    .skip(pageSize * (pageNumber - 1))
+                    .populate({ path: 'category', select: 'name' })
+                    .select("-status -createdAt -updatedAt -__v")
+                    .sort({ rating: -1 });
+            }
+
+            if (sort === "rASC") {
+                result = await Product.find({
+                    $or: [
+                        { name: { $regex: keyword, $options: 'i' } },
+                        { desc: { $regex: keyword, $options: 'i' } },
+                        { brand: { $regex: keyword, $options: 'i' } },
+                        { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
+                    ]
+                })
+                    .limit(pageSize)
+                    .skip(pageSize * (pageNumber - 1))
+                    .populate({ path: 'category', select: 'name' })
+                    .select("-status -createdAt -updatedAt -__v")
+                    .sort({ rating: 1 });
+            }
+
+            if (sort === "HOT") {
+                result = await Product.find({
+                    $or: [
+                        { name: { $regex: keyword, $options: 'i' } },
+                        { desc: { $regex: keyword, $options: 'i' } },
+                        { brand: { $regex: keyword, $options: 'i' } },
+                        { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
+                    ]
+                })
+                    .limit(pageSize)
+                    .skip(pageSize * (pageNumber - 1))
+                    .populate({ path: 'category', select: 'name' })
+                    .select("-status -createdAt -updatedAt -__v")
+                    .sort({ sold: -1 });
+            }
+
+            if (!result) return false;
+            return {
+                success: true,
+                status: 200,
+                message: "Find Product By Keyword Successful !!!",
+                data: result,
+            }
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong in User Service !!!",
+            }
+        }
+    },
+
+    findByKeyword: async (keyword, pageSize, pageNumber) => {
+        try {
+            const result = await Product.find({
+                $or: [
+                    { name: { $regex: keyword, $options: 'i' } },
+                    { desc: { $regex: keyword, $options: 'i' } },
+                    { brand: { $regex: keyword, $options: 'i' } },
+                    { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
+                ]
+            })
+                .limit(pageSize)
+                .skip(pageSize * (pageNumber - 1))
+                .populate({ path: 'category', select: 'name' })
+                .select("-status -createdAt -updatedAt -__v");
+
+            if (!result) return false;
+            return {
+                success: true,
+                status: 200,
+                message: "Find Product By Keyword Successful !!!",
+                data: result,
+            }
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong in User Service !!!",
+            }
+        }
+    },
 
     update: async (proID, body) => {
         try {
@@ -134,9 +373,11 @@ export const {
         }
     },
 
-    getAll: async () => {
+    getAll: async (pageSize, pageNumber) => {
         try {
             const listProduct = await Product.find()
+                .limit(pageSize)
+                .skip(pageSize * (pageNumber - 1))
                 .populate({ path: 'category', select: 'name' })
                 .select("-createdAt -updatedAt -__v");
 
@@ -155,11 +396,13 @@ export const {
         }
     },
 
-    getAllByCateID: async (cateID) => {
+    getAllByCateID: async (cateID, pageSize, pageNumber) => {
         try {
-            const listProduct = await Product.find({ category: cateID }).select({
-                _id: 1, name: 1, brand: 1, price: 1, rating: 1, sold: 1
-            });
+            const listProduct = await Product.find({ category: cateID })
+                .limit(pageSize)
+                .skip(pageSize * (pageNumber - 1))
+                .select({ _id: 1, name: 1, brand: 1, price: 1, rating: 1, sold: 1 });
+
             return {
                 success: true,
                 status: 200,
