@@ -2,16 +2,17 @@ import { Rating } from '@mui/material';
 import Image from 'next/image';
 import React from 'react';
 import StarIcon from '@mui/icons-material/Star';
-import BorderBlack from '@/components/shared/BorderBlack';
+import BorderBlack from '@/components/shared/Border';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import ShoeInfo from '@/components/cards/ShoeInfo';
 import Reviews from '@/components/cards/Reviews';
+import SingleSellShoe from '@/components/cards/SingleSellShoe';
 
 const ShoesSinglePage = () => {
     return (
-        <div>
-            <div className="flex mx-[240px] gap-[100px] mt-[52px] mb-[116px]">
+        <div className="flex flex-col items-center">
+            <div className="flex justify-between  gap-[100px] mt-[52px] mb-[116px] w-[1020px]">
                 <div className="w-[420px]">
                     <div className="h-[328px] relative bg-bg_sell rounded-lg border-gray border-2">
                         <Image src="/nike.png" alt="giày" fill />
@@ -92,12 +93,12 @@ const ShoesSinglePage = () => {
                     </div>
                 </div>
             </div>
-            <div className="px-5 pt-[25px] pb-5 bg-bg_sell rounded-lg mx-[240px]">
+            <div className="px-5 pt-[25px] pb-5 bg-bg_sell rounded-lg w-[1020px]">
                 <div className="text-lg font-medium flex mb-[25px]">
                     <span className="w-[180px] border-b-2 border-blue flex items-center justify-center">
                         Shoe Information
                     </span>
-                    <div className="w-[160px]  flex items-center justify-center gap-3">
+                    <div className="w-[160px] flex items-center justify-center gap-3">
                         <span>Review</span>
                         <span className="text-rv">0</span>
                     </div>
@@ -106,9 +107,12 @@ const ShoesSinglePage = () => {
                 {/* <ShoeInfo /> */}
                 <Reviews />
             </div>
-            <div>
-                <span>Hot Shoes</span>
-                {/* Vỉew hot shoes (component singlesellshoe) */}
+            <div className="mt-24 flex flex-col items-center">
+                <span className="font-bold text-3xl text-blue">Hot Shoes</span>
+                <div className="mt-5">
+                    {/* Vỉew hot shoes (component singlesellshoe) */}
+                    <SingleSellShoe />
+                </div>
             </div>
         </div>
     );

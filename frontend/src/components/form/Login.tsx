@@ -8,7 +8,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { LoginValidation } from '@/lib/validation/user';
 import { useForm } from 'react-hook-form';
-import axios from '@/hooks/axios';
+import axios from '@/utils/axios';
 import { useRouter } from 'next/navigation';
 
 const Login = () => {

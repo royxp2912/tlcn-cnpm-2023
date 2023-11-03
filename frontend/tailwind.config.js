@@ -36,6 +36,14 @@ module.exports = {
                 rv: '#C1C8CE',
                 size2: '#99D0FF',
                 buy: '#EBF6FF',
+                border_sell: '#E3E6E8',
+                deal: '#F6F7F8',
+                bluev2: '#EBF6FF',
+                bluev3: '#ADD6FA',
+                cart: '#9EA0A2',
+                black: '#262626',
+                bluev4: '#71BDFF',
+                red: '#FF4252',
             },
             keyframes: {
                 'accordion-down': {

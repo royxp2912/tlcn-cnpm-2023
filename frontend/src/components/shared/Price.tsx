@@ -1,10 +1,10 @@
 import React from 'react';
 
-const Range = () => {
+const Price = () => {
     return (
-        <div>
-            <span>Prices</span>
-            <div>
+        <div className="p-5 bg-deal rounded-lg">
+            <span className="font-bold text-lg">Prices</span>
+            <div className="flex gap-[52px] mt-5">
                 <span>Ranger:</span>
                 <div>
                     <span>$13.99</span>
@@ -17,4 +17,4 @@ const Range = () => {
     );
 };
 
-export default Range;
+export default Price;

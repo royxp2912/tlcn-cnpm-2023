@@ -5,10 +5,7 @@ import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlin
 
 const SingleSellShoe = () => {
     return (
-        <div className="flex items-center justify-between">
-            <div>
-                <Image src="/left1.png" alt="Left Arrow" width={25} height={41} />
-            </div>
+        <div>
             <div className="flex gap-2">
                 <div className="border-2 border-gray2 w-max rounded-md p-1">
                     {/* Single Product */}
@@ -29,9 +26,6 @@ const SingleSellShoe = () => {
                         </div>
                     </div>
                 </div>
-            </div>
-            <div>
-                <Image src="/right1.png" alt="Right Arrow" width={25} height={41} />
             </div>
         </div>
     );
