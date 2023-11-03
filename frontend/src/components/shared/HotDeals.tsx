@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Brand = () => {
+const HotDeals = () => {
     return (
         <div className="bg-deal p-5 rounded-lg">
             <span className="font-bold text-lg">Hot Deals</span>
@@ -14,4 +14,4 @@ const Brand = () => {
     );
 };
 
-export default Brand;
+export default HotDeals;

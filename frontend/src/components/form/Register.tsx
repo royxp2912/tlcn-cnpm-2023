@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { RegisterValidation } from '@/lib/validation/user';
 import { useForm } from 'react-hook-form';
 import { Checkbox } from '../ui/checkbox';
-import axios from '@/hooks/axios';
+import axios from '@/utils/axios';
 import { useRouter } from 'next/navigation';
 
 type data = {

@@ -1,48 +1,62 @@
 import React from 'react';
+import UserNav from '@/components/shared/UserNav';
+import AddLocationAltOutlinedIcon from '@mui/icons-material/AddLocationAltOutlined';
+import LoopOutlinedIcon from '@mui/icons-material/LoopOutlined';
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 
 const Address = () => {
     return (
-        <div>
-            <div>userNav</div>
-            <div>
-                <div>
-                    <div>
-                        <span>Delivery Address</span>
-                        <span>Where you can receive your orders!!!</span>
+        <div className="flex px-20 mt-10 gap-5">
+            <UserNav />
+
+            <div className="flex flex-col w-[1100px] shadow-lg rounded-lg gap-[10px] py-10 px-[50px]">
+                <div className="flex items-center justify-between mb-10">
+                    <div className="flex flex-col">
+                        <span className="font-bold text-xl">Delivery Address</span>
+                        <span className="font-bold">Where you can receive your orders!!!</span>
                     </div>
-                    <div>
-                        icon
+                    <div className="w-[186px] h-10 bg-blue bg-opacity-20 text-blue flex gap-1 items-center justify-center rounded-full font-medium">
+                        <AddLocationAltOutlinedIcon />
                         <span>New Address</span>
                     </div>
                 </div>
-                <div>
-                    <span>Address 1</span>
-                    icon icon
-                    <div>
-                        <div>
+                <div className="border border-black border-opacity-20 px-10 pt-10 pb-5 rounded-full relative">
+                    <span className="opacity-60 top-[-14px] left-[100px] absolute block w-[100px] h-5 bg-white text-center">
+                        Address 1
+                    </span>
+                    <div className="flex gap-[10px] absolute top-[-14px] right-20">
+                        <div className="text-blue px-1 bg-white">
+                            <LoopOutlinedIcon />
+                        </div>
+                        <div className="text-red px-1 bg-white">
+                            <CloseOutlinedIcon />
+                        </div>
+                    </div>
+                    <div className="ml-5 flex items-center gap-[180px] font-bold text-lg">
+                        <div className="flex gap-3">
                             <span>Receiver:</span>
                             <span> Han Soo Hee</span>
                         </div>
-                        <div>
-                            <span>Phoen:</span>
+                        <div className="flex gap-3">
+                            <span>Phone:</span>
                             <span>0901909909</span>
                         </div>
                     </div>
-                    <div>
-                        <div>
+                    <div className="ml-5 mt-[30px] mb-5 font-medium flex gap-[60px]">
+                        <div className="flex gap-3">
                             <span>Province / City:</span>
                             <span> Han Soo Hee</span>
                         </div>
-                        <div>
+                        <div className="flex gap-3">
                             <span>District:</span>
                             <span> Han Soo Hee</span>
                         </div>
-                        <div>
+                        <div className="flex gap-3">
                             <span>Wards:</span>
                             <span> Han Soo Hee</span>
                         </div>
                     </div>
-                    <span>Specific Address: 111 đường nguyễn văn a</span>
+                    <span className="ml-5 font-medium">Specific Address: 111 đường nguyễn văn a</span>
                 </div>
             </div>
         </div>
