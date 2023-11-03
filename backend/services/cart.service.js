@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import Cart from "../models/Cart.js";
 import { checkedNull } from "../utils/handel_null.js";
 import { getUserByID } from "./user.service.js";

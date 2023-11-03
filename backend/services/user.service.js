@@ -1,3 +1,4 @@
+import bcrypt from "bcryptjs";
 import User from "../models/User.js";
 import { checkedNull } from "../utils/handel_null.js";
 import { deleteAllByUserID } from "./address.service.js";
@@ -14,7 +15,70 @@ export const {
     deleteUserByID,
     updateUserByID,
     getAllUserByStatus,
+    updateEmailByUserID,
+    updatePasswordByUserID,
 } = {
+
+    updateEmailByUserID: async (userID, newEmail) => {
+        try {
+            checkedObjectId(userID, "User ID");
+            const result = await User.findByIdAndUpdate(
+                userID,
+                { $set: { email: newEmail } },
+                { new: true }
+            );
+            checkedNull(result, "User don't exist !!!");
+
+            return {
+                success: true,
+                status: 200,
+                message: "Update User Email Successful !!!",
+            }
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong in User Service !!!",
+            }
+        }
+    },
+
+    updatePasswordByUserID: async (userID, oldPass, newPass) => {
+        try {
+            checkedObjectId(userID, "User ID");
+            const result = await User.findById(userID).select("password");
+            checkedNull(result, "User don't exist !!!");
+
+            const isCorrectPassword = bcrypt.compareSync(oldPass, result.password);
+            if (!isCorrectPassword)
+                return {
+                    success: false,
+                    status: 404,
+                    message: 'Incorrect Old Password !!!',
+                };
+
+            const salt = bcrypt.genSaltSync(10);
+            const newPassword = bcrypt.hashSync(newPass, salt);
+
+            await User.findByIdAndUpdate(
+                userID,
+                { $set: { password: newPassword } },
+                { new: true }
+            );
+
+            return {
+                success: true,
+                status: 200,
+                message: "Update User Password Successful !!!",
+            }
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong in User Service !!!",
+            }
+        }
+    },
 
     findByKeyword: async (keyword, pageSize, pageNumber) => {
         try {

@@ -7,10 +7,11 @@ import cartRoute from "./routes/cart.js";
 import usersRoute from "./routes/users.js";
 import orderRoute from "./routes/order.js";
 import addressRoute from "./routes/address.js";
+import revenueRoute from "./routes/revenue.js";
 import productsRoute from "./routes/products.js";
 import commentsRoute from "./routes/comments.js";
-import categoryRoute from "./routes/categories.js";
 import variantsRoute from "./routes/variants.js";
+import categoryRoute from "./routes/categories.js";
 // import client from "./connections/redis.js";
 
 // connect to mongodb
@@ -33,15 +34,16 @@ app.use(
 app.options('*', cors({ credentials: true, origin: true }));
 
 // Route API
-app.use("/carts", cartRoute);
 app.use("/auth", authRoute);
-app.use("/orders", orderRoute);
+app.use("/carts", cartRoute);
 app.use("/users", usersRoute);
+app.use("/orders", orderRoute);
 app.use("/address", addressRoute);
+app.use("/revenue", revenueRoute);
 app.use("/products", productsRoute);
 app.use("/comments", commentsRoute);
-app.use("/categories", categoryRoute);
 app.use("/variants", variantsRoute);
+app.use("/categories", categoryRoute);
 
 // middleware handel error
 app.use((err, req, res, next) => {

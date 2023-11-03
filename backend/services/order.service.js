@@ -8,11 +8,55 @@ export const {
     getByID,
     cancelOrder,
     updateStatus,
+    findByKeyword,
     getAllByUserID,
     getAllByStatus,
     paymentConfirm,
     deliveryConfirm,
 } = {
+
+    findByKeyword: async (keyword, pageSize, pageNumber) => {
+        try {
+            let result = []
+            if (isNaN(keyword)) {
+                result = await Order.find({
+                    $or: [
+                        { 'items.name': { $regex: keyword, $options: 'i' } },
+                        { status: { $regex: keyword, $options: 'i' } },
+                        { paymentMethod: { $regex: keyword, $options: 'i' } },
+                    ]
+                })
+                    .limit(pageSize)
+                    .skip(pageSize * (pageNumber - 1))
+                    .select("-createdAt -updatedAt -__v -user -deliveryAddress");
+            } else {
+                result = await Order.find({
+                    $or: [
+                        { 'items.name': { $regex: keyword, $options: 'i' } },
+                        { total: keyword },
+                        { status: { $regex: keyword, $options: 'i' } },
+                        { paymentMethod: { $regex: keyword, $options: 'i' } },
+                    ]
+                })
+                    .limit(pageSize)
+                    .skip(pageSize * (pageNumber - 1))
+                    .select("-createdAt -updatedAt -__v -user -deliveryAddress");
+            }
+
+            return {
+                success: true,
+                status: 200,
+                message: "Find Order By Keyword Successful !!!",
+                data: result,
+            }
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong in Order Service !!!",
+            }
+        }
+    },
 
     deliveryConfirm: async (orderID) => {
         try {
@@ -138,7 +182,7 @@ export const {
     getByID: async (orderID) => {
         try {
             const result = await Order.findById(orderID)
-                .populate({ path: 'deliveryAddress', select: '-createdAt -updatedAt -__v -user -default' })
+                .populate({ path: 'deliveryAddress', select: '-createdAt -updatedAt -__v -user' })
                 .select("-updatedAt -createdAt -__v");
             checkedNull(result, "Order doesn't exist !!!")
 
