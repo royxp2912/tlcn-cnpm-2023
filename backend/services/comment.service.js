@@ -4,15 +4,16 @@ import Comment from "../models/Comment.js";
 import { checkedNull } from "../utils/handel_null.js";
 
 export const {
-    deleteAllByUserID,
-    deleteAllByProID,
-    update, updateLike,
-    deleteAll,
-    deleteByID,
     create,
+    update,
+    deleteAll,
+    updateLike,
+    deleteByID,
     getByCmtID,
-    getAllByUserID,
     getAllByProID,
+    getAllByUserID,
+    deleteAllByProID,
+    deleteAllByUserID,
     updateRatingOfProduct
 } = {
 

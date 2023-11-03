@@ -8,19 +8,29 @@ import {
     unlockUserByID,
     uploadAvatarByID,
     deleteUserByUserID,
+    isExistUser,
+    testUploadAvatarByID,
+    findUserByKeyword,
+    updateUserPassword,
+    updateUserEmail,
 } from "../controllers/user.controller.js";
+import sharp from "sharp";
 
 const router = express.Router();
 
 // Find User By ID
 router.get("/", findAllUser);
 router.get("/:userID", findUserByID);
+router.get("/search/keyword", findUserByKeyword);
 
 // Edit User By ID
 router.put("/:userID", editUserByID);
 router.patch("/lock/:userID", lockUserByID);
+router.patch("/email/:userID", updateUserEmail);
 router.patch("/unlock/:userID", unlockUserByID);
-router.patch("/upload-avatar/:userID", uploadCloud.single("avatar"), uploadAvatarByID);
+router.patch("/password/:userID", updateUserPassword);
+router.patch("/upload-avatar/:userID", isExistUser, uploadCloud.single("avatar"), uploadAvatarByID);
+router.patch("/upload-avatar/test/:userID", isExistUser, testUploadAvatarByID);
 
 // Delete User By User ID
 router.delete("/:userID", deleteUserByUserID);

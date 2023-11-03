@@ -11,6 +11,11 @@ const OrderSchema = new mongoose.Schema({
             price: { type: Number, require: true, },
         }
     ],
+    deliveryAddress: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Address",
+        required: true,
+    },
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
@@ -20,9 +25,22 @@ const OrderSchema = new mongoose.Schema({
         type: Number,
         default: 0,
     },
+    paymentMethod: {
+        type: String,
+        enum: ["COD", "VNPay"],
+        default: "COD",
+    },
+    isPaid: {
+        type: Boolean,
+        default: false,
+    },
+    isDelivered: {
+        type: Boolean,
+        default: false,
+    },
     status: {
         type: String,
-        enum: ["Confirmming", "Delivering", "Successful", "Cancel", "Return"],
+        enum: ["Confirmming", "Waiting", "Delivering", "Successful", "Cancel", "Return"],
         default: "Confirmming",
     },
 },

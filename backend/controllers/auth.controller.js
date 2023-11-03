@@ -132,7 +132,7 @@ export const login = async (req, res, next) => {
         if (!success) return next(createError(status, message));
 
         const detailsCreate = await createListToken(data._id, refreshToken);
-        if (!detailsCreate.success) return next(createError(status, message));
+        if (!detailsCreate.success) return next(createError(detailsCreate.status, detailsCreate.message));
 
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true

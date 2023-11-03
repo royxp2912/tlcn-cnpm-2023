@@ -8,7 +8,85 @@ import {
     getById,
     deleteById,
     getAllByCateID,
+    findByKeyword,
+    findByKeywordAndSort,
+    findByColor,
+    findByColorAndSort,
 } from "../services/product.service.js";
+
+export const findProductByColor = async (req, res, next) => {
+    try {
+        const pageSize = req.body.pageSize || 8;
+        const pageNumber = req.query.pageNumber || 1;
+        const sort = req.query.sort;
+
+        if (sort) {
+            const { success, message, data, status } = await findByColorAndSort(req.body.color, pageSize, pageNumber, sort);
+            if (!success) return next(createError(status, message));
+            res.status(status).json({
+                success: success,
+                message: message,
+                data: data
+            });
+        }
+
+        const { success, message, data, status } = await findByColor(req.body.color, pageSize, pageNumber);
+        if (!success) return next(createError(status, message));
+
+        if (data.length === 0) {
+            res.status(404).json({
+                success: success,
+                message: `No shoes found matching color <${req.body.color}> !!!`,
+            });
+        }
+
+        res.status(status).json({
+            success: success,
+            message: message,
+            total: data.length,
+            data: data
+        });
+    } catch (err) {
+        next(err);
+    }
+}
+
+export const findProductByKeyword = async (req, res, next) => {
+    try {
+        const pageSize = req.body.pageSize || 8;
+        const pageNumber = req.query.pageNumber || 1;
+        const sort = req.query.sort;
+
+        if (sort) {
+            const { success, message, data, status } = await findByKeywordAndSort(req.body.keyword, pageSize, pageNumber, sort);
+            if (!success) return next(createError(status, message));
+            res.status(status).json({
+                success: success,
+                message: message,
+                data: data
+            });
+        }
+
+        const { success, message, data, status } = await findByKeyword(req.body.keyword, pageSize, pageNumber);
+        if (!success) return next(createError(status, message));
+
+        if (data.length === 0) {
+            res.status(404).json({
+                success: success,
+                message: `No shoes found matching keyword <${req.body.keyword}> !!!`,
+            });
+        }
+
+        res.status(status).json({
+            success: success,
+            message: message,
+            total: data.length,
+            data: data
+        });
+    } catch (err) {
+        next(err);
+    }
+}
 
 export const updateProduct = async (req, res, next) => {
     try {
@@ -63,7 +141,10 @@ export const getByIdProduct = async (req, res, next) => {
 
 export const getAllProductByCategory = async (req, res, next) => {
     try {
-        const { success, message, data, status } = await getAllByCateID(req.params.cateID);
+        const pageSize = 8;
+        const pageNumber = req.query.pageNumber || 1;
+
+        const { success, message, data, status } = await getAllByCateID(req.params.cateID, pageSize, pageNumber);
         if (!success) return next(createError(status, message));
 
         res.status(status).json({
@@ -79,7 +160,10 @@ export const getAllProductByCategory = async (req, res, next) => {
 
 export const getAllProduct = async (req, res, next) => {
     try {
-        const { success, message, data, status } = await getAll();
+        const pageSize = 8;
+        const pageNumber = req.query.pageNumber || 1;
+
+        const { success, message, data, status } = await getAll(pageSize, pageNumber);
         if (!success) return next(createError(status, message));
 
         res.status(status).json({

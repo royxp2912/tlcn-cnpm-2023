@@ -9,9 +9,28 @@ export const {
     getVarByID,
     updateVarByID,
     deleteVarByID,
+    findProIDByColor,
     getListVarByProID,
     deleteListVarByProID,
 } = {
+
+    findProIDByColor: async (color) => {
+        try {
+            const listProduct = await Variant.find({ color: color })
+                .select("product -_id");
+
+            const uniqueListProduct = Array.from(new Set(listProduct.map(JSON.stringify)), JSON.parse);
+
+            return uniqueListProduct;
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong on Variant !!!",
+            }
+        }
+    },
+
 
     createOne: async (proID, variant) => {
         try {

@@ -12,11 +12,12 @@ import {
     createTokenTest,
     refreshAccessToken,
 } from "../controllers/auth.controller.js";
+import validateRegister from "../middlewares/validator/auth/validateRegister.js";
 
 const router = express.Router();
 
 // REGISTER
-router.post("/register", register);
+router.post("/register", validateRegister, register);
 
 // LOGIN
 router.post("/login", validateLogin, login);

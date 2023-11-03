@@ -1,9 +1,11 @@
-import bcrypt from 'bcryptjs';
-import User from '../models/User.js';
-import Auth from '../models/Authentication.js';
-import { findByEmail } from './user.service.js';
-import generateToken from '../helpers/jwt/generateTokens.js';
-import sendCodeEmail from '../utils/emailservice_config.js';
+import bcrypt from "bcryptjs";
+import User from "../models/User.js";
+import Auth from "../models/Authentication.js";
+import { findByEmail } from "./user.service.js";
+import generateToken from "../helpers/jwt/generateTokens.js";
+import sendCodeEmail from "../utils/emailservice_config.js";
+import { checkedNull } from "../utils/handel_null.js";
+import { checkedObjectId } from "../utils/checkedOthers.js";
 
 export const {
     addNewToken,
@@ -71,6 +73,7 @@ export const {
 
     logoutService: async (userID) => {
         try {
+            checkedObjectId(userID, "User ID");
             const deletedAuth = await Auth.findOneAndDelete({ user: userID });
             if (!deletedAuth)
                 return {
@@ -125,7 +128,7 @@ export const {
             return {
                 success: true,
                 status: 200,
-                message: 'Login Successful !!!',
+                message: "Login Successful !!!",
                 data: otherDetails,
                 accessToken,
                 refreshToken,
@@ -184,6 +187,13 @@ export const {
 
     createListToken: async (userID, token) => {
         try {
+            const existAuth = await Auth.findOne({ user: userID });
+            if (existAuth) return {
+                success: false,
+                status: 400,
+                message: "User đã và đang login !!! Vui lòng logout và thử lại !!!",
+            }
+
             const newAuth = new Auth({
                 user: userID,
                 listTokens: [
