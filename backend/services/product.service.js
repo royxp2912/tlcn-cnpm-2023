@@ -128,84 +128,176 @@ export const {
     findByKeywordAndSort: async (keyword, pageSize, pageNumber, sort) => {
         try {
             let result = [];
-            if (sort === "pDESC") {
-                result = await Product.find({
-                    $or: [
-                        { name: { $regex: keyword, $options: 'i' } },
-                        { desc: { $regex: keyword, $options: 'i' } },
-                        { brand: { $regex: keyword, $options: 'i' } },
-                        { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
-                    ]
-                })
-                    .limit(pageSize)
-                    .skip(pageSize * (pageNumber - 1))
-                    .populate({ path: 'category', select: 'name' })
-                    .select("-status -createdAt -updatedAt -__v")
-                    .sort({ price: -1 });
-            }
+            if (isNaN(keyword)) {
+                if (sort === "pDESC") {
+                    result = await Product.find({
+                        $or: [
+                            { name: { $regex: keyword, $options: 'i' } },
+                            { desc: { $regex: keyword, $options: 'i' } },
+                            { brand: { $regex: keyword, $options: 'i' } },
+                            { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
+                        ]
+                    })
+                        .limit(pageSize)
+                        .skip(pageSize * (pageNumber - 1))
+                        .populate({ path: 'category', select: 'name' })
+                        .select("-status -createdAt -updatedAt -__v")
+                        .sort({ price: -1 });
+                }
 
-            if (sort === "pASC") {
-                result = await Product.find({
-                    $or: [
-                        { name: { $regex: keyword, $options: 'i' } },
-                        { desc: { $regex: keyword, $options: 'i' } },
-                        { brand: { $regex: keyword, $options: 'i' } },
-                        { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
-                    ]
-                })
-                    .limit(pageSize)
-                    .skip(pageSize * (pageNumber - 1))
-                    .populate({ path: 'category', select: 'name' })
-                    .select("-status -createdAt -updatedAt -__v")
-                    .sort({ price: 1 });
-            }
+                if (sort === "pASC") {
+                    result = await Product.find({
+                        $or: [
+                            { name: { $regex: keyword, $options: 'i' } },
+                            { desc: { $regex: keyword, $options: 'i' } },
+                            { brand: { $regex: keyword, $options: 'i' } },
+                            { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
+                        ]
+                    })
+                        .limit(pageSize)
+                        .skip(pageSize * (pageNumber - 1))
+                        .populate({ path: 'category', select: 'name' })
+                        .select("-status -createdAt -updatedAt -__v")
+                        .sort({ price: 1 });
+                }
 
-            if (sort === "rDESC") {
-                result = await Product.find({
-                    $or: [
-                        { name: { $regex: keyword, $options: 'i' } },
-                        { desc: { $regex: keyword, $options: 'i' } },
-                        { brand: { $regex: keyword, $options: 'i' } },
-                        { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
-                    ]
-                })
-                    .limit(pageSize)
-                    .skip(pageSize * (pageNumber - 1))
-                    .populate({ path: 'category', select: 'name' })
-                    .select("-status -createdAt -updatedAt -__v")
-                    .sort({ rating: -1 });
-            }
+                if (sort === "rDESC") {
+                    result = await Product.find({
+                        $or: [
+                            { name: { $regex: keyword, $options: 'i' } },
+                            { desc: { $regex: keyword, $options: 'i' } },
+                            { brand: { $regex: keyword, $options: 'i' } },
+                            { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
+                        ]
+                    })
+                        .limit(pageSize)
+                        .skip(pageSize * (pageNumber - 1))
+                        .populate({ path: 'category', select: 'name' })
+                        .select("-status -createdAt -updatedAt -__v")
+                        .sort({ rating: -1 });
+                }
 
-            if (sort === "rASC") {
-                result = await Product.find({
-                    $or: [
-                        { name: { $regex: keyword, $options: 'i' } },
-                        { desc: { $regex: keyword, $options: 'i' } },
-                        { brand: { $regex: keyword, $options: 'i' } },
-                        { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
-                    ]
-                })
-                    .limit(pageSize)
-                    .skip(pageSize * (pageNumber - 1))
-                    .populate({ path: 'category', select: 'name' })
-                    .select("-status -createdAt -updatedAt -__v")
-                    .sort({ rating: 1 });
-            }
+                if (sort === "rASC") {
+                    result = await Product.find({
+                        $or: [
+                            { name: { $regex: keyword, $options: 'i' } },
+                            { desc: { $regex: keyword, $options: 'i' } },
+                            { brand: { $regex: keyword, $options: 'i' } },
+                            { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
+                        ]
+                    })
+                        .limit(pageSize)
+                        .skip(pageSize * (pageNumber - 1))
+                        .populate({ path: 'category', select: 'name' })
+                        .select("-status -createdAt -updatedAt -__v")
+                        .sort({ rating: 1 });
+                }
 
-            if (sort === "HOT") {
-                result = await Product.find({
-                    $or: [
-                        { name: { $regex: keyword, $options: 'i' } },
-                        { desc: { $regex: keyword, $options: 'i' } },
-                        { brand: { $regex: keyword, $options: 'i' } },
-                        { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
-                    ]
-                })
-                    .limit(pageSize)
-                    .skip(pageSize * (pageNumber - 1))
-                    .populate({ path: 'category', select: 'name' })
-                    .select("-status -createdAt -updatedAt -__v")
-                    .sort({ sold: -1 });
+                if (sort === "HOT") {
+                    result = await Product.find({
+                        $or: [
+                            { name: { $regex: keyword, $options: 'i' } },
+                            { desc: { $regex: keyword, $options: 'i' } },
+                            { brand: { $regex: keyword, $options: 'i' } },
+                            { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
+                        ]
+                    })
+                        .limit(pageSize)
+                        .skip(pageSize * (pageNumber - 1))
+                        .populate({ path: 'category', select: 'name' })
+                        .select("-status -createdAt -updatedAt -__v")
+                        .sort({ sold: -1 });
+                }
+            } else {
+                if (sort === "pDESC") {
+                    result = await Product.find({
+                        $or: [
+                            { name: { $regex: keyword, $options: 'i' } },
+                            { desc: { $regex: keyword, $options: 'i' } },
+                            { brand: { $regex: keyword, $options: 'i' } },
+                            { sold: keyword },
+                            { price: keyword },
+                            { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
+                        ]
+                    })
+                        .limit(pageSize)
+                        .skip(pageSize * (pageNumber - 1))
+                        .populate({ path: 'category', select: 'name' })
+                        .select("-status -createdAt -updatedAt -__v")
+                        .sort({ price: -1 });
+                }
+
+                if (sort === "pASC") {
+                    result = await Product.find({
+                        $or: [
+                            { name: { $regex: keyword, $options: 'i' } },
+                            { desc: { $regex: keyword, $options: 'i' } },
+                            { brand: { $regex: keyword, $options: 'i' } },
+                            { sold: keyword },
+                            { price: keyword },
+                            { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
+                        ]
+                    })
+                        .limit(pageSize)
+                        .skip(pageSize * (pageNumber - 1))
+                        .populate({ path: 'category', select: 'name' })
+                        .select("-status -createdAt -updatedAt -__v")
+                        .sort({ price: 1 });
+                }
+
+                if (sort === "rDESC") {
+                    result = await Product.find({
+                        $or: [
+                            { name: { $regex: keyword, $options: 'i' } },
+                            { desc: { $regex: keyword, $options: 'i' } },
+                            { brand: { $regex: keyword, $options: 'i' } },
+                            { sold: keyword },
+                            { price: keyword },
+                            { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
+                        ]
+                    })
+                        .limit(pageSize)
+                        .skip(pageSize * (pageNumber - 1))
+                        .populate({ path: 'category', select: 'name' })
+                        .select("-status -createdAt -updatedAt -__v")
+                        .sort({ rating: -1 });
+                }
+
+                if (sort === "rASC") {
+                    result = await Product.find({
+                        $or: [
+                            { name: { $regex: keyword, $options: 'i' } },
+                            { desc: { $regex: keyword, $options: 'i' } },
+                            { brand: { $regex: keyword, $options: 'i' } },
+                            { sold: keyword },
+                            { price: keyword },
+                            { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
+                        ]
+                    })
+                        .limit(pageSize)
+                        .skip(pageSize * (pageNumber - 1))
+                        .populate({ path: 'category', select: 'name' })
+                        .select("-status -createdAt -updatedAt -__v")
+                        .sort({ rating: 1 });
+                }
+
+                if (sort === "HOT") {
+                    result = await Product.find({
+                        $or: [
+                            { name: { $regex: keyword, $options: 'i' } },
+                            { desc: { $regex: keyword, $options: 'i' } },
+                            { brand: { $regex: keyword, $options: 'i' } },
+                            { sold: keyword },
+                            { price: keyword },
+                            { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
+                        ]
+                    })
+                        .limit(pageSize)
+                        .skip(pageSize * (pageNumber - 1))
+                        .populate({ path: 'category', select: 'name' })
+                        .select("-status -createdAt -updatedAt -__v")
+                        .sort({ sold: -1 });
+                }
             }
 
             if (!result) return false;
@@ -226,18 +318,36 @@ export const {
 
     findByKeyword: async (keyword, pageSize, pageNumber) => {
         try {
-            const result = await Product.find({
-                $or: [
-                    { name: { $regex: keyword, $options: 'i' } },
-                    { desc: { $regex: keyword, $options: 'i' } },
-                    { brand: { $regex: keyword, $options: 'i' } },
-                    { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
-                ]
-            })
-                .limit(pageSize)
-                .skip(pageSize * (pageNumber - 1))
-                .populate({ path: 'category', select: 'name' })
-                .select("-status -createdAt -updatedAt -__v");
+            let result = [];
+            if (isNaN(keyword)) {
+                result = await Product.find({
+                    $or: [
+                        { name: { $regex: keyword, $options: 'i' } },
+                        { desc: { $regex: keyword, $options: 'i' } },
+                        { brand: { $regex: keyword, $options: 'i' } },
+                        { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
+                    ]
+                })
+                    .limit(pageSize)
+                    .skip(pageSize * (pageNumber - 1))
+                    .populate({ path: 'category', select: 'name' })
+                    .select("-status -createdAt -updatedAt -__v");
+            } else {
+                result = await Product.find({
+                    $or: [
+                        { name: { $regex: keyword, $options: 'i' } },
+                        { desc: { $regex: keyword, $options: 'i' } },
+                        { brand: { $regex: keyword, $options: 'i' } },
+                        { sold: keyword },
+                        { price: keyword },
+                        { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
+                    ]
+                })
+                    .limit(pageSize)
+                    .skip(pageSize * (pageNumber - 1))
+                    .populate({ path: 'category', select: 'name' })
+                    .select("-status -createdAt -updatedAt -__v");
+            }
 
             if (!result) return false;
             return {

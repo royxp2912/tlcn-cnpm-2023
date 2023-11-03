@@ -11,6 +11,8 @@ import {
     isExistUser,
     testUploadAvatarByID,
     findUserByKeyword,
+    updateUserPassword,
+    updateUserEmail,
 } from "../controllers/user.controller.js";
 import sharp from "sharp";
 
@@ -24,7 +26,9 @@ router.get("/search/keyword", findUserByKeyword);
 // Edit User By ID
 router.put("/:userID", editUserByID);
 router.patch("/lock/:userID", lockUserByID);
+router.patch("/email/:userID", updateUserEmail);
 router.patch("/unlock/:userID", unlockUserByID);
+router.patch("/password/:userID", updateUserPassword);
 router.patch("/upload-avatar/:userID", isExistUser, uploadCloud.single("avatar"), uploadAvatarByID);
 router.patch("/upload-avatar/test/:userID", isExistUser, testUploadAvatarByID);
 

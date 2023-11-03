@@ -8,8 +8,51 @@ import {
     getAllByUserID,
     getAllByStatus,
     paymentConfirm,
+    deliveryConfirm,
+    findByKeyword,
 } from "../services/order.service.js";
 
+
+export const searchOrderByKeyword = async (req, res, next) => {
+    try {
+        const pageSize = req.body.pageSize || 5;
+        const pageNumber = req.query.pageNumber || 1;
+        const keyword = req.body.keyword || "";
+
+        const { success, status, message, data } = await findByKeyword(keyword, pageSize, pageNumber);
+        if (!success) return next(createError(status, message));
+
+        if (data.length === 0) {
+            res.status(404).json({
+                success: success,
+                message: `No Order found matching keyword <${keyword}> !!!`,
+            });
+        }
+
+        res.status(status).json({
+            success,
+            message,
+            total: data.length,
+            data,
+        });
+    } catch (err) {
+        next(err);
+    }
+}
+
+export const deliveryConfirmOrder = async (req, res, next) => {
+    try {
+        const { success, status, message } = await deliveryConfirm(req.params.orderID);
+        if (!success) return next(createError(status, message));
+
+        res.status(status).send({
+            success,
+            message,
+        });
+    } catch (err) {
+        next(err);
+    }
+}
 
 export const paymentConfirmOrder = async (req, res, next) => {
     try {

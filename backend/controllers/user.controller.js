@@ -7,11 +7,41 @@ import {
     unlockUser,
     getUserByID,
     updateAvatar,
+    findByKeyword,
     deleteUserByID,
     updateUserByID,
     getAllUserByStatus,
-    findByKeyword,
+    updateEmailByUserID,
+    updatePasswordByUserID,
 } from "../services/user.service.js";
+
+export const updateUserEmail = async (req, res, next) => {
+    try {
+        const { success, status, message } = await updateEmailByUserID(req.params.userID, req.body.newEmail);
+        if (!success) return next(createError(status, message));
+
+        res.status(status).json({
+            success,
+            message,
+        })
+    } catch (err) {
+        next(err);
+    }
+}
+
+export const updateUserPassword = async (req, res, next) => {
+    try {
+        const { success, status, message } = await updatePasswordByUserID(req.params.userID, req.body.oldPass, req.body.newPass);
+        if (!success) return next(createError(status, message));
+
+        res.status(status).json({
+            success,
+            message,
+        })
+    } catch (err) {
+        next(err);
+    }
+}
 
 export const findUserByKeyword = async (req, res, next) => {
     try {
@@ -20,6 +50,13 @@ export const findUserByKeyword = async (req, res, next) => {
 
         const { success, status, message, data } = await findByKeyword(req.body.keyword, pageSize, pageNumber);
         if (!success) return next(createError(status, message));
+
+        if (data.length === 0) {
+            res.status(404).json({
+                success: success,
+                message: `No User found matching keyword <${req.body.keyword}> !!!`,
+            });
+        }
 
         res.status(status).json({
             success,

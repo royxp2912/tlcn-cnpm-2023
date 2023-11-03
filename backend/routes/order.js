@@ -7,6 +7,8 @@ import {
     updateOrderStatus,
     getAllOrderByUserID,
     paymentConfirmOrder,
+    deliveryConfirmOrder,
+    searchOrderByKeyword,
 } from "../controllers/order.controller.js";
 import createPaymentUrl from "../utils/createPaymentUrl.js";
 
@@ -17,6 +19,9 @@ router.get("/", getAllOrder);
 router.get("/:orderID", getOrderByID);
 router.get("/user/:userID", getAllOrderByUserID);
 
+// search by keyword
+router.get("/search/keyword", searchOrderByKeyword);
+
 // create
 router.post("/", createOrder);
 
@@ -24,6 +29,7 @@ router.post("/", createOrder);
 router.patch("/:orderID", updateOrderStatus);
 router.patch("/:orderID/cancel", cancelOrderByID);
 router.patch("/:orderID/paid", paymentConfirmOrder);
+router.patch("/:orderID/delivered", deliveryConfirmOrder);
 
 // create vnpay url
 router.post('/create_payment_url', function (req, res, next) {

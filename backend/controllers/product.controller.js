@@ -16,7 +16,7 @@ import {
 
 export const findProductByColor = async (req, res, next) => {
     try {
-        const pageSize = 8;
+        const pageSize = req.body.pageSize || 8;
         const pageNumber = req.query.pageNumber || 1;
         const sort = req.query.sort;
 
@@ -53,7 +53,7 @@ export const findProductByColor = async (req, res, next) => {
 
 export const findProductByKeyword = async (req, res, next) => {
     try {
-        const pageSize = 8;
+        const pageSize = req.body.pageSize || 8;
         const pageNumber = req.query.pageNumber || 1;
         const sort = req.query.sort;
 
