@@ -24,14 +24,13 @@ export const {
                     size: size,
                 },
             )
-                .select("color -_id");
-            const result = listProduct.map((item) => item.color);
+                .select("color quantity -_id");
 
             return {
                 success: true,
                 status: 200,
                 message: "Get Size Of Product By Color !!!",
-                data: result,
+                data: listProduct,
             };
         } catch (err) {
             return {
@@ -50,14 +49,13 @@ export const {
                     color: color,
                 },
             )
-                .select("size -_id");
-            const result = listProduct.map((item) => item.size);
+                .select("size quantity -_id");
 
             return {
                 success: true,
                 status: 200,
                 message: "Get Size Of Product By Color !!!",
-                data: result,
+                data: listProduct,
             };
         } catch (err) {
             return {
