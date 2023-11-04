@@ -14,6 +14,7 @@ export const {
     getAll,
     update,
     getById,
+    getHotDeal,
     deleteById,
     findByColor,
     findByKeyword,
@@ -473,6 +474,30 @@ export const {
                     product: result,
                     variants,
                 },
+            }
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message,
+            }
+        }
+    },
+
+    getHotDeal: async (pageSize, pageNumber) => {
+        try {
+            const listProduct = await Product.find()
+                .limit(pageSize)
+                .skip(pageSize * (pageNumber - 1))
+                .populate({ path: 'category', select: 'name' })
+                .select("-createdAt -updatedAt -__v")
+                .sort({ sold: -1 });
+
+            return {
+                success: true,
+                status: 200,
+                message: "Get All Product Hot Deal Successful!!!",
+                data: checkedNull(listProduct, "Resource doesn't exist !!!"),
             }
         } catch (err) {
             return {
