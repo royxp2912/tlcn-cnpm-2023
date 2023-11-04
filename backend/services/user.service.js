@@ -314,7 +314,7 @@ export const {
     findByEmail: async (email) => {
         try {
             const existUser = await User.findOne({ email: email })
-                .select("-password -role -status -createdAt -updatedAt -__v");;
+                .select("-role -status -createdAt -updatedAt -__v");
 
             if (!existUser) return false;
             return {

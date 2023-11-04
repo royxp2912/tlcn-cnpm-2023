@@ -12,6 +12,7 @@ import {
     findByKeywordAndSort,
     findByColor,
     findByColorAndSort,
+    getHotDeal,
 } from "../services/product.service.js";
 
 export const findProductByColor = async (req, res, next) => {
@@ -164,6 +165,25 @@ export const getAllProduct = async (req, res, next) => {
         const pageNumber = req.query.pageNumber || 1;
 
         const { success, message, data, status } = await getAll(pageSize, pageNumber);
+        if (!success) return next(createError(status, message));
+
+        res.status(status).json({
+            success: success,
+            message: message,
+            total: data.length,
+            data: data
+        });
+    } catch (err) {
+        next(err);
+    }
+}
+
+export const getProductHotDeal = async (req, res, next) => {
+    try {
+        const pageSize = req.query.pageSize || 8;
+        const pageNumber = req.query.pageNumber || 1;
+
+        const { success, message, data, status } = await getHotDeal(pageSize, pageNumber);
         if (!success) return next(createError(status, message));
 
         res.status(status).json({
