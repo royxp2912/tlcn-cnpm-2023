@@ -26,7 +26,7 @@ export const getAddressByAddressId = createAsyncThunk(
 );
 
 export const createAddress = createAsyncThunk(
-    'address/getAddressByAddressId',
+    'address/createAddress',
     async (params: { userId: string; address: Address }, { dispatch, rejectWithValue }) => {
         try {
             const { userId, address } = params;
@@ -169,16 +169,6 @@ export const addressSlice = createSlice({
             state.error = action.error.message || null;
         });
         builder.addCase(setDefaultAddressByAddressId.fulfilled, (state, action) => {
-            state.loading = false;
-        });
-        builder.addCase(unsetDefaultAddressByAddressId.pending, (state) => {
-            state.loading = true;
-        });
-        builder.addCase(unsetDefaultAddressByAddressId.rejected, (state, action) => {
-            state.loading = false;
-            state.error = action.error.message || null;
-        });
-        builder.addCase(unsetDefaultAddressByAddressId.fulfilled, (state, action) => {
             state.loading = false;
         });
         builder.addCase(unsetDefaultAddressByAddressId.pending, (state) => {

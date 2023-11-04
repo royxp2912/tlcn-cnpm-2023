@@ -1,6 +1,7 @@
 'use client';
 
 import { configureStore } from '@reduxjs/toolkit';
+import thunkMiddleware from 'redux-thunk';
 import authReducer from '../slices/authSlice';
 import addressReducer from '../slices/addressSlice';
 import productReducer from '../slices/productSlice';
@@ -19,10 +20,17 @@ const store = configureStore({
         user: userReducer,
         order: orderReducer,
     },
+
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
+            thunk: {
+                extraArgument: {},
+            },
             serializableCheck: false,
-        }),
+        }).concat(thunkMiddleware),
+    devTools: true,
 });
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
 
 export default store;

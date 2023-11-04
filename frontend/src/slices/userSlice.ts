@@ -12,7 +12,7 @@ export const getUser = createAsyncThunk('users/getUser', async (userId: string, 
 });
 
 export const updateUser = createAsyncThunk(
-    'users/getUser',
+    'users/updateUser',
     async (params: { userId: string; user: User }, { dispatch, rejectWithValue }) => {
         try {
             const { userId, user } = params;

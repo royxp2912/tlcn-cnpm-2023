@@ -7,7 +7,7 @@ export const signIn = createAsyncThunk('auth/signIn', async (user: SignIn, { rej
         const res = await authApi.signIn(user);
         return res;
     } catch (err: any) {
-        return rejectWithValue(err.res.data);
+        return rejectWithValue(err);
     }
 });
 
@@ -16,7 +16,7 @@ export const signUp = createAsyncThunk('auth/signUp', async (user: SignUp, { rej
         const res = await authApi.signUp(user);
         return res;
     } catch (err: any) {
-        return rejectWithValue(err.res.data);
+        return rejectWithValue(err);
     }
 });
 
@@ -25,7 +25,7 @@ export const sendCode = createAsyncThunk('auth/sendCode', async (email: string, 
         const res = await authApi.sendCode(email);
         return res;
     } catch (err: any) {
-        return rejectWithValue(err.res.data);
+        return rejectWithValue(err);
     }
 });
 
@@ -34,7 +34,7 @@ export const refreshToken = createAsyncThunk('auth/refreshToken', async (_, { re
         const res = await authApi.refreshToken();
         return res;
     } catch (err: any) {
-        return rejectWithValue(err.res.data);
+        return rejectWithValue(err);
     }
 });
 
@@ -43,7 +43,7 @@ export const logout = createAsyncThunk('auth/logout', async (userId: string, { r
         const res = await authApi.logout(userId);
         return res;
     } catch (err: any) {
-        return rejectWithValue(err.res.data);
+        return rejectWithValue(err);
     }
 });
 
@@ -62,11 +62,11 @@ export const authSlice = createSlice({
         });
         builder.addCase(signIn.rejected, (state, action) => {
             state.loading = false;
-            state.error = action.error.message || null;
+            state.error = (action.payload as { response: any }).response.data.message || null;
         });
         builder.addCase(signIn.fulfilled, (state, action) => {
             state.loading = false;
-            state.user = action.payload.data.user;
+            state.user = action.payload.data.data;
             localStorage.setItem('token', action.payload.data.accessToken);
         });
         builder.addCase(signUp.pending, (state) => {

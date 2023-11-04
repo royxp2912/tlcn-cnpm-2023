@@ -46,7 +46,7 @@ export const findProductByKeyword = createAsyncThunk(
 );
 
 export const findProductByColor = createAsyncThunk(
-    'products/findProductByKeyword',
+    'products/findProductByColor',
     async (params: { color: string; sort: string }, { rejectWithValue }) => {
         try {
             const { color, sort } = params;

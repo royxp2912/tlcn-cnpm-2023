@@ -1,3 +1,4 @@
+'use client';
 import { Rating } from '@mui/material';
 import Image from 'next/image';
 import React from 'react';
@@ -8,8 +9,11 @@ import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import ShoeInfo from '@/components/cards/ShoeInfo';
 import Reviews from '@/components/cards/Reviews';
 import SingleSellShoe from '@/components/cards/SingleSellShoe';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@/utils/store';
 
 const ShoesSinglePage = () => {
+    const dispatch = useDispatch<AppDispatch>();
     return (
         <div className="flex flex-col items-center">
             <div className="flex justify-between  gap-[100px] mt-[52px] mb-[116px] w-[1020px]">

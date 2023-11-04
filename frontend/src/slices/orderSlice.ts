@@ -148,17 +148,6 @@ export const orderSlice = createSlice({
             state.loading = false;
             state.order = action.payload.data;
         });
-        builder.addCase(getOrderByOrderId.pending, (state) => {
-            state.loading = true;
-        });
-        builder.addCase(getOrderByOrderId.rejected, (state, action) => {
-            state.loading = false;
-            state.error = action.error.message || null;
-        });
-        builder.addCase(getOrderByOrderId.fulfilled, (state, action) => {
-            state.loading = false;
-            state.order = action.payload.data;
-        });
         builder.addCase(createOrder.pending, (state) => {
             state.loading = true;
         });

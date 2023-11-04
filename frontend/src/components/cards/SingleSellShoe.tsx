@@ -1,9 +1,14 @@
+'use client';
 import { Rating } from '@mui/material';
 import Image from 'next/image';
 import React from 'react';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@/utils/store';
 
 const SingleSellShoe = () => {
+    const dispatch = useDispatch<AppDispatch>();
+
     return (
         <div>
             <div className="flex gap-2">
