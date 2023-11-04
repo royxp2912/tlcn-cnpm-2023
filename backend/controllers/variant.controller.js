@@ -5,7 +5,41 @@ import {
     updateVarByID,
     deleteVarByID,
     getListVarByProID,
+    getSizeByColorAndProID,
+    getColorBySizeAndProID,
 } from "../services/variant.service.js";
+
+export const getColorOfProductBySizeAndProID = async (req, res, next) => {
+    try {
+        const { success, status, message, data } = await getColorBySizeAndProID(req.params.proID, req.body.size);
+        if (!success) return next(createError(status, message));
+
+        res.status(status).send({
+            success,
+            message,
+            total: data.length,
+            data
+        });
+    } catch (err) {
+        next(err);
+    }
+}
+
+export const getSizeOfProductByColorAndProID = async (req, res, next) => {
+    try {
+        const { success, status, message, data } = await getSizeByColorAndProID(req.params.proID, req.body.color);
+        if (!success) return next(createError(status, message));
+
+        res.status(status).send({
+            success,
+            message,
+            total: data.length,
+            data
+        });
+    } catch (err) {
+        next(err);
+    }
+}
 
 export const getAllVarByProID = async (req, res, next) => {
     try {

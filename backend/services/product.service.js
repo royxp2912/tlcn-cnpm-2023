@@ -459,11 +459,6 @@ export const {
             const { success, status, message, data } = await getListVarByProID(proID);
             if (!success) return { success, status, message };
 
-            // lấy các thông tin cần thiết của variant
-            const variants = data.map((item) => {
-                const { product, createdAt, updatedAt, __v, ...others } = item._doc;
-                return others;
-            })
             checkedNull(result, "Product doesn't exist !!!");
 
             return {
@@ -472,7 +467,7 @@ export const {
                 message: "Get Product By Id Successful!!!",
                 data: {
                     product: result,
-                    variants,
+                    variants: data,
                 },
             }
         } catch (err) {
