@@ -138,8 +138,8 @@ export const {
 
     create: async (userID) => {
         try {
-            const existUser = await getUserByID(userID);
-            if (!existUser.success) return existUser;
+            // const existUser = await getUserByID(userID);
+            // if (!existUser.success) return existUser;
 
             const newCart = new Cart({ user: userID });
             await newCart.save();
