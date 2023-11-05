@@ -1,5 +1,5 @@
 import usersApi from '@/apis/users';
-import { Password, User } from '@/types/type';
+import { User, upAvatar, updatePassword } from '@/types/type';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 export const getUser = createAsyncThunk('users/getUser', async (userId: string, { rejectWithValue }) => {
@@ -11,27 +11,22 @@ export const getUser = createAsyncThunk('users/getUser', async (userId: string, 
     }
 });
 
-export const updateUser = createAsyncThunk(
-    'users/getUser',
-    async (params: { userId: string; user: User }, { dispatch, rejectWithValue }) => {
-        try {
-            const { userId, user } = params;
-            const res = await usersApi.updateUser(userId, user);
-            await dispatch(getUser(userId));
-            return res;
-        } catch (err: any) {
-            return rejectWithValue(err.res.data);
-        }
-    },
-);
+export const updateUser = createAsyncThunk('users/updateUser', async (user: User, { dispatch, rejectWithValue }) => {
+    try {
+        const res = await usersApi.updateUser(user);
+        await dispatch(getUser(user._id));
+        return res;
+    } catch (err: any) {
+        return rejectWithValue(err.res.data);
+    }
+});
 
 export const uploadAvatar = createAsyncThunk(
-    'users/uploadAvatar',
-    async (params: { userId: string; img: string }, { dispatch, rejectWithValue }) => {
+    'users/upLoadAvatar',
+    async (user: upAvatar, { dispatch, rejectWithValue }) => {
         try {
-            const { userId, img } = params;
-            const res = await usersApi.uploadAvatar(userId, img);
-            await dispatch(getUser(userId));
+            const res = await usersApi.uploadAvatar(user);
+            await dispatch(getUser(user.user));
             return res;
         } catch (err: any) {
             return rejectWithValue(err.res.data);
@@ -41,13 +36,12 @@ export const uploadAvatar = createAsyncThunk(
 
 export const updateUserPasswordByUserId = createAsyncThunk(
     'users/updateUserPasswordByUserId',
-    async (params: { userId: string; password: Password }, { dispatch, rejectWithValue }) => {
+    async (user: updatePassword, { rejectWithValue }) => {
         try {
-            const { userId, password } = params;
-            const res = await usersApi.updateUserPasswordByUserId(userId, password);
+            const res = await usersApi.updateUserPasswordByUserId(user);
             return res;
         } catch (err: any) {
-            return rejectWithValue(err.res.data);
+            return rejectWithValue(err.response.data);
         }
     },
 );

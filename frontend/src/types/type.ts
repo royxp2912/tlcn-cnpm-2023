@@ -13,15 +13,23 @@ export type SignUp = {
 };
 
 export type User = {
+    _id: string;
     fullName: string;
+    email?: string;
     gender: string;
     birthDay: string;
     phone: string;
+    avatar: string;
 };
 
-export type Password = {
+export type updatePassword = {
+    user: string;
     oldPass: string;
     newPass: string;
+};
+export type updateEmail = {
+    userId: string;
+    newEmail: string;
 };
 
 export type Category = {
@@ -30,25 +38,27 @@ export type Category = {
 };
 
 export type Product = {
+    _id: string;
     name: string;
     image: string[];
     desc: string;
     category: Category;
     brand: string;
-    price: Number;
-    rating?: Number;
-    sold?: Number;
+    price: number;
+    rating?: number;
+    sold?: number;
     status?: string;
-    variant: Variant[];
+    variant: Variant;
 };
 
 export type Variant = {
-    color: string;
-    size: string;
-    quantity: Number;
+    listColor: string[];
+    listSize: string[];
+    quantity: number;
 };
 
 export type Address = {
+    _id: string;
     user: string;
     receiver: string;
     phone: string;
@@ -59,19 +69,59 @@ export type Address = {
 };
 
 export type ItemCart = {
+    user: string;
     product: string;
     image: string;
     name: string;
     color: string;
     size: string;
-    quantity: Number;
-    price: Number;
+    quantity: number;
+    price: number;
+};
+
+export type Cart = {
+    _id: string;
+    user: string;
+    total: number;
+    items: ItemCart[];
 };
 
 export type Order = {
+    _id: string;
     items: ItemCart[];
     userId: string;
     deliveryAddress: string;
     paymentMethod: string;
-    total: Number;
+    total: number;
+    status: string;
+    isPaid: boolean;
+};
+
+export type RemoveItemCart = {
+    userId: string;
+    productId: string;
+};
+
+export type updateOrder = {
+    orderId: string;
+    userId: string;
+    status: string;
+};
+
+export type findProduct = {
+    color?: string;
+    keyword?: string;
+    sort: string;
+    pageSize: number;
+    pageNumber: number;
+};
+
+export type upAvatar = {
+    img: string;
+    user: string;
+};
+
+export type getSizeOfColor = {
+    id: string;
+    color: string;
 };

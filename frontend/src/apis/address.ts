@@ -2,37 +2,44 @@ import { Address } from '@/types/type';
 import axios from '../utils/axios';
 
 const addressApi = {
-    getAllAddressByUserId: (userId: string) => {
-        const url = `/address/user/${userId}`;
-        return axios.get(url);
+    getAllAddressByUserId: (user: string) => {
+        const url = '/address/user';
+        const pageSize = 5;
+        const pageNumber = 1;
+        return axios.get(url, { params: { user: user, pageSize: pageSize, pageNumber: pageNumber } });
     },
-    getAddressByAddressId: (addressId: string) => {
-        const url = `/address/${addressId}`;
-        return axios.get(url);
+    getAddressByAddressId: (address: string) => {
+        const url = '/address/detail';
+        const pageSize = 5;
+        const pageNumber = 5;
+        return axios.get(url, { data: { address } });
     },
     createAddress: (address: Address) => {
         const url = '/address';
         return axios.post(url, address);
     },
-    updateAddressByAddressId: (addressId: string, address: Address) => {
-        const url = `/address/${addressId}`;
+    updateAddressByAddressId: (address: Address) => {
+        const url = '/address';
         return axios.put(url, address);
     },
-    setDefaultAddressByAddressId: (addressId: string) => {
-        const url = `/address/${addressId}/default`;
-        return axios.patch(url);
+    setDefaultAddressByAddressId: (address: Address) => {
+        const url = `/address/default`;
+        const id = address._id;
+        return axios.patch(url, id);
     },
-    unsetDefaultAddressByAddressId: (addressId: string) => {
-        const url = `/address/${addressId}/unDefault`;
-        return axios.patch(url);
+    unsetDefaultAddressByAddressId: (address: Address) => {
+        const url = `/address/unDefault`;
+        const id = address._id;
+        return axios.patch(url, id);
     },
-    deleteAllAddressByUserId: (userId: string) => {
-        const url = `/address/user/${userId}`;
-        return axios.delete(url);
+    deleteAllAddressByUserId: (user: string) => {
+        const url = '/address/user';
+        return axios.delete(url, { data: { user } });
     },
-    deleteAddressByAddressId: (addressId: string) => {
-        const url = `/address/${addressId}`;
-        return axios.delete(url);
+    deleteAddressByAddressId: (address: Address) => {
+        const url = '/address';
+        const id = address._id;
+        return axios.delete(url, { data: { id } });
     },
 };
 

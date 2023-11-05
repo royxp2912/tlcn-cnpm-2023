@@ -1,5 +1,5 @@
 import cartsApi from '@/apis/carts';
-import { ItemCart } from '@/types/type';
+import { Cart, ItemCart, RemoveItemCart } from '@/types/type';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 export const getCartByUserId = createAsyncThunk(
@@ -25,11 +25,10 @@ export const createCart = createAsyncThunk('carts/createCart', async (user: stri
 
 export const addItemToCartByUserId = createAsyncThunk(
     'carts/addItemToCartByUserId',
-    async (params: { userId: string; item: ItemCart }, { dispatch, rejectWithValue }) => {
+    async (item: ItemCart, { dispatch, rejectWithValue }) => {
         try {
-            const { userId, item } = params;
-            const res = await cartsApi.addItemToCartByUserId(userId, item);
-            await dispatch(getCartByUserId(userId));
+            const res = await cartsApi.addItemToCartByUserId(item);
+            await dispatch(getCartByUserId(item.user));
             return res;
         } catch (err: any) {
             return rejectWithValue(err.res.data);
@@ -39,11 +38,10 @@ export const addItemToCartByUserId = createAsyncThunk(
 
 export const removeItemFromCartByUserId = createAsyncThunk(
     'carts/removeItemFromCartByUserId',
-    async (params: { userId: string; productId: string }, { dispatch, rejectWithValue }) => {
+    async (item: RemoveItemCart, { dispatch, rejectWithValue }) => {
         try {
-            const { userId, productId } = params;
-            const res = await cartsApi.removeItemFromCartByUserId(userId, productId);
-            await dispatch(getCartByUserId(userId));
+            const res = await cartsApi.removeItemFromCartByUserId(item);
+            await dispatch(getCartByUserId(item.userId));
             return res;
         } catch (err: any) {
             return rejectWithValue(err.res.data);
@@ -54,7 +52,7 @@ export const removeItemFromCartByUserId = createAsyncThunk(
 export const cartSlice = createSlice({
     name: 'carts',
     initialState: {
-        cartItem: [],
+        cartItem: {},
         loading: false,
         error: null as string | null,
     },
@@ -90,7 +88,7 @@ export const cartSlice = createSlice({
         });
         builder.addCase(getCartByUserId.fulfilled, (state, action) => {
             state.loading = false;
-            state.cartItem = action.payload.data;
+            state.cartItem = action.payload.data.data;
         });
         builder.addCase(removeItemFromCartByUserId.pending, (state) => {
             state.loading = true;

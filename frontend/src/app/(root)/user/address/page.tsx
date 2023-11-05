@@ -1,12 +1,33 @@
-import React from 'react';
+'use client';
+import React, { useEffect } from 'react';
 import UserNav from '@/components/shared/UserNav';
 import AddLocationAltOutlinedIcon from '@mui/icons-material/AddLocationAltOutlined';
 import LoopOutlinedIcon from '@mui/icons-material/LoopOutlined';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+import { Address, User } from '@/types/type';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch } from '@/utils/store';
+import { getAllAddressByUserId } from '@/slices/addressSlice';
 
 const Address = () => {
+    const userString = localStorage.getItem('user');
+    let user: User | null = null;
+    if (userString !== null) {
+        try {
+            user = JSON.parse(userString) as User;
+        } catch (error) {
+            console.error('Error parsing user data:', error);
+        }
+    }
+    const id = user?._id as string;
+    const dispatch = useDispatch<AppDispatch>();
+    const { address }: { address: Address[] } = useSelector((state: any) => state.address);
+    useEffect(() => {
+        dispatch(getAllAddressByUserId(id));
+    }, [id]);
+    console.log(address);
     return (
-        <div className="flex px-20 mt-10 gap-5">
+        <div className="flex justify-center px-20 mt-10 gap-5">
             <UserNav />
 
             <div className="flex flex-col w-[1100px] shadow-lg rounded-lg gap-[10px] py-10 px-[50px]">
@@ -20,43 +41,50 @@ const Address = () => {
                         <span>New Address</span>
                     </div>
                 </div>
-                <div className="border border-black border-opacity-20 px-10 pt-10 pb-5 rounded-full relative">
-                    <span className="opacity-60 top-[-14px] left-[100px] absolute block w-[100px] h-5 bg-white text-center">
-                        Address 1
-                    </span>
-                    <div className="flex gap-[10px] absolute top-[-14px] right-20">
-                        <div className="text-blue px-1 bg-white">
-                            <LoopOutlinedIcon />
+                <div className="flex flex-col gap-10">
+                    {address.map((item: Address, index: number) => (
+                        <div
+                            key={item._id}
+                            className="border border-black border-opacity-20 px-10 pt-10 pb-5 rounded-full relative"
+                        >
+                            <span className="opacity-60 top-[-14px] left-[100px] absolute block w-[100px] h-5 bg-white text-center">
+                                Address {index + 1}
+                            </span>
+                            <div className="flex gap-[10px] absolute top-[-14px] right-20">
+                                <div className="text-blue px-1 bg-white">
+                                    <LoopOutlinedIcon />
+                                </div>
+                                <div className="text-red px-1 bg-white">
+                                    <CloseOutlinedIcon />
+                                </div>
+                            </div>
+                            <div className="ml-5 flex items-center gap-[180px] font-bold text-lg">
+                                <div className="flex gap-3">
+                                    <span>Receiver:</span>
+                                    <span>{item.receiver}</span>
+                                </div>
+                                <div className="flex gap-3">
+                                    <span>Phone:</span>
+                                    <span>{item.phone}</span>
+                                </div>
+                            </div>
+                            <div className="ml-5 mt-[30px] mb-5 font-medium flex gap-[60px]">
+                                <div className="flex gap-3">
+                                    <span>Province / City:</span>
+                                    <span>{item.province}</span>
+                                </div>
+                                <div className="flex gap-3">
+                                    <span>District:</span>
+                                    <span>{item.districts}</span>
+                                </div>
+                                <div className="flex gap-3">
+                                    <span>Wards:</span>
+                                    <span>{item.wards}</span>
+                                </div>
+                            </div>
+                            <span className="ml-5 font-medium">Specific Address: {item.specific}</span>
                         </div>
-                        <div className="text-red px-1 bg-white">
-                            <CloseOutlinedIcon />
-                        </div>
-                    </div>
-                    <div className="ml-5 flex items-center gap-[180px] font-bold text-lg">
-                        <div className="flex gap-3">
-                            <span>Receiver:</span>
-                            <span> Han Soo Hee</span>
-                        </div>
-                        <div className="flex gap-3">
-                            <span>Phone:</span>
-                            <span>0901909909</span>
-                        </div>
-                    </div>
-                    <div className="ml-5 mt-[30px] mb-5 font-medium flex gap-[60px]">
-                        <div className="flex gap-3">
-                            <span>Province / City:</span>
-                            <span> Han Soo Hee</span>
-                        </div>
-                        <div className="flex gap-3">
-                            <span>District:</span>
-                            <span> Han Soo Hee</span>
-                        </div>
-                        <div className="flex gap-3">
-                            <span>Wards:</span>
-                            <span> Han Soo Hee</span>
-                        </div>
-                    </div>
-                    <span className="ml-5 font-medium">Specific Address: 111 đường nguyễn văn a</span>
+                    ))}
                 </div>
             </div>
         </div>

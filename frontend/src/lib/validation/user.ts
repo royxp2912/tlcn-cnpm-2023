@@ -15,7 +15,7 @@ const isValidDate = (day: number, month: number, year: number): boolean => {
 
 export const LoginValidation = z.object({
     email: z.string().nonempty('Field required').email({ message: 'Not email...' }),
-    password: z.string().nonempty('Field required'),
+    password: z.string().nonempty('Field required').min(6),
 });
 
 interface Props {

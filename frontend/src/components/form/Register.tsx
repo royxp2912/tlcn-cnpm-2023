@@ -11,6 +11,10 @@ import { useForm } from 'react-hook-form';
 import { Checkbox } from '../ui/checkbox';
 import axios from '@/utils/axios';
 import { useRouter } from 'next/navigation';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@/utils/store';
+import { signUp } from '@/slices/authSlice';
+import { toast } from 'react-toastify';
 
 type data = {
     data: {
@@ -21,6 +25,7 @@ type data = {
 
 const Register = () => {
     const router = useRouter();
+    const dispatch = useDispatch<AppDispatch>();
     const form = useForm<z.infer<typeof RegisterValidation>>({
         mode: 'onBlur',
         resolver: zodResolver(RegisterValidation),
@@ -37,18 +42,16 @@ const Register = () => {
     // 2. Define a submit handler.
     const onSubmit = async (values: z.infer<typeof RegisterValidation>) => {
         try {
-            const { data }: data = await axios.post('auth/register', {
-                email: values.email,
-                fullName: values.fullName,
-                password: values.password,
-                gender: values.gender,
-                birthDay: values.birthDay,
-            });
-            if (data.success) {
+            const res = await dispatch(signUp(values));
+
+            if ((res.payload as { status: number }).status === 201) {
+                toast.success('Register Success');
                 router.push('/sign-in');
+            } else {
+                toast.error((res.payload as { response: any }).response.data.message);
             }
-        } catch (error) {
-            console.log(error);
+        } catch (error: any) {
+            toast.error(error);
         }
     };
 

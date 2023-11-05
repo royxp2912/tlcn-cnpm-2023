@@ -6,9 +6,9 @@ const categoriesApi = {
         const url = '/categories';
         return axios.get(url);
     },
-    getCategoryById: (categoryId: string) => {
-        const url = `/categories/${categoryId}`;
-        return axios.get(url);
+    getCategoryById: (category: string) => {
+        const url = `/categories/detail`;
+        return axios.get(url, { data: { category } });
     },
     createCategory: (category: Category) => {
         const url = '/categories';

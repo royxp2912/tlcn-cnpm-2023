@@ -1,6 +1,7 @@
 'use client';
 
 import { configureStore } from '@reduxjs/toolkit';
+import thunkMiddleware from 'redux-thunk';
 import authReducer from '../slices/authSlice';
 import addressReducer from '../slices/addressSlice';
 import productReducer from '../slices/productSlice';
@@ -12,17 +13,24 @@ import orderReducer from '../slices/orderSlice';
 const store = configureStore({
     reducer: {
         auth: authReducer,
-        cart: cartReducer,
+        carts: cartReducer,
         address: addressReducer,
-        product: productReducer,
-        category: categoryReducer,
-        user: userReducer,
-        order: orderReducer,
+        products: productReducer,
+        categories: categoryReducer,
+        users: userReducer,
+        orders: orderReducer,
     },
+
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
+            thunk: {
+                extraArgument: {},
+            },
             serializableCheck: false,
-        }),
+        }).concat(thunkMiddleware),
+    devTools: true,
 });
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
 
 export default store;

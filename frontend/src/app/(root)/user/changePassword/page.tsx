@@ -1,9 +1,67 @@
+'use client';
 import UserNav from '@/components/shared/UserNav';
-import React from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import TextField from '@mui/material/TextField';
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
+import { toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@/utils/store';
+import { updateUserPasswordByUserId, uploadAvatar } from '@/slices/userSlice';
+import { User, updatePassword } from '@/types/type';
+
+type Pass = {
+    oldPass: string;
+    newPass: string;
+    rePass: string;
+};
 
 const ChangePassword = () => {
+    const dispatch = useDispatch<AppDispatch>;
+
+    const [passwords, setPasswords] = useState<Pass>({
+        oldPass: '',
+        newPass: '',
+        rePass: ' ',
+    });
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setPasswords((prev) => ({ ...prev, [e.target.id]: e.target.value }));
+    };
+
+    const userString = localStorage.getItem('user');
+    let user: User | null = null;
+
+    if (userString !== null) {
+        try {
+            user = JSON.parse(userString) as User;
+        } catch (error) {
+            console.error('Error parsing user data:', error);
+        }
+    }
+    const id = user?._id as string;
+
+    const handleCheck = () => {
+        if (passwords.newPass !== passwords.rePass) {
+            toast.error('Dont Match');
+            return;
+        }
+    };
+
+    const handleSubmit = async () => {
+        try {
+            const item = {
+                user: id,
+                oldPass: passwords.oldPass,
+                newPass: passwords.newPass,
+            };
+            console.log(user);
+
+            // handleCheck();
+            dispatch(updateUserPasswordByUserId(item));
+            // console.log(res);
+        } catch (error) {
+            console.log(error);
+        }
+    };
     return (
         <div className="flex px-20 mt-10 gap-5">
             <UserNav />
@@ -11,11 +69,32 @@ const ChangePassword = () => {
             <div className="flex flex-col items-center w-[1100px] shadow-lg rounded-lg gap-[10px] py-10">
                 <span className="font-bold text-2xl">Change Password</span>
                 <span className="font-medium">Your password must be at least 6 characters!!!</span>
-                <TextField label="Current Password" variant="outlined" className="mt-[30px] mb-[15px] w-[500px]" />
-                <TextField label="New Password" variant="outlined" className="mb-[13px] w-[500px]" />
-                <TextField label="Re-type New Password" variant="outlined" className="mb-[12px] w-[500px]" />
+                <TextField
+                    label="Current Password"
+                    variant="outlined"
+                    id="oldPass"
+                    className="mt-[30px] mb-[15px] w-[500px]"
+                    onChange={handleChange}
+                />
+                <TextField
+                    label="New Password"
+                    variant="outlined"
+                    id="newPass"
+                    className="mb-[13px] w-[500px]"
+                    onChange={handleChange}
+                />
+                <TextField
+                    label="Re-type New Password"
+                    variant="outlined"
+                    id="rePass"
+                    className="mb-[12px] w-[500px]"
+                    onChange={handleChange}
+                />
 
-                <div className="w-[500px] h-11 bg-blue bg-opacity-20 text-blue rounded-full flex items-center justify-center gap-2 font-medium text-xl">
+                <div
+                    className="w-[500px] h-11 bg-blue bg-opacity-20 text-blue rounded-full flex items-center justify-center gap-2 font-medium text-xl"
+                    onClick={handleSubmit}
+                >
                     <CloudUploadOutlinedIcon />
                     <span>Save</span>
                 </div>

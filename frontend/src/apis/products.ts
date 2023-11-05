@@ -1,4 +1,4 @@
-import { Product } from '@/types/type';
+import { Product, findProduct } from '@/types/type';
 import axios from '../utils/axios';
 
 const productsApi = {
@@ -6,13 +6,13 @@ const productsApi = {
         const url = '/products';
         return axios.get(url);
     },
-    getProductById: (productId: string) => {
-        const url = `/products/${productId}`;
-        return axios.get(url);
+    getProductById: (product: string) => {
+        const url = '/products/detail';
+        return axios.get(url, { params: { product: product } });
     },
-    getAllProductByCateId: (categoryId: string) => {
-        const url = `/products/category/${categoryId}`;
-        return axios.get(url);
+    getAllProductByCateId: (category: string) => {
+        const url = '/products/category';
+        return axios.get(url, { data: { category } });
     },
     createProduct: (product: Product) => {
         const url = `/products`;
@@ -31,17 +31,29 @@ const productsApi = {
         const url = '/products';
         return axios.delete(url);
     },
-    findProductByKeyword: (keyword: string, sort: string) => {
-        let url = '/products/search/keyword';
-        if (sort) {
-            url = `/products/search/keyword?sort=${sort}`;
-        }
-
-        return axios.get(url, { data: { keyword } });
+    findProductByKeyword: (item: findProduct) => {
+        const url = '/products/search/keyword';
+        const items = {
+            keywword: item.keyword,
+            sort: item.sort,
+            pageSize: item.pageSize,
+            pageNumber: item.pageNumber,
+        };
+        return axios.get(url, { data: { items } });
     },
-    findProductByColor: (color: string, sort: string) => {
-        const url = `/products/search/color?sort=${sort}`;
-        return axios.get(url, { data: { color } });
+    findProductByColor: (item: findProduct) => {
+        const url = `/products/search/color`;
+        const items = {
+            color: item.color,
+            sort: item.sort,
+            pageSize: item.pageSize,
+            pageNumber: item.pageNumber,
+        };
+        return axios.get(url, { data: { items } });
+    },
+    getProductHotDeal: () => {
+        const url = '/products/search/hotDeal';
+        return axios.get(url);
     },
 };
 

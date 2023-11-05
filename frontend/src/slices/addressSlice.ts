@@ -4,9 +4,9 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 export const getAllAddressByUserId = createAsyncThunk(
     'address/getAllAddressByUserId',
-    async (userId: string, { rejectWithValue }) => {
+    async (user: string, { rejectWithValue }) => {
         try {
-            const res = await addressApi.getAllAddressByUserId(userId);
+            const res = await addressApi.getAllAddressByUserId(user);
             return res;
         } catch (err: any) {
             return rejectWithValue(err.res.data);
@@ -15,9 +15,9 @@ export const getAllAddressByUserId = createAsyncThunk(
 );
 export const getAddressByAddressId = createAsyncThunk(
     'address/getAddressByAddressId',
-    async (addressId: string, { rejectWithValue }) => {
+    async (address: string, { rejectWithValue }) => {
         try {
-            const res = await addressApi.getAddressByAddressId(addressId);
+            const res = await addressApi.getAddressByAddressId(address);
             return res;
         } catch (err: any) {
             return rejectWithValue(err.res.data);
@@ -26,12 +26,11 @@ export const getAddressByAddressId = createAsyncThunk(
 );
 
 export const createAddress = createAsyncThunk(
-    'address/getAddressByAddressId',
-    async (params: { userId: string; address: Address }, { dispatch, rejectWithValue }) => {
+    'address/createAddress',
+    async (address: Address, { dispatch, rejectWithValue }) => {
         try {
-            const { userId, address } = params;
             const res = await addressApi.createAddress(address);
-            await dispatch(getAllAddressByUserId(userId));
+            await dispatch(getAllAddressByUserId(address.user));
             return res;
         } catch (err: any) {
             return rejectWithValue(err.res.data);
@@ -41,12 +40,11 @@ export const createAddress = createAsyncThunk(
 
 export const updateAddressByAddressId = createAsyncThunk(
     'address/updateAddressByAddressId',
-    async (params: { userId: string; addressId: string; address: Address }, { dispatch, rejectWithValue }) => {
+    async (address: Address, { dispatch, rejectWithValue }) => {
         try {
-            const { userId, addressId, address } = params;
-            const res = await addressApi.updateAddressByAddressId(addressId, address);
-            await dispatch(getAllAddressByUserId(userId));
-            await dispatch(getAddressByAddressId(addressId));
+            const res = await addressApi.updateAddressByAddressId(address);
+            await dispatch(getAllAddressByUserId(address.user));
+            await dispatch(getAddressByAddressId(address._id));
             return res;
         } catch (err: any) {
             return rejectWithValue(err.res.data);
@@ -56,12 +54,11 @@ export const updateAddressByAddressId = createAsyncThunk(
 
 export const setDefaultAddressByAddressId = createAsyncThunk(
     'address/setDefaultAddressByAddressId',
-    async (params: { userId: string; addressId: string }, { dispatch, rejectWithValue }) => {
+    async (address: Address, { dispatch, rejectWithValue }) => {
         try {
-            const { userId, addressId } = params;
-            const res = await addressApi.setDefaultAddressByAddressId(addressId);
-            await dispatch(getAllAddressByUserId(userId));
-            await dispatch(getAddressByAddressId(addressId));
+            const res = await addressApi.setDefaultAddressByAddressId(address);
+            await dispatch(getAllAddressByUserId(address.user));
+            await dispatch(getAddressByAddressId(address._id));
             return res;
         } catch (err: any) {
             return rejectWithValue(err.res.data);
@@ -70,12 +67,11 @@ export const setDefaultAddressByAddressId = createAsyncThunk(
 );
 export const unsetDefaultAddressByAddressId = createAsyncThunk(
     'address/unsetDefaultAddressByAddressId',
-    async (params: { userId: string; addressId: string }, { dispatch, rejectWithValue }) => {
+    async (address: Address, { dispatch, rejectWithValue }) => {
         try {
-            const { userId, addressId } = params;
-            const res = await addressApi.unsetDefaultAddressByAddressId(addressId);
-            await dispatch(getAllAddressByUserId(userId));
-            await dispatch(getAddressByAddressId(addressId));
+            const res = await addressApi.unsetDefaultAddressByAddressId(address);
+            await dispatch(getAllAddressByUserId(address.user));
+            await dispatch(getAddressByAddressId(address._id));
             return res;
         } catch (err: any) {
             return rejectWithValue(err.res.data);
@@ -84,10 +80,10 @@ export const unsetDefaultAddressByAddressId = createAsyncThunk(
 );
 export const deleteAllAddressByUserId = createAsyncThunk(
     'address/deleteAllAddressByUserId',
-    async (userId: string, { dispatch, rejectWithValue }) => {
+    async (user: string, { dispatch, rejectWithValue }) => {
         try {
-            const res = await addressApi.deleteAllAddressByUserId(userId);
-            await dispatch(getAllAddressByUserId(userId));
+            const res = await addressApi.deleteAllAddressByUserId(user);
+            await dispatch(getAllAddressByUserId(user));
             return res;
         } catch (err: any) {
             return rejectWithValue(err.res.data);
@@ -97,11 +93,10 @@ export const deleteAllAddressByUserId = createAsyncThunk(
 
 export const deleteAddressByAddressId = createAsyncThunk(
     'address/deleteAddressByAddressId',
-    async (params: { userId: string; addressId: string }, { dispatch, rejectWithValue }) => {
+    async (address: Address, { dispatch, rejectWithValue }) => {
         try {
-            const { userId, addressId } = params;
-            const res = await addressApi.deleteAddressByAddressId(addressId);
-            await dispatch(getAllAddressByUserId(userId));
+            const res = await addressApi.deleteAddressByAddressId(address);
+            await dispatch(getAllAddressByUserId(address.user));
             return res;
         } catch (err: any) {
             return rejectWithValue(err.res.data);
@@ -128,7 +123,7 @@ export const addressSlice = createSlice({
         });
         builder.addCase(getAllAddressByUserId.fulfilled, (state, action) => {
             state.loading = false;
-            state.address = action.payload.data;
+            state.address = action.payload.data.data;
         });
         builder.addCase(getAddressByAddressId.pending, (state) => {
             state.loading = true;
@@ -169,16 +164,6 @@ export const addressSlice = createSlice({
             state.error = action.error.message || null;
         });
         builder.addCase(setDefaultAddressByAddressId.fulfilled, (state, action) => {
-            state.loading = false;
-        });
-        builder.addCase(unsetDefaultAddressByAddressId.pending, (state) => {
-            state.loading = true;
-        });
-        builder.addCase(unsetDefaultAddressByAddressId.rejected, (state, action) => {
-            state.loading = false;
-            state.error = action.error.message || null;
-        });
-        builder.addCase(unsetDefaultAddressByAddressId.fulfilled, (state, action) => {
             state.loading = false;
         });
         builder.addCase(unsetDefaultAddressByAddressId.pending, (state) => {

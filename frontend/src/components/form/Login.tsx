@@ -8,11 +8,15 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { LoginValidation } from '@/lib/validation/user';
 import { useForm } from 'react-hook-form';
-import axios from '@/utils/axios';
 import { useRouter } from 'next/navigation';
+import { useDispatch } from 'react-redux';
+import { signIn } from '@/slices/authSlice';
+import { AppDispatch } from '@/utils/store';
+import { toast } from 'react-toastify';
 
 const Login = () => {
     const router = useRouter();
+    const dispatch = useDispatch<AppDispatch>();
     const form = useForm<z.infer<typeof LoginValidation>>({
         mode: 'onBlur',
         resolver: zodResolver(LoginValidation),
@@ -24,18 +28,20 @@ const Login = () => {
 
     // 2. Define a submit handler.
     const onSubmit = async (values: z.infer<typeof LoginValidation>) => {
-        console.log(values);
         try {
-            const { data } = await axios.post('auth/login', {
+            const user = {
                 email: values.email,
                 password: values.password,
-            });
-            console.log(data.data);
-            localStorage.setItem('user', JSON.stringify(data.data));
-            // router.push('/');
-            console.log(data);
+            };
+            const res = await dispatch(signIn(user));
+            if ((res.payload as { status: number }).status === 200) {
+                toast.success('Login Success');
+                router.push('/');
+            } else {
+                toast.error((res.payload as { response: any }).response.data.message);
+            }
         } catch (error: any) {
-            console.log(error);
+            toast.error(error);
         }
     };
 
