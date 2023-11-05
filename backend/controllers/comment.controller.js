@@ -9,11 +9,12 @@ import {
     getAllByProID,
     getAllByUserID,
     deleteAllByUserID,
+    deleteAllByProID,
 } from "../services/comment.service.js";
 
 export const updateCommentByID = async (req, res, next) => {
     try {
-        const { success, status, message } = await update(req.params.cmtID, req.body);
+        const { success, status, message } = await update(req.body);
         if (!success) return next(createError(status, message));
 
         res.status(status).json({
@@ -27,7 +28,7 @@ export const updateCommentByID = async (req, res, next) => {
 
 export const updateCommentLike = async (req, res, next) => {
     try {
-        const { success, status, message } = await updateLike(req.params.cmtID);
+        const { success, status, message } = await updateLike(req.body.comment);
         if (!success) return next(createError(status, message));
 
         res.status(status).json({
@@ -41,7 +42,9 @@ export const updateCommentLike = async (req, res, next) => {
 
 export const getAllCommentByUserID = async (req, res, next) => {
     try {
-        const { success, status, message, data } = await getAllByUserID(req.params.userID);
+        const pageSize = req.body.pageSize || 5;
+        const pageNumber = req.body.pageNumber || 1;
+        const { success, status, message, data } = await getAllByUserID(req.body.user, pageSize, pageNumber);
         if (!success) return next(createError(status, message));
 
         res.status(status).json({
@@ -57,7 +60,9 @@ export const getAllCommentByUserID = async (req, res, next) => {
 
 export const getAllCommentByProID = async (req, res, next) => {
     try {
-        const { success, status, message, data } = await getAllByProID(req.params.proID);
+        const pageSize = req.body.pageSize || 5;
+        const pageNumber = req.body.pageNumber || 1;
+        const { success, status, message, data } = await getAllByProID(req.body.product, pageSize, pageNumber);
         if (!success) return next(createError(status, message));
 
         res.status(status).json({
@@ -73,7 +78,7 @@ export const getAllCommentByProID = async (req, res, next) => {
 
 export const getCommentByID = async (req, res, next) => {
     try {
-        const { success, status, message, data } = await getByCmtID(req.params.cmtID);
+        const { success, status, message, data } = await getByCmtID(req.body.comment);
         if (!success) return next(createError(status, message));
 
         res.status(status).json({
@@ -88,7 +93,7 @@ export const getCommentByID = async (req, res, next) => {
 
 export const deleteCommentByID = async (req, res, next) => {
     try {
-        const { success, status, message } = await deleteByID(req.params.cmtID);
+        const { success, status, message } = await deleteByID(req.body.comment);
         if (!success) return next(createError(status, message));
 
         res.status(status).json({
@@ -132,7 +137,22 @@ export const deleteAllComment = async (req, res, next) => {
 
 export const deleteAllCommentByUserID = async (req, res, next) => {
     try {
-        const { success, status, message, total } = await deleteAllByUserID(req.params.userID);
+        const { success, status, message, total } = await deleteAllByUserID(req.body.user);
+        if (!success) return next(createError(status, message));
+
+        res.status(status).json({
+            success,
+            message,
+            total,
+        });
+    } catch (err) {
+        next(err);
+    }
+}
+
+export const deleteAllCommentByProID = async (req, res, next) => {
+    try {
+        const { success, status, message, total } = await deleteAllByProID(req.body.product);
         if (!success) return next(createError(status, message));
 
         res.status(status).json({
