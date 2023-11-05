@@ -16,8 +16,8 @@ const router = express.Router();
 
 // GET ALL
 router.get("/", getAllProduct);
-router.get("/:proId", getByIdProduct);
-router.get("/category/:cateID", getAllProductByCategory);
+router.get("/detail", getByIdProduct);
+router.get("/category", getAllProductByCategory);
 
 // find
 router.get("/search/hotDeal", getProductHotDeal);
@@ -28,9 +28,9 @@ router.get("/search/color", findProductByColor);
 router.post("/create", uploadCloud.array("images"), createProduct);
 
 // UPDATE
-router.put("/update/:proId", updateProduct);
+router.put("/update", updateProduct);
 
 // DELETE
-router.delete("/:proId", deleteProduct);
+router.delete("/", deleteProduct);
 
 export default router

@@ -16,8 +16,8 @@ const router = express.Router();
 
 // get 
 router.get("/", getAllOrder);
-router.get("/:orderID", getOrderByID);
-router.get("/user/:userID", getAllOrderByUserID);
+router.get("/detail", getOrderByID);
+router.get("/user", getAllOrderByUserID);
 
 // search by keyword
 router.get("/search/keyword", searchOrderByKeyword);
@@ -26,10 +26,10 @@ router.get("/search/keyword", searchOrderByKeyword);
 router.post("/", createOrder);
 
 // patch
-router.patch("/:orderID", updateOrderStatus);
-router.patch("/:orderID/cancel", cancelOrderByID);
-router.patch("/:orderID/paid", paymentConfirmOrder);
-router.patch("/:orderID/delivered", deliveryConfirmOrder);
+router.patch("/", updateOrderStatus);
+router.patch("/cancel", cancelOrderByID);
+router.patch("/paid", paymentConfirmOrder);
+router.patch("/delivered", deliveryConfirmOrder);
 
 // create vnpay url
 router.post('/create_payment_url', function (req, res, next) {

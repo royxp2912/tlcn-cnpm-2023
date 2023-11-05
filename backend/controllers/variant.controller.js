@@ -11,7 +11,7 @@ import {
 
 export const getColorOfProductBySizeAndProID = async (req, res, next) => {
     try {
-        const { success, status, message, data } = await getColorBySizeAndProID(req.params.proID, req.body.size);
+        const { success, status, message, data } = await getColorBySizeAndProID(req.body.product, req.body.size);
         if (!success) return next(createError(status, message));
 
         res.status(status).send({
@@ -27,7 +27,7 @@ export const getColorOfProductBySizeAndProID = async (req, res, next) => {
 
 export const getSizeOfProductByColorAndProID = async (req, res, next) => {
     try {
-        const { success, status, message, data } = await getSizeByColorAndProID(req.params.proID, req.body.color);
+        const { success, status, message, data } = await getSizeByColorAndProID(req.body.product, req.body.color);
         if (!success) return next(createError(status, message));
 
         res.status(status).send({
@@ -43,7 +43,7 @@ export const getSizeOfProductByColorAndProID = async (req, res, next) => {
 
 export const getAllVarByProID = async (req, res, next) => {
     try {
-        const { success, status, message, data } = await getListVarByProID(req.params.proID);
+        const { success, status, message, data } = await getListVarByProID(req.body.product);
         if (!success) return next(createError(status, message));
 
         res.status(status).send({
@@ -59,7 +59,7 @@ export const getAllVarByProID = async (req, res, next) => {
 
 export const getVariantByID = async (req, res, next) => {
     try {
-        const { success, status, message, data } = await getVarByID(req.params.varID);
+        const { success, status, message, data } = await getVarByID(req.body.variant);
         if (!success) return next(createError(status, message));
 
         res.status(status).send({
@@ -74,7 +74,7 @@ export const getVariantByID = async (req, res, next) => {
 
 export const deleteVariantByID = async (req, res, next) => {
     try {
-        const { success, status, message, data } = await deleteVarByID(req.params.varID);
+        const { success, status, message, data } = await deleteVarByID(req.body.variant);
         if (!success) return next(createError(status, message));
 
         res.status(status).send({
@@ -88,7 +88,7 @@ export const deleteVariantByID = async (req, res, next) => {
 
 export const updateVariantByID = async (req, res, next) => {
     try {
-        const { success, status, message, data } = await updateVarByID(req.params.varID, req.body.size, req.body.quantity);
+        const { success, status, message, data } = await updateVarByID(req.body.variant, req.body.size, req.body.quantity);
         if (!success) return next(createError(status, message));
 
         res.status(status).send({

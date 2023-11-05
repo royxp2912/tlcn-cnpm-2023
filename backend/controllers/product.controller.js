@@ -17,12 +17,13 @@ import {
 
 export const findProductByColor = async (req, res, next) => {
     try {
+        const sort = req.body.sort;
+        const color = req.body.color;
         const pageSize = req.body.pageSize || 8;
-        const pageNumber = req.query.pageNumber || 1;
-        const sort = req.query.sort;
+        const pageNumber = req.body.pageNumber || 1;
 
         if (sort) {
-            const { success, message, data, status } = await findByColorAndSort(req.body.color, pageSize, pageNumber, sort);
+            const { success, message, data, status } = await findByColorAndSort(color, pageSize, pageNumber, sort);
             if (!success) return next(createError(status, message));
             res.status(status).json({
                 success: success,
@@ -31,13 +32,13 @@ export const findProductByColor = async (req, res, next) => {
             });
         }
 
-        const { success, message, data, status } = await findByColor(req.body.color, pageSize, pageNumber);
+        const { success, message, data, status } = await findByColor(color, pageSize, pageNumber);
         if (!success) return next(createError(status, message));
 
         if (data.length === 0) {
             res.status(404).json({
                 success: success,
-                message: `No shoes found matching color <${req.body.color}> !!!`,
+                message: `No shoes found matching color <${color}> !!!`,
             });
         }
 
@@ -54,12 +55,13 @@ export const findProductByColor = async (req, res, next) => {
 
 export const findProductByKeyword = async (req, res, next) => {
     try {
+        const sort = req.body.sort;
+        const keyword = req.body.keyword;
         const pageSize = req.body.pageSize || 8;
-        const pageNumber = req.query.pageNumber || 1;
-        const sort = req.query.sort;
+        const pageNumber = req.body.pageNumber || 1;
 
         if (sort) {
-            const { success, message, data, status } = await findByKeywordAndSort(req.body.keyword, pageSize, pageNumber, sort);
+            const { success, message, data, status } = await findByKeywordAndSort(keyword, pageSize, pageNumber, sort);
             if (!success) return next(createError(status, message));
             res.status(status).json({
                 success: success,
@@ -68,13 +70,13 @@ export const findProductByKeyword = async (req, res, next) => {
             });
         }
 
-        const { success, message, data, status } = await findByKeyword(req.body.keyword, pageSize, pageNumber);
+        const { success, message, data, status } = await findByKeyword(keyword, pageSize, pageNumber);
         if (!success) return next(createError(status, message));
 
         if (data.length === 0) {
             res.status(404).json({
                 success: success,
-                message: `No shoes found matching keyword <${req.body.keyword}> !!!`,
+                message: `No shoes found matching keyword <${keyword}> !!!`,
             });
         }
 
@@ -91,13 +93,12 @@ export const findProductByKeyword = async (req, res, next) => {
 
 export const updateProduct = async (req, res, next) => {
     try {
-        const { success, message, data, status } = await update(req.params.proId, req.body);
+        const { success, message, data, status } = await update(req.body);
         if (!success) return next(createError(status, message));
 
         res.status(status).send({
             success: success,
             message: message,
-            data: data
         });
     } catch (err) {
         next(err);
@@ -106,7 +107,7 @@ export const updateProduct = async (req, res, next) => {
 
 export const deleteProduct = async (req, res, next) => {
     try {
-        const { success, message, data, status } = await deleteById(req.params.proId);
+        const { success, message, data, status } = await deleteById(req.body.product);
         if (!success) return next(createError(status, message));
 
         if (data.images.length !== 0) {
@@ -127,7 +128,7 @@ export const deleteProduct = async (req, res, next) => {
 
 export const getByIdProduct = async (req, res, next) => {
     try {
-        const { success, message, data, status } = await getById(req.params.proId);
+        const { success, message, data, status } = await getById(req.body.product);
         if (!success) return next(createError(status, message));
 
         res.status(status).json({
@@ -145,7 +146,7 @@ export const getAllProductByCategory = async (req, res, next) => {
         const pageSize = 8;
         const pageNumber = req.query.pageNumber || 1;
 
-        const { success, message, data, status } = await getAllByCateID(req.params.cateID, pageSize, pageNumber);
+        const { success, message, data, status } = await getAllByCateID(req.body.category, pageSize, pageNumber);
         if (!success) return next(createError(status, message));
 
         res.status(status).json({
@@ -161,8 +162,8 @@ export const getAllProductByCategory = async (req, res, next) => {
 
 export const getAllProduct = async (req, res, next) => {
     try {
-        const pageSize = 8;
-        const pageNumber = req.query.pageNumber || 1;
+        const pageSize = req.body.pageSize || 8;
+        const pageNumber = req.body.pageNumber || 1;
 
         const { success, message, data, status } = await getAll(pageSize, pageNumber);
         if (!success) return next(createError(status, message));
@@ -180,8 +181,8 @@ export const getAllProduct = async (req, res, next) => {
 
 export const getProductHotDeal = async (req, res, next) => {
     try {
-        const pageSize = req.query.pageSize || 8;
-        const pageNumber = req.query.pageNumber || 1;
+        const pageSize = req.body.pageSize || 8;
+        const pageNumber = req.body.pageNumber || 1;
 
         const { success, message, data, status } = await getHotDeal(pageSize, pageNumber);
         if (!success) return next(createError(status, message));

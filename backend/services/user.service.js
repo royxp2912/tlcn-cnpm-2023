@@ -220,13 +220,14 @@ export const {
         }
     },
 
-    updateUserByID: async (userID, body) => {
+    updateUserByID: async (body) => {
         try {
-            checkedObjectId(userID, "User ID");
+            const { user, ...others } = body;
+            checkedObjectId(user, "User ID");
 
             const updatedUser = await User.findByIdAndUpdate(
-                userID,
-                { $set: body },
+                user,
+                { $set: others },
                 { new: true }
             );
             checkedNull(updatedUser, "User don't exist !!!");
