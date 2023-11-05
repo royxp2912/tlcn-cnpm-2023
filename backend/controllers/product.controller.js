@@ -17,10 +17,10 @@ import {
 
 export const findProductByColor = async (req, res, next) => {
     try {
-        const sort = req.body.sort;
-        const color = req.body.color;
-        const pageSize = req.body.pageSize || 8;
-        const pageNumber = req.body.pageNumber || 1;
+        const sort = req.query.sort;
+        const color = req.query.color;
+        const pageSize = req.query.pageSize || 8;
+        const pageNumber = req.query.pageNumber || 1;
 
         if (sort) {
             const { success, message, data, status } = await findByColorAndSort(color, pageSize, pageNumber, sort);
@@ -55,10 +55,10 @@ export const findProductByColor = async (req, res, next) => {
 
 export const findProductByKeyword = async (req, res, next) => {
     try {
-        const sort = req.body.sort;
-        const keyword = req.body.keyword;
-        const pageSize = req.body.pageSize || 8;
-        const pageNumber = req.body.pageNumber || 1;
+        const sort = req.query.sort;
+        const keyword = req.query.keyword;
+        const pageSize = req.query.pageSize || 8;
+        const pageNumber = req.query.pageNumber || 1;
 
         if (sort) {
             const { success, message, data, status } = await findByKeywordAndSort(keyword, pageSize, pageNumber, sort);
@@ -107,7 +107,7 @@ export const updateProduct = async (req, res, next) => {
 
 export const deleteProduct = async (req, res, next) => {
     try {
-        const { success, message, data, status } = await deleteById(req.body.product);
+        const { success, message, data, status } = await deleteById(req.query.product);
         if (!success) return next(createError(status, message));
 
         if (data.images.length !== 0) {
@@ -128,7 +128,7 @@ export const deleteProduct = async (req, res, next) => {
 
 export const getByIdProduct = async (req, res, next) => {
     try {
-        const { success, message, data, status } = await getById(req.body.product);
+        const { success, message, data, status } = await getById(req.query.product);
         if (!success) return next(createError(status, message));
 
         res.status(status).json({
@@ -143,10 +143,11 @@ export const getByIdProduct = async (req, res, next) => {
 
 export const getAllProductByCategory = async (req, res, next) => {
     try {
-        const pageSize = 8;
+        const category = req.query.category;
+        const pageSize = req.query.pageSize || 8;
         const pageNumber = req.query.pageNumber || 1;
 
-        const { success, message, data, status } = await getAllByCateID(req.body.category, pageSize, pageNumber);
+        const { success, message, data, status } = await getAllByCateID(category, pageSize, pageNumber);
         if (!success) return next(createError(status, message));
 
         res.status(status).json({
@@ -162,8 +163,8 @@ export const getAllProductByCategory = async (req, res, next) => {
 
 export const getAllProduct = async (req, res, next) => {
     try {
-        const pageSize = req.body.pageSize || 8;
-        const pageNumber = req.body.pageNumber || 1;
+        const pageSize = req.query.pageSize || 8;
+        const pageNumber = req.query.pageNumber || 1;
 
         const { success, message, data, status } = await getAll(pageSize, pageNumber);
         if (!success) return next(createError(status, message));
@@ -181,8 +182,8 @@ export const getAllProduct = async (req, res, next) => {
 
 export const getProductHotDeal = async (req, res, next) => {
     try {
-        const pageSize = req.body.pageSize || 8;
-        const pageNumber = req.body.pageNumber || 1;
+        const pageSize = req.query.pageSize || 8;
+        const pageNumber = req.query.pageNumber || 1;
 
         const { success, message, data, status } = await getHotDeal(pageSize, pageNumber);
         if (!success) return next(createError(status, message));

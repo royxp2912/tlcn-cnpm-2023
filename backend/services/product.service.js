@@ -422,7 +422,6 @@ export const {
 
             const newProduct = new Product({ ...others, images });
             const savedProduct = await newProduct.save();
-
             // create variant of Product
             const { success, status, message } = await createList(savedProduct._id, listVariant);
             if (!success) {
