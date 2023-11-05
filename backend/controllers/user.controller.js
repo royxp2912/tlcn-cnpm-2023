@@ -17,7 +17,7 @@ import {
 
 export const updateUserEmail = async (req, res, next) => {
     try {
-        const { success, status, message } = await updateEmailByUserID(req.params.userID, req.body.newEmail);
+        const { success, status, message } = await updateEmailByUserID(req.body.user, req.body.newEmail);
         if (!success) return next(createError(status, message));
 
         res.status(status).json({
@@ -31,7 +31,7 @@ export const updateUserEmail = async (req, res, next) => {
 
 export const updateUserPassword = async (req, res, next) => {
     try {
-        const { success, status, message } = await updatePasswordByUserID(req.params.userID, req.body.oldPass, req.body.newPass);
+        const { success, status, message } = await updatePasswordByUserID(req.body.user, req.body.oldPass, req.body.newPass);
         if (!success) return next(createError(status, message));
 
         res.status(status).json({
@@ -45,8 +45,8 @@ export const updateUserPassword = async (req, res, next) => {
 
 export const findUserByKeyword = async (req, res, next) => {
     try {
-        const pageSize = 10;
-        const pageNumber = req.query.pageNumber || 1;
+        const pageSize = req.body.pageSize || 10;
+        const pageNumber = req.body.pageNumber || 1;
 
         const { success, status, message, data } = await findByKeyword(req.body.keyword, pageSize, pageNumber);
         if (!success) return next(createError(status, message));
@@ -71,7 +71,7 @@ export const findUserByKeyword = async (req, res, next) => {
 
 export const deleteUserByUserID = async (req, res, next) => {
     try {
-        const { success, message, data, status } = await deleteUserByID(req.params.userID);
+        const { success, message, data, status } = await deleteUserByID(req.body.user);
         if (!success) return next(createError(status, message));
 
         if (data.avatar !== "https://res.cloudinary.com/dtfei3453/image/upload/v1697015386/shoeshop/avatar_default_kf1ko4.png") {
@@ -96,7 +96,7 @@ export const uploadAvatarByID = async (req, res, next) => {
             return next(createError(400, "Avatar does not exist for data sent !!!"))
         }
         const image = req.file.path;
-        const { success, status, message, data } = await updateAvatar(req.params.userID, image);
+        const { success, status, message, data } = await updateAvatar(req.body.user, image);
         const publicId = extractPublicId(image);
         if (!success) {
             // xóa image nếu uploadAvatar thất bại!!!
@@ -123,7 +123,7 @@ export const uploadAvatarByID = async (req, res, next) => {
 
 export const unlockUserByID = async (req, res, next) => {
     try {
-        const { success, status, message } = await unlockUser(req.params.userID, req.body);
+        const { success, status, message } = await unlockUser(req.body.user);
         if (!success) return next(createError(status, message));
 
         res.status(status).json({
@@ -137,7 +137,7 @@ export const unlockUserByID = async (req, res, next) => {
 
 export const lockUserByID = async (req, res, next) => {
     try {
-        const { success, status, message } = await lockUser(req.params.userID, req.body);
+        const { success, status, message } = await lockUser(req.body.user);
         if (!success) return next(createError(status, message));
 
         res.status(status).json({
@@ -151,7 +151,7 @@ export const lockUserByID = async (req, res, next) => {
 
 export const editUserByID = async (req, res, next) => {
     try {
-        const { success, status, message } = await updateUserByID(req.params.userID, req.body);
+        const { success, status, message } = await updateUserByID(req.body);
         if (!success) return next(createError(status, message));
 
         res.status(status).json({
@@ -166,12 +166,12 @@ export const editUserByID = async (req, res, next) => {
 export const findAllUser = async (req, res, next) => {
     try {
         const pageSize = 10;
-        const userStatus = req.query.status;
-        const pageNumber = req.query.pageNumber || 1;
+        const userStatus = req.body.status;
+        const pageNumber = req.body.pageNumber || 1;
 
         if (userStatus) {
             if (userStatus === "Locked" || userStatus === "Available") {
-                const { success, status, message, data } = await getAllUserByStatus(req.query.status, pageSize, pageNumber);
+                const { success, status, message, data } = await getAllUserByStatus(userStatus, pageSize, pageNumber);
                 if (!success) return next(createError(status, message));
                 res.status(status).json({
                     success,
@@ -203,7 +203,7 @@ export const findAllUser = async (req, res, next) => {
 
 export const findUserByID = async (req, res, next) => {
     try {
-        const { success, status, message, data } = await getUserByID(req.params.userID);
+        const { success, status, message, data } = await getUserByID(req.body.user);
         if (!success) return next(createError(status, message));
 
         res.status(status).json({

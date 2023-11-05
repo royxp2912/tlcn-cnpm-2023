@@ -8,7 +8,7 @@ import {
 
 export const getCartByUserID = async (req, res, next) => {
     try {
-        const { success, status, message, data } = await getByUserID(req.params.userID);
+        const { success, status, message, data } = await getByUserID(req.body.user);
         if (!success) return next(createError(status, message));
 
         res.status(status).send({
@@ -23,7 +23,7 @@ export const getCartByUserID = async (req, res, next) => {
 
 export const removeItemFromCart = async (req, res, next) => {
     try {
-        const { success, status, message } = await removeFromCart(req.params.userID, req.params.proID);
+        const { success, status, message } = await removeFromCart(req.body.user, req.body.product);
         if (!success) return next(createError(status, message));
 
         res.status(status).send({
@@ -37,7 +37,7 @@ export const removeItemFromCart = async (req, res, next) => {
 
 export const addItemToCart = async (req, res, next) => {
     try {
-        const { success, status, message } = await addToCart(req.params.userID, req.body);
+        const { success, status, message } = await addToCart(req.body);
         if (!success) return next(createError(status, message));
 
         res.status(status).send({

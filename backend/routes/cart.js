@@ -9,13 +9,13 @@ import {
 const router = express.Router();
 
 // create
-router.get("/:userID", getCartByUserID);
+router.get("/", getCartByUserID);
 
 // create
 router.post("/", createCart);
-router.post("/:userID/addToCart", addItemToCart);
+router.post("/addToCart", addItemToCart);
 
 // remove
-router.delete("/:userID/remove/:proID", removeItemFromCart);
+router.delete("/remove", removeItemFromCart);
 
 export default router

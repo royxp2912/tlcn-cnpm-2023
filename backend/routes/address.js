@@ -16,22 +16,22 @@ const router = express.Router();
 
 // get
 router.get("", getAllAddress);
-router.get("/:addID", getAddressByID);
-router.get("/user/:userID", getAllAddressByUserID);
+router.get("/detail", getAddressByID);
+router.get("/user", getAllAddressByUserID);
 
 // create
 router.post("/", createAddress);
 
 // update
-router.put("/:addID", updateAddressByID);
+router.put("/", updateAddressByID);
 
 // default
-router.patch("/:addID/default", setDefaultAddress);
-router.patch("/:addID/unDefault", unDefaultAddress);
+router.patch("/default", setDefaultAddress);
+router.patch("/unDefault", unDefaultAddress);
 
 // delete
 router.delete("/", deleteAllAddress);
-router.delete("/:addID", deleteAddressByID);
-router.delete("/user/:userID", deleteAllAddressByUerID);
+router.delete("/one", deleteAddressByID);
+router.delete("/user", deleteAllAddressByUerID);
 
 export default router

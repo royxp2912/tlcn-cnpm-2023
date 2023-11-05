@@ -201,9 +201,9 @@ export const {
         }
     },
 
-    getAllByStatus: async (status) => {
+    getAllByStatus: async (status, pageSize, pageNumber) => {
         try {
-            if (status !== "Confirmming" &&
+            if (status !== "Confirming" &&
                 status !== "Delivering" &&
                 status !== "Successful" &&
                 status !== "Cancel" &&
@@ -215,6 +215,8 @@ export const {
             }
 
             const result = await Order.find({ status: status })
+                .limit(pageSize)
+                .skip(pageSize * (pageNumber - 1))
                 .select("-updatedAt -createdAt -__v");
 
             return {
@@ -232,12 +234,14 @@ export const {
         }
     },
 
-    getAllByUserID: async (userID) => {
+    getAllByUserID: async (userID, pageSize, pageNumber) => {
         try {
             const existUser = await getUserByID(userID);
             if (!existUser.success) return existUser;
 
             const result = await Order.find({ user: userID })
+                .limit(pageSize)
+                .skip(pageSize * (pageNumber - 1))
                 .select("-updatedAt -createdAt -__v -user");
 
             return {
@@ -255,9 +259,11 @@ export const {
         }
     },
 
-    getAll: async () => {
+    getAll: async (pageSize, pageNumber) => {
         try {
             const result = await Order.find()
+                .limit(pageSize)
+                .skip(pageSize * (pageNumber - 1))
                 .select("-updatedAt -createdAt -__v");
 
             return {

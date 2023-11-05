@@ -12,18 +12,18 @@ import {
 const router = express.Router();
 
 // get variant by varid
-router.get("/:varID", getVariantByID);
-router.get("/product/:proID", getAllVarByProID);
-router.get("/product/:proID/size", getSizeOfProductByColorAndProID);
-router.get("/product/:proID/color", getColorOfProductBySizeAndProID);
+router.get("/", getVariantByID);
+router.get("/product", getAllVarByProID);
+router.get("/product/size", getSizeOfProductByColorAndProID);
+router.get("/product/color", getColorOfProductBySizeAndProID);
 
 // create one
 router.post("/create", createOneVariant);
 
 // update by variant id
-router.put("/update/:varID", updateVariantByID);
+router.put("/update", updateVariantByID);
 
 // delete by variant id
-router.delete("/delete/:varID", deleteVariantByID);
+router.delete("/delete", deleteVariantByID);
 
 export default router
