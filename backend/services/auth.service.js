@@ -6,6 +6,7 @@ import generateToken from "../helpers/jwt/generateTokens.js";
 import sendCodeEmail from "../utils/emailservice_config.js";
 import { checkedNull } from "../utils/handel_null.js";
 import { checkedObjectId } from "../utils/checkedOthers.js";
+import { create } from "./cart.service.js";
 
 export const {
     addNewToken,
@@ -56,7 +57,9 @@ export const {
                 birthDay: body.birthDay,
             });
 
-            await newUser.save();
+            const result = await newUser.save();
+            await create(result._id);
+
             return {
                 success: true,
                 status: 201,

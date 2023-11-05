@@ -1,8 +1,12 @@
+'use client';
 import React from 'react';
 import { userNav } from '@/constants';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 const UserNav = () => {
+    const router = useRouter();
+
     return (
         <div className="py-5 px-[25px] bg-deal drop-shadow-lg w-max h-max rounded-md">
             <div className="flex items-center gap-[10px] mb-5">
@@ -10,7 +14,11 @@ const UserNav = () => {
                 <span className="font-bold text-sm">Han Soo Hee</span>
             </div>
             {userNav.map((item) => (
-                <div className="mt-5 flex items-center gap-5 font-semibold">
+                <div
+                    key={item.label}
+                    className="mt-5 flex items-center gap-5 font-semibold"
+                    onClick={() => router.push(item.route)}
+                >
                     <item.icon />
                     <span>{item.label}</span>
                 </div>

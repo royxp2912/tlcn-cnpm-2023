@@ -34,7 +34,6 @@ const Login = () => {
                 password: values.password,
             };
             const res = await dispatch(signIn(user));
-            // router.push('/');
             if ((res.payload as { status: number }).status === 200) {
                 toast.success('Login Success');
                 router.push('/');

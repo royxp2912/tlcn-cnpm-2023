@@ -13,12 +13,12 @@ import orderReducer from '../slices/orderSlice';
 const store = configureStore({
     reducer: {
         auth: authReducer,
-        cart: cartReducer,
+        carts: cartReducer,
         address: addressReducer,
-        product: productReducer,
-        category: categoryReducer,
-        user: userReducer,
-        order: orderReducer,
+        products: productReducer,
+        categories: categoryReducer,
+        users: userReducer,
+        orders: orderReducer,
     },
 
     middleware: (getDefaultMiddleware) =>

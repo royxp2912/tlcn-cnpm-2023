@@ -68,6 +68,7 @@ export const authSlice = createSlice({
             state.loading = false;
             state.user = action.payload.data.data;
             localStorage.setItem('token', action.payload.data.accessToken);
+            localStorage.setItem('user', JSON.stringify(action.payload.data.data));
         });
         builder.addCase(signUp.pending, (state) => {
             state.loading = true;

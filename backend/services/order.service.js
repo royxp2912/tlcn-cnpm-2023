@@ -1,6 +1,6 @@
-import Order from "../models/Order.js";
-import { checkedNull } from "../utils/handel_null.js";
-import { getUserByID } from "./user.service.js";
+import Order from '../models/Order.js';
+import { checkedNull } from '../utils/handel_null.js';
+import { getUserByID } from './user.service.js';
 
 export const {
     create,
@@ -14,21 +14,20 @@ export const {
     paymentConfirm,
     deliveryConfirm,
 } = {
-
     findByKeyword: async (keyword, pageSize, pageNumber) => {
         try {
-            let result = []
+            let result = [];
             if (isNaN(keyword)) {
                 result = await Order.find({
                     $or: [
                         { 'items.name': { $regex: keyword, $options: 'i' } },
                         { status: { $regex: keyword, $options: 'i' } },
                         { paymentMethod: { $regex: keyword, $options: 'i' } },
-                    ]
+                    ],
                 })
                     .limit(pageSize)
                     .skip(pageSize * (pageNumber - 1))
-                    .select("-createdAt -updatedAt -__v -user -deliveryAddress");
+                    .select('-createdAt -updatedAt -__v -user -deliveryAddress');
             } else {
                 result = await Order.find({
                     $or: [
@@ -36,146 +35,133 @@ export const {
                         { total: keyword },
                         { status: { $regex: keyword, $options: 'i' } },
                         { paymentMethod: { $regex: keyword, $options: 'i' } },
-                    ]
+                    ],
                 })
                     .limit(pageSize)
                     .skip(pageSize * (pageNumber - 1))
-                    .select("-createdAt -updatedAt -__v -user -deliveryAddress");
+                    .select('-createdAt -updatedAt -__v -user -deliveryAddress');
             }
 
             return {
                 success: true,
                 status: 200,
-                message: "Find Order By Keyword Successful !!!",
+                message: 'Find Order By Keyword Successful !!!',
                 data: result,
-            }
+            };
         } catch (err) {
             return {
                 success: false,
                 status: err.status || 500,
-                message: err.message || "Something went wrong in Order Service !!!",
-            }
+                message: err.message || 'Something went wrong in Order Service !!!',
+            };
         }
     },
 
     deliveryConfirm: async (orderID) => {
         try {
-            const result = await Order.findByIdAndUpdate(
-                orderID,
-                { $set: { isDelivered: true } },
-            );
+            const result = await Order.findByIdAndUpdate(orderID, { $set: { isDelivered: true } });
             checkedNull(result, "Order doesn't exist !!!");
 
             return {
                 success: true,
                 status: 200,
-                message: "Delivery Order Successful!!!",
-            }
+                message: 'Delivery Order Successful!!!',
+            };
         } catch (err) {
             return {
                 success: false,
                 status: err.status || 500,
-                message: err.message || "Something went wrong in Order !!!",
-            }
+                message: err.message || 'Something went wrong in Order !!!',
+            };
         }
     },
 
     paymentConfirm: async (orderID) => {
         try {
-            const result = await Order.findByIdAndUpdate(
-                orderID,
-                { $set: { isPaid: true } },
-            );
+            const result = await Order.findByIdAndUpdate(orderID, { $set: { isPaid: true } });
             checkedNull(result, "Order doesn't exist !!!");
 
             return {
                 success: true,
                 status: 200,
-                message: "Payment Order Successful!!!",
-            }
+                message: 'Payment Order Successful!!!',
+            };
         } catch (err) {
             return {
                 success: false,
                 status: err.status || 500,
-                message: err.message || "Something went wrong in Order !!!",
-            }
+                message: err.message || 'Something went wrong in Order !!!',
+            };
         }
     },
 
     cancelOrder: async (orderID) => {
         try {
-            const result = await Order.findByIdAndUpdate(
-                orderID,
-                { $set: { status: "Cancel" } },
-            );
+            const result = await Order.findByIdAndUpdate(orderID, { $set: { status: 'Cancel' } });
             checkedNull(result, "Order doesn't exist !!!");
 
             return {
                 success: true,
                 status: 200,
-                message: "Cancel Order Successful!!!",
-            }
+                message: 'Cancel Order Successful!!!',
+            };
         } catch (err) {
             return {
                 success: false,
                 status: err.status || 500,
-                message: err.message || "Something went wrong in Order !!!",
-            }
+                message: err.message || 'Something went wrong in Order !!!',
+            };
         }
     },
 
     updateStatus: async (orderID, status) => {
         try {
-            if (status !== "Confirmming" &&
-                status !== "Delivering" &&
-                status !== "Successful" &&
-                status !== "Cancel" &&
-                status !== "Return"
-            ) return {
-                success: false,
-                status: 400,
-                message: "Order Status doesn't exist !!!",
-            }
+            if (
+                status !== 'Confirming' &&
+                status !== 'Delivering' &&
+                status !== 'Successful' &&
+                status !== 'Cancel' &&
+                status !== 'Return'
+            )
+                return {
+                    success: false,
+                    status: 400,
+                    message: "Order Status doesn't exist !!!",
+                };
             const existOrder = await Order.findById(orderID);
             checkedNull(existOrder, "Order doesn't exist !!!");
 
-            if (status === "Successful") {
-                if (!existOrder.isPaid && existOrder.paymentMethod === "VNPay") {
+            if (status === 'Successful') {
+                if (!existOrder.isPaid && existOrder.paymentMethod === 'VNPay') {
                     return {
                         success: false,
                         status: 402,
-                        message: "Order has not been paid yet !!!",
-                    }
+                        message: 'Order has not been paid yet !!!',
+                    };
                 } else {
-                    await Order.findByIdAndUpdate(
-                        orderID,
-                        {
-                            $set: {
-                                status: "Successful",
-                                isDelivered: true,
-                                isPaid: true,
-                            }
+                    await Order.findByIdAndUpdate(orderID, {
+                        $set: {
+                            status: 'Successful',
+                            isDelivered: true,
+                            isPaid: true,
                         },
-                    );
+                    });
                 }
             } else {
-                await Order.findByIdAndUpdate(
-                    orderID,
-                    { $set: { status: status } },
-                );
+                await Order.findByIdAndUpdate(orderID, { $set: { status: status } });
             }
 
             return {
                 success: true,
                 status: 200,
-                message: "Update Status Order Successful!!!",
-            }
+                message: 'Update Status Order Successful!!!',
+            };
         } catch (err) {
             return {
                 success: false,
                 status: err.status || 500,
-                message: err.message || "Something went wrong in Order !!!",
-            }
+                message: err.message || 'Something went wrong in Order !!!',
+            };
         }
     },
 
@@ -183,52 +169,53 @@ export const {
         try {
             const result = await Order.findById(orderID)
                 .populate({ path: 'deliveryAddress', select: '-createdAt -updatedAt -__v -user' })
-                .select("-updatedAt -createdAt -__v");
-            checkedNull(result, "Order doesn't exist !!!")
+                .select('-updatedAt -createdAt -__v');
+            checkedNull(result, "Order doesn't exist !!!");
 
             return {
                 success: true,
                 status: 200,
-                message: "Get All Order Of Status Successful!!!",
+                message: 'Get All Order Of Status Successful!!!',
                 data: result,
-            }
+            };
         } catch (err) {
             return {
                 success: false,
                 status: err.status || 500,
-                message: err.message || "Something went wrong in Order !!!",
-            }
+                message: err.message || 'Something went wrong in Order !!!',
+            };
         }
     },
 
     getAllByStatus: async (status) => {
         try {
-            if (status !== "Confirmming" &&
-                status !== "Delivering" &&
-                status !== "Successful" &&
-                status !== "Cancel" &&
-                status !== "Return"
-            ) return {
-                success: false,
-                status: 400,
-                message: "Order Status doesn't exist !!!",
-            }
+            if (
+                status !== 'Confirming' &&
+                status !== 'Delivering' &&
+                status !== 'Successful' &&
+                status !== 'Cancel' &&
+                status !== 'Return'
+            )
+                return {
+                    success: false,
+                    status: 400,
+                    message: "Order Status doesn't exist !!!",
+                };
 
-            const result = await Order.find({ status: status })
-                .select("-updatedAt -createdAt -__v");
+            const result = await Order.find({ status: status }).select('-updatedAt -createdAt -__v');
 
             return {
                 success: true,
                 status: 200,
-                message: "Get All Order Of Status Successful!!!",
+                message: 'Get All Order Of Status Successful!!!',
                 data: result,
-            }
+            };
         } catch (err) {
             return {
                 success: false,
                 status: err.status || 500,
-                message: err.message || "Something went wrong in Order !!!",
-            }
+                message: err.message || 'Something went wrong in Order !!!',
+            };
         }
     },
 
@@ -237,41 +224,39 @@ export const {
             const existUser = await getUserByID(userID);
             if (!existUser.success) return existUser;
 
-            const result = await Order.find({ user: userID })
-                .select("-updatedAt -createdAt -__v -user");
+            const result = await Order.find({ user: userID }).select('-updatedAt -createdAt -__v -user');
 
             return {
                 success: true,
                 status: 200,
-                message: "Get All Order Of User Successful!!!",
+                message: 'Get All Order Of User Successful!!!',
                 data: result,
-            }
+            };
         } catch (err) {
             return {
                 success: false,
                 status: err.status || 500,
-                message: err.message || "Something went wrong in Order !!!",
-            }
+                message: err.message || 'Something went wrong in Order !!!',
+            };
         }
     },
 
     getAll: async () => {
         try {
-            const result = await Order.find()
-                .select("-updatedAt -createdAt -__v");
+            const result = await Order.find().select('-updatedAt -createdAt -__v');
 
             return {
                 success: true,
                 status: 200,
-                message: "Get All Order Successful !!!",
+                message: 'Get All Order Successful !!!',
                 data: result,
-            }
+            };
         } catch (err) {
             return {
                 success: false,
                 status: err.status || 500,
-                message: err.message || "Something went wrong in Order !!!",
-            }
+                message: err.message || 'Something went wrong in Order !!!',
+            };
         }
     },
 
@@ -292,14 +277,14 @@ export const {
             return {
                 success: true,
                 status: 201,
-                message: "Create New Order Successful!!!",
-            }
+                message: 'Create New Order Successful!!!',
+            };
         } catch (err) {
             return {
                 success: false,
                 status: err.status || 500,
-                message: err.message || "Something went wrong in Order !!!",
-            }
+                message: err.message || 'Something went wrong in Order !!!',
+            };
         }
     },
-}
+};

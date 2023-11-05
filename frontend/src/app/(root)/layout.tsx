@@ -5,9 +5,8 @@ import { Inter } from 'next/font/google';
 import Navbar from '@/components/shared/Navbar';
 import Footer from '@/components/shared/Footer';
 import Providers from '@/utils/Providers';
-import { Provider, useDispatch, useSelector } from 'react-redux';
-import store, { AppDispatch } from '@/utils/store';
-import { useEffect } from 'react';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -17,15 +16,16 @@ export const metadata: Metadata = {
 };
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
-        <Providers>
-            <html lang="en">
-                <body className={inter.className}>
+        <html lang="en">
+            <body className={inter.className}>
+                <Providers>
                     <Header />
                     <Navbar />
                     {children}
                     <Footer />
-                </body>
-            </html>
-        </Providers>
+                    <ToastContainer position="bottom-right" theme="dark" autoClose={3000} />
+                </Providers>
+            </body>
+        </html>
     );
 }

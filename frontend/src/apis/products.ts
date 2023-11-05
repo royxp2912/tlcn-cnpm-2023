@@ -43,6 +43,10 @@ const productsApi = {
         const url = `/products/search/color?sort=${sort}`;
         return axios.get(url, { data: { color } });
     },
+    getProductHotDeal: () => {
+        const url = '/products/search/hotDeal';
+        return axios.get(url);
+    },
 };
 
 export default productsApi;

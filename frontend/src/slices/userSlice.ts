@@ -2,6 +2,11 @@ import usersApi from '@/apis/users';
 import { Password, User } from '@/types/type';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
+type Params = {
+    userId: string;
+    password: Password;
+};
+
 export const getUser = createAsyncThunk('users/getUser', async (userId: string, { rejectWithValue }) => {
     try {
         const res = await usersApi.getUser(userId);
@@ -41,9 +46,8 @@ export const uploadAvatar = createAsyncThunk(
 
 export const updateUserPasswordByUserId = createAsyncThunk(
     'users/updateUserPasswordByUserId',
-    async (params: { userId: string; password: Password }, { dispatch, rejectWithValue }) => {
+    async ({ userId, password }: { userId: string; password: Password }, { rejectWithValue }) => {
         try {
-            const { userId, password } = params;
             const res = await usersApi.updateUserPasswordByUserId(userId, password);
             return res;
         } catch (err: any) {

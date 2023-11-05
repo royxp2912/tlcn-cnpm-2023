@@ -128,7 +128,7 @@ export const addressSlice = createSlice({
         });
         builder.addCase(getAllAddressByUserId.fulfilled, (state, action) => {
             state.loading = false;
-            state.address = action.payload.data;
+            state.address = action.payload.data.data;
         });
         builder.addCase(getAddressByAddressId.pending, (state) => {
             state.loading = true;

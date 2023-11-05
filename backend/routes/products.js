@@ -9,6 +9,7 @@ import {
     getAllProductByCategory,
     findProductByKeyword,
     findProductByColor,
+    getProductHotDeal,
 } from "../controllers/product.controller.js";
 
 const router = express.Router();
@@ -19,6 +20,7 @@ router.get("/:proId", getByIdProduct);
 router.get("/category/:cateID", getAllProductByCategory);
 
 // find
+router.get("/search/hotDeal", getProductHotDeal);
 router.get("/search/keyword", findProductByKeyword);
 router.get("/search/color", findProductByColor);
 

@@ -124,7 +124,7 @@ export const orderSlice = createSlice({
         });
         builder.addCase(getAllOrderByUserId.fulfilled, (state, action) => {
             state.loading = false;
-            state.orders = action.payload.data;
+            state.orders = action.payload.data.data;
         });
         builder.addCase(getAllOrderByOrderStatus.pending, (state) => {
             state.loading = true;
@@ -132,10 +132,11 @@ export const orderSlice = createSlice({
         builder.addCase(getAllOrderByOrderStatus.rejected, (state, action) => {
             state.loading = false;
             state.error = action.error.message || null;
+            state.orders = [];
         });
         builder.addCase(getAllOrderByOrderStatus.fulfilled, (state, action) => {
             state.loading = false;
-            state.orders = action.payload.data;
+            state.orders = action.payload.data.data;
         });
         builder.addCase(getOrderByOrderId.pending, (state) => {
             state.loading = true;
