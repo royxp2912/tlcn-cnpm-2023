@@ -97,11 +97,12 @@ export const {
         }
     },
 
-    update: async (addID, body) => {
+    update: async (body) => {
         try {
+            const { address, ...others } = body;
             const updatedAddress = await Address.findByIdAndUpdate(
-                addID,
-                { $set: body }
+                address,
+                { $set: others }
             );
             checkedNull(updatedAddress, "Address don't exist !!!");
 

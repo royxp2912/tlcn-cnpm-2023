@@ -58,9 +58,10 @@ export const {
         }
     },
 
-    addToCart: async (userID, body) => {
+    addToCart: async (body) => {
         try {
-            const existCart = await Cart.findOne({ user: userID });
+            const { user, ...others } = body;
+            const existCart = await Cart.findOne({ user: user });
             checkedNull(existCart, "Cart don't exist !!!");
 
             // const isExist = await Cart.findOne(
@@ -70,16 +71,16 @@ export const {
             //     },
             // )
 
-            const isExist = existCart.items.filter((item) => item.product.toString() === body.product);
+            const isExist = existCart.items.filter((item) => item.product.toString() === others.product);
 
             if (isExist.length !== 0) {
                 await Cart.findOneAndUpdate(
                     {
-                        user: userID,
-                        items: { $elemMatch: { product: body.product } },
+                        user: user,
+                        items: { $elemMatch: { product: others.product } },
                     },
                     {
-                        $set: { "items.$": body },
+                        $set: { "items.$": others },
                     },
                     { new: true },
                 )
@@ -88,7 +89,7 @@ export const {
                 await Cart.findByIdAndUpdate(
                     existCart._id,
                     {
-                        $push: { items: body },
+                        $push: { items: others },
                     },
                     { new: true },
                 )

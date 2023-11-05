@@ -14,7 +14,7 @@ import {
 
 export const deleteAddressByID = async (req, res, next) => {
     try {
-        const { success, status, message } = await deleteByID(req.params.addID);
+        const { success, status, message } = await deleteByID(req.body.address);
         if (!success) return next(createError(status, message));
 
         res.status(status).send({
@@ -28,7 +28,7 @@ export const deleteAddressByID = async (req, res, next) => {
 
 export const deleteAllAddressByUerID = async (req, res, next) => {
     try {
-        const { success, status, message, total } = await deleteAllByUserID(req.params.userID);
+        const { success, status, message, total } = await deleteAllByUserID(req.body.user);
         if (!success) return next(createError(status, message));
 
         res.status(status).send({
@@ -43,7 +43,7 @@ export const deleteAllAddressByUerID = async (req, res, next) => {
 
 export const unDefaultAddress = async (req, res, next) => {
     try {
-        const { success, status, message } = await unDefault(req.params.addID);
+        const { success, status, message } = await unDefault(req.body.address);
         if (!success) return next(createError(status, message));
 
         res.status(status).send({
@@ -57,7 +57,7 @@ export const unDefaultAddress = async (req, res, next) => {
 
 export const setDefaultAddress = async (req, res, next) => {
     try {
-        const { success, status, message } = await setDefault(req.params.addID);
+        const { success, status, message } = await setDefault(req.body.address);
         if (!success) return next(createError(status, message));
 
         res.status(status).send({
@@ -71,7 +71,7 @@ export const setDefaultAddress = async (req, res, next) => {
 
 export const updateAddressByID = async (req, res, next) => {
     try {
-        const { success, status, message } = await update(req.params.addID, req.body);
+        const { success, status, message } = await update(req.body);
         if (!success) return next(createError(status, message));
 
         res.status(status).send({
@@ -85,7 +85,7 @@ export const updateAddressByID = async (req, res, next) => {
 
 export const getAddressByID = async (req, res, next) => {
     try {
-        const { success, status, message, data } = await getByID(req.params.addID);
+        const { success, status, message, data } = await getByID(req.body.address);
         if (!success) return next(createError(status, message));
 
         res.status(status).send({
@@ -100,7 +100,7 @@ export const getAddressByID = async (req, res, next) => {
 
 export const getAllAddressByUserID = async (req, res, next) => {
     try {
-        const { success, status, message, data } = await getAllByUserID(req.params.userID);
+        const { success, status, message, data } = await getAllByUserID(req.body.user);
         if (!success) return next(createError(status, message));
 
         res.status(status).send({

@@ -1,5 +1,5 @@
 import ordersApi from '@/apis/orders';
-import { Order } from '@/types/type';
+import { Order, updateOrder } from '@/types/type';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 export const getAllOrder = createAsyncThunk('orders/getAllCategory', async (_, { rejectWithValue }) => {
@@ -37,9 +37,9 @@ export const getAllOrderByOrderStatus = createAsyncThunk(
 
 export const getOrderByOrderId = createAsyncThunk(
     'orders/getOrderByOrderId',
-    async (orderId: string, { rejectWithValue }) => {
+    async (order: string, { rejectWithValue }) => {
         try {
-            const res = await ordersApi.getOrderByOrderId(orderId);
+            const res = await ordersApi.getOrderByOrderId(order);
             return res;
         } catch (err: any) {
             return rejectWithValue(err.res.data);
@@ -48,11 +48,10 @@ export const getOrderByOrderId = createAsyncThunk(
 );
 export const createOrder = createAsyncThunk(
     'orders/createOrder',
-    async (params: { userId: string; item: Order }, { dispatch, rejectWithValue }) => {
+    async (item: Order, { dispatch, rejectWithValue }) => {
         try {
-            const { userId, item } = params;
             const res = await ordersApi.createOrder(item);
-            await dispatch(getAllOrderByUserId(userId));
+            await dispatch(getAllOrderByUserId(item.userId));
             return res;
         } catch (err: any) {
             return rejectWithValue(err.res.data);
@@ -62,12 +61,11 @@ export const createOrder = createAsyncThunk(
 
 export const updateOrderStatusByOrderId = createAsyncThunk(
     'orders/updateOrderStatusByOrderId',
-    async (params: { userId: string; orderId: string; status: string }, { dispatch, rejectWithValue }) => {
+    async (order: updateOrder, { dispatch, rejectWithValue }) => {
         try {
-            const { userId, orderId, status } = params;
-            const res = await ordersApi.updateOrderStatusByOrderId(orderId, status);
-            await dispatch(getAllOrderByUserId(userId));
-            await dispatch(getOrderByOrderId(orderId));
+            const res = await ordersApi.updateOrderStatusByOrderId(order);
+            await dispatch(getAllOrderByUserId(order.userId));
+            await dispatch(getOrderByOrderId(order.orderId));
             return res;
         } catch (err: any) {
             return rejectWithValue(err.res.data);
@@ -77,12 +75,11 @@ export const updateOrderStatusByOrderId = createAsyncThunk(
 
 export const cancelOrderByOrderId = createAsyncThunk(
     'orders/cancelOrderByOrderId',
-    async (params: { userId: string; orderId: string }, { dispatch, rejectWithValue }) => {
+    async (order: updateOrder, { dispatch, rejectWithValue }) => {
         try {
-            const { userId, orderId } = params;
-            const res = await ordersApi.cancelOrderByOrderId(orderId);
-            await dispatch(getAllOrderByUserId(userId));
-            await dispatch(getOrderByOrderId(orderId));
+            const res = await ordersApi.cancelOrderByOrderId(order);
+            await dispatch(getAllOrderByUserId(order.userId));
+            await dispatch(getOrderByOrderId(order.orderId));
             return res;
         } catch (err: any) {
             return rejectWithValue(err.res.data);

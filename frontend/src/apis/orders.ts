@@ -1,4 +1,4 @@
-import { Order } from '@/types/type';
+import { Order, updateOrder } from '@/types/type';
 import axios from '../utils/axios';
 
 const ordersApi = {
@@ -14,25 +14,26 @@ const ordersApi = {
         const url = `/orders?status=${status}`;
         return axios.get(url);
     },
-    getOrderByOrderId: (orderId: string) => {
-        const url = `/orders/${orderId}`;
-        return axios.get(url);
+    getOrderByOrderId: (order: string) => {
+        const url = '/orders/detail';
+        return axios.get(url, { data: { order } });
     },
     createOrder: (item: Order) => {
         const url = '/orders';
         return axios.post(url, item);
     },
-    updateOrderStatusByOrderId: (orderId: string, status: string) => {
-        const url = `/orders/${orderId}`;
-        return axios.patch(url, status);
+    updateOrderStatusByOrderId: (order: updateOrder) => {
+        const url = `/orders/${order.orderId}`;
+        return axios.patch(url, order);
     },
-    cancelOrderByOrderId: (orderId: string) => {
-        const url = `/orders/${orderId}/cancel`;
-        return axios.patch(url);
+    cancelOrderByOrderId: (order: updateOrder) => {
+        const url = `/orders/cancel`;
+        const id = order.orderId;
+        return axios.patch(url, id);
     },
-    comfirmPaymentOrderByOrderId: (orderId: string) => {
-        const url = `/orders/${orderId}/paid`;
-        return axios.patch(url);
+    comfirmPaymentOrderByOrderId: (order: string) => {
+        const url = `/orders/paid`;
+        return axios.patch(url, order);
     },
 };
 

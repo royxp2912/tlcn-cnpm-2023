@@ -366,24 +366,25 @@ export const {
         }
     },
 
-    update: async (proID, body) => {
+    update: async (body) => {
         try {
+            const { product, ...others } = body;
             const savedProduct = await Product.findByIdAndUpdate(
-                proID,
-                { $set: body },
+                product,
+                { $set: others },
                 { new: true }
             );
+            checkedNull(savedProduct, "Product doen't exist !!!");
             return {
                 success: true,
                 status: 200,
                 message: "Update Product Successful!!!",
-                data: checkedNullAndFormatData(savedProduct),
             }
         } catch (err) {
             return {
                 success: false,
                 status: err.status || 500,
-                message: err.message,
+                message: err.message || "Something went wrong in Product Service !!!",
             }
         }
     },
@@ -459,11 +460,6 @@ export const {
             const { success, status, message, data } = await getListVarByProID(proID);
             if (!success) return { success, status, message };
 
-            // lấy các thông tin cần thiết của variant
-            const variants = data.map((item) => {
-                const { product, createdAt, updatedAt, __v, ...others } = item._doc;
-                return others;
-            })
             checkedNull(result, "Product doesn't exist !!!");
 
             return {
@@ -472,7 +468,7 @@ export const {
                 message: "Get Product By Id Successful!!!",
                 data: {
                     product: result,
-                    variants,
+                    variants: data,
                 },
             }
         } catch (err) {

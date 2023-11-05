@@ -12,7 +12,59 @@ export const {
     findProIDByColor,
     getListVarByProID,
     deleteListVarByProID,
+    getSizeByColorAndProID,
+    getColorBySizeAndProID,
 } = {
+
+    getColorBySizeAndProID: async (proID, size) => {
+        try {
+            const listProduct = await Variant.find(
+                {
+                    product: proID,
+                    size: size,
+                },
+            )
+                .select("color quantity -_id");
+
+            return {
+                success: true,
+                status: 200,
+                message: "Get Size Of Product By Color !!!",
+                data: listProduct,
+            };
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong on Variant !!!",
+            }
+        }
+    },
+
+    getSizeByColorAndProID: async (proID, color) => {
+        try {
+            const listProduct = await Variant.find(
+                {
+                    product: proID,
+                    color: color,
+                },
+            )
+                .select("size quantity -_id");
+
+            return {
+                success: true,
+                status: 200,
+                message: "Get Size Of Product By Color !!!",
+                data: listProduct,
+            };
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong on Variant !!!",
+            }
+        }
+    },
 
     findProIDByColor: async (color) => {
         try {
@@ -30,7 +82,6 @@ export const {
             }
         }
     },
-
 
     createOne: async (proID, variant) => {
         try {
@@ -121,17 +172,24 @@ export const {
 
     getListVarByProID: async (proID) => {
         try {
-            const listVariant = await Variant.find({ product: proID }).select("-product -createdAt -updatedAt -__v");
+            const listVariant = await Variant.find({ product: proID }).select("color size -_id");
             if (listVariant.length === 0) return {
                 success: false,
                 status: 404,
                 message: "Product doesn't exist !!!"
             }
+
+            const listColor = listVariant.map((item) => item.color);
+            const listSize = listVariant.map((item) => item.size);
+
             return {
                 success: true,
                 status: 200,
                 message: "Get List Variant Successful !!!",
-                data: listVariant,
+                data: {
+                    listColor: [...new Set(listColor)],
+                    listSize: [...new Set(listSize)],
+                },
             }
         } catch (err) {
             return {

@@ -20,19 +20,21 @@ const router = express.Router();
 
 // Find User By ID
 router.get("/", findAllUser);
-router.get("/:userID", findUserByID);
+router.get("/detail", findUserByID);
 router.get("/search/keyword", findUserByKeyword);
 
 // Edit User By ID
-router.put("/:userID", editUserByID);
-router.patch("/lock/:userID", lockUserByID);
-router.patch("/email/:userID", updateUserEmail);
-router.patch("/unlock/:userID", unlockUserByID);
-router.patch("/password/:userID", updateUserPassword);
-router.patch("/upload-avatar/:userID", isExistUser, uploadCloud.single("avatar"), uploadAvatarByID);
+router.put("/", editUserByID);
+router.patch("/lock", lockUserByID);
+router.patch("/email", updateUserEmail);
+router.patch("/unlock", unlockUserByID);
+router.patch("/password", updateUserPassword);
+router.patch("/upload-avatar", isExistUser, uploadCloud.single("avatar"), uploadAvatarByID);
+
+// test
 router.patch("/upload-avatar/test/:userID", isExistUser, testUploadAvatarByID);
 
 // Delete User By User ID
-router.delete("/:userID", deleteUserByUserID);
+router.delete("/", deleteUserByUserID);
 
 export default router

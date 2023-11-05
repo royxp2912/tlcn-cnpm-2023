@@ -1,22 +1,22 @@
-import { ItemCart } from '@/types/type';
+import { ItemCart, RemoveItemCart } from '@/types/type';
 import axios from '../utils/axios';
 
 const cartsApi = {
     getCartByUserId: (userId: string) => {
-        const url = `/carts/${userId}`;
+        const url = `/carts`;
         return axios.get(url);
     },
     createCart: (user: string) => {
         const url = '/carts';
         return axios.post(url, user);
     },
-    addItemToCartByUserId: (userId: string, item: ItemCart) => {
-        const url = `/carts/${userId}/addToCart`;
+    addItemToCartByUserId: (item: ItemCart) => {
+        const url = `/carts/addToCart`;
         return axios.post(url, item);
     },
-    removeItemFromCartByUserId: (userid: string, productId: string) => {
-        const url = `/carts/${userid}/remove/${productId}`;
-        return axios.delete(url);
+    removeItemFromCartByUserId: (item: RemoveItemCart) => {
+        const url = '/carts/remove';
+        return axios.delete(url, { data: { item } });
     },
 };
 

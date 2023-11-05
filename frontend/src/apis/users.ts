@@ -1,17 +1,17 @@
-import { Password, User } from '@/types/type';
+import { User, updateEmail, updatePassword, upAvatar } from '@/types/type';
 import axios from '../utils/axios';
 
 const usersApi = {
-    getUser: (userId: string) => {
-        const url = `/users/${userId}`;
-        return axios.get(url);
+    getUser: (user: string) => {
+        const url = '/users/detail';
+        return axios.get(url, { data: { user } });
     },
     getAllUser: () => {
-        const url = '/users/get/all';
+        const url = '/users';
         return axios.get(url);
     },
-    updateUser: (userId: string, user: User) => {
-        const url = `/users/update/${userId}`;
+    updateUser: (user: User) => {
+        const url = '/users/update/';
         return axios.put(url, user);
     },
     lockUser: (userId: string) => {
@@ -22,9 +22,9 @@ const usersApi = {
         const url = `/users/unlock/${userId}`;
         return axios.patch(url);
     },
-    uploadAvatar: (userId: string, img: string) => {
-        const url = `/users/upload-avatar/${userId}`;
-        return axios.patch(url, img);
+    uploadAvatar: (item: upAvatar) => {
+        const url = '/users/upload-avatar';
+        return axios.patch(url, item);
     },
     deleteUser: (userId: string) => {
         const url = `/users/delete/${userId}`;
@@ -38,9 +38,13 @@ const usersApi = {
         const url = `/users/search/keyword?pageNumber=${pageNum}`;
         return axios.get(url, { data: { keyword } });
     },
-    updateUserPasswordByUserId: (userId: string, password: Password) => {
-        const url = `/users/email/${userId}`;
-        return axios.patch(url, password);
+    updateUserPasswordByUserId: (item: updatePassword) => {
+        const url = `/users/password`;
+        return axios.patch(url, item);
+    },
+    updateUserEmailByUserId: (email: updateEmail) => {
+        const url = `/users/email`;
+        return axios.patch(url, email);
     },
 };
 

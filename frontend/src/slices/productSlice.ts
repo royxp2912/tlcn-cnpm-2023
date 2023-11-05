@@ -1,4 +1,5 @@
 import productsApi from '@/apis/products';
+import { findProduct } from '@/types/type';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 export const getAllProduct = createAsyncThunk('products/getAllProduct', async (_, { rejectWithValue }) => {
@@ -11,9 +12,9 @@ export const getAllProduct = createAsyncThunk('products/getAllProduct', async (_
 });
 export const getProductById = createAsyncThunk(
     'products/getProductById',
-    async (productId: string, { rejectWithValue }) => {
+    async (product: string, { rejectWithValue }) => {
         try {
-            const res = await productsApi.getProductById(productId);
+            const res = await productsApi.getProductById(product);
             return res;
         } catch (err: any) {
             return rejectWithValue(err);
@@ -22,9 +23,9 @@ export const getProductById = createAsyncThunk(
 );
 export const getAllProductByCateId = createAsyncThunk(
     'products/getAllProductByCateId',
-    async (categoryId: string, { rejectWithValue }) => {
+    async (category: string, { rejectWithValue }) => {
         try {
-            const res = await productsApi.getAllProductByCateId(categoryId);
+            const res = await productsApi.getAllProductByCateId(category);
             return res;
         } catch (err: any) {
             return rejectWithValue(err);
@@ -34,10 +35,9 @@ export const getAllProductByCateId = createAsyncThunk(
 
 export const findProductByKeyword = createAsyncThunk(
     'products/findProductByKeyword',
-    async (params: { keyword: string; sort: string }, { rejectWithValue }) => {
+    async (item: findProduct, { rejectWithValue }) => {
         try {
-            const { keyword, sort } = params;
-            const res = await productsApi.findProductByKeyword(keyword, sort);
+            const res = await productsApi.findProductByKeyword(item);
             return res;
         } catch (err: any) {
             return rejectWithValue(err);
@@ -47,10 +47,9 @@ export const findProductByKeyword = createAsyncThunk(
 
 export const findProductByColor = createAsyncThunk(
     'products/findProductByColor',
-    async (params: { color: string; sort: string }, { rejectWithValue }) => {
+    async (item: findProduct, { rejectWithValue }) => {
         try {
-            const { color, sort } = params;
-            const res = await productsApi.findProductByKeyword(color, sort);
+            const res = await productsApi.findProductByKeyword(item);
             return res;
         } catch (err: any) {
             return rejectWithValue(err);

@@ -13,7 +13,7 @@ export type SignUp = {
 };
 
 export type User = {
-    _id: string;
+    id: string;
     fullName: string;
     email?: string;
     gender: string;
@@ -22,9 +22,14 @@ export type User = {
     avatar: string;
 };
 
-export type Password = {
+export type updatePassword = {
+    userId: string;
     oldPass: string;
     newPass: string;
+};
+export type updateEmail = {
+    userId: string;
+    newEmail: string;
 };
 
 export type Category = {
@@ -33,7 +38,7 @@ export type Category = {
 };
 
 export type Product = {
-    _id: string;
+    id: string;
     name: string;
     image: string[];
     desc: string;
@@ -53,7 +58,7 @@ export type Variant = {
 };
 
 export type Address = {
-    _id: string;
+    id: string;
     user: string;
     receiver: string;
     phone: string;
@@ -64,6 +69,7 @@ export type Address = {
 };
 
 export type ItemCart = {
+    userId: string;
     productID: string;
     image: string;
     name: string;
@@ -74,7 +80,7 @@ export type ItemCart = {
 };
 
 export type Order = {
-    _id: string;
+    id: string;
     items: ItemCart[];
     userId: string;
     deliveryAddress: string;
@@ -82,4 +88,33 @@ export type Order = {
     total: number;
     status: string;
     isPaid: boolean;
+};
+
+export type RemoveItemCart = {
+    userId: string;
+    productId: string;
+};
+
+export type updateOrder = {
+    orderId: string;
+    userId: string;
+    status: string;
+};
+
+export type findProduct = {
+    color?: string;
+    keyword?: string;
+    sort: string;
+    pageSize: number;
+    pageNumber: number;
+};
+
+export type upAvatar = {
+    img: string;
+    user: string;
+};
+
+export type getSizeOfColor = {
+    id: string;
+    color: string;
 };
