@@ -2,6 +2,7 @@ import User from "../models/User.js";
 import Product from "../models/Product.js";
 import Comment from "../models/Comment.js";
 import { checkedNull } from "../utils/handel_null.js";
+import { checkedObjectId } from "../utils/checkedOthers.js";
 
 export const {
     create,
@@ -17,11 +18,12 @@ export const {
     updateRatingOfProduct
 } = {
 
-    update: async (cmtID, body) => {
+    update: async (body) => {
         try {
+            const { comment, ...others } = body;
             const updatedComment = await Comment.findByIdAndUpdate(
-                cmtID,
-                { $set: body },
+                comment,
+                { $set: others },
                 { new: true },
             );
             checkedNull(updatedComment, "Comment don't exist !!!");
@@ -44,6 +46,8 @@ export const {
 
     updateLike: async (cmtID) => {
         try {
+            checkedObjectId(cmtID, "Comment ID");
+
             const updatedComment = await Comment.findByIdAndUpdate(
                 cmtID,
                 { $inc: { like: 1 } },
@@ -64,12 +68,17 @@ export const {
         }
     },
 
-    getAllByUserID: async (userID) => {
+    getAllByUserID: async (userID, pageSize, pageNumber) => {
         try {
+            checkedObjectId(userID, "User ID");
+
             const existUser = await User.findById(userID);
             checkedNull(existUser, "User don't exist !!!");
 
-            const result = await Comment.find({ commentator: userID }).select("-createdAt -updatedAt -__v");
+            const result = await Comment.find({ commentator: userID })
+                .limit(pageSize)
+                .skip(pageSize * (pageNumber - 1))
+                .select("-createdAt -updatedAt -__v");
             checkedNull(result, "The User has no comments yet !!!");
 
             return {
@@ -87,12 +96,17 @@ export const {
         }
     },
 
-    getAllByProID: async (proID) => {
+    getAllByProID: async (proID, pageSize, pageNumber) => {
         try {
+            checkedObjectId(proID, "Product ID");
+
             const existProduct = await Product.findById(proID);
             checkedNull(existProduct, "Product don't exist !!!");
 
-            const result = await Comment.find({ product: proID }).select("-createdAt -updatedAt -__v");
+            const result = await Comment.find({ product: proID })
+                .limit(pageSize)
+                .skip(pageSize * (pageNumber - 1))
+                .select("-createdAt -updatedAt -__v");
             checkedNull(result, "This Product has no comments yet !!!");
 
             return {
@@ -112,6 +126,8 @@ export const {
 
     getByCmtID: async (cmtID) => {
         try {
+            checkedObjectId(cmtID, "Comment ID");
+
             const existComment = await Comment.findById(cmtID).select("-createdAt -updatedAt -__v");
             checkedNull(existComment, "Comment don't exist !!!")
 
@@ -132,6 +148,9 @@ export const {
 
     create: async (userID, proID, rating, content) => {
         try {
+            checkedObjectId(userID, "User ID");
+            checkedObjectId(proID, "Product ID");
+
             const existUser = await User.findById(userID);
             checkedNull(existUser, "User don't exist !!!");
 
@@ -175,6 +194,8 @@ export const {
 
     deleteByID: async (cmtID) => {
         try {
+            checkedObjectId(cmtID, "Comment ID");
+
             const deletedComment = await Comment.findByIdAndDelete(cmtID);
             checkedNull(deletedComment, "Comment don't exist !!!");
 
@@ -196,6 +217,8 @@ export const {
 
     deleteAllByUserID: async (userID) => {
         try {
+            checkedObjectId(userID, "User ID");
+
             const listDelete = await Comment.find({ commentator: userID });
             await Promise.all(listDelete.map((cmt) => deleteByID(cmt._id)));
 
@@ -216,6 +239,8 @@ export const {
 
     deleteAllByProID: async (proID) => {
         try {
+            checkedObjectId(proID, "Product ID");
+
             const result = await Comment.deleteMany({ product: proID });
 
             return {
@@ -254,6 +279,8 @@ export const {
 
     updateRatingOfProduct: async (proID) => {
         try {
+            checkedObjectId(proID, "Product ID");
+
             let newRating = 0;
             const listComment = await getAllByProID(proID);
             if (listComment.data.length !== 0) {

@@ -13,7 +13,7 @@ import {
 const router = express.Router();
 
 // GET
-router.get("/get/:cateId", getByIdCategory);
+router.get("/detail", getByIdCategory);
 router.get("/", getAllCategory);
 
 // CREATE
@@ -21,11 +21,11 @@ router.post("/", uploadCloud.single("image"), createCategory);
 
 // UPDATE
 // test verify
-router.put("/updateName/:cateId", verifyAccessToken, updateNameCategory);
+router.put("/updateName", updateNameCategory);
 
-router.put("/updateImg/:cateId", uploadCloud.single("image"), updateImageCategory);
+router.put("/updateImg", uploadCloud.single("image"), updateImageCategory);
 
 // DELETE
-router.delete("/:cateId", deleteCategory);
+router.delete("/one", deleteCategory);
 
 export default router

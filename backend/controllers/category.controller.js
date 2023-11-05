@@ -12,7 +12,9 @@ import {
 
 export const getAllCategory = async (req, res, next) => {
     try {
-        const { success, message, data, status } = await getAll();
+        const pageSize = req.body.pageSize || 8;
+        const pageNumber = req.body.pageNumber || 1;
+        const { success, message, data, status } = await getAll(pageSize, pageNumber);
         if (!success) return next(createError(status, message));
 
         res.status(status).send({
@@ -28,7 +30,7 @@ export const getAllCategory = async (req, res, next) => {
 
 export const getByIdCategory = async (req, res, next) => {
     try {
-        const { success, message, data, status } = await getById(req.params.cateId);
+        const { success, message, data, status } = await getById(req.body.category);
         if (!success) return next(createError(status, message));
 
         res.status(status).send({
@@ -43,7 +45,7 @@ export const getByIdCategory = async (req, res, next) => {
 
 export const deleteCategory = async (req, res, next) => {
     try {
-        const { success, message, data, status } = await deleteById(req.params.cateId);
+        const { success, message, data, status } = await deleteById(req.body.category);
         if (!success) return next(createError(status, message));
 
         // xóa image nếu delete thành công !!!
@@ -63,7 +65,7 @@ export const deleteCategory = async (req, res, next) => {
 export const updateImageCategory = async (req, res, next) => {
     const image = req.file.path;
     try {
-        const { success, message, data, status } = await updateImage(req.params.cateId, image);
+        const { success, message, data, status } = await updateImage(req.body.category, image);
         if (!success) {
             // xóa image mới nếu update thất bại !!!
             const publicId = extractPublicId(image);
@@ -83,7 +85,6 @@ export const updateImageCategory = async (req, res, next) => {
         res.status(status).send({
             success: success,
             message: message,
-            data: data
         });
     } catch (err) {
         next(err);
@@ -92,13 +93,12 @@ export const updateImageCategory = async (req, res, next) => {
 
 export const updateNameCategory = async (req, res, next) => {
     try {
-        const { success, message, data, status } = await updateName(req.params.cateId, req.body.name);
+        const { success, message, data, status } = await updateName(req.body.category, req.body.name);
         if (!success) return next(createError(status, message));
 
         res.status(status).send({
             success: success,
             message: message,
-            data: data
         });
     } catch (err) {
         next(err);
@@ -120,7 +120,6 @@ export const createCategory = async (req, res, next) => {
         res.status(status).send({
             success: success,
             message: message,
-            data: data
         });
     } catch (err) {
         next(err);

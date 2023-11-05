@@ -1,5 +1,6 @@
 import Category from "../models/Category.js";
 import { checkedNull } from "../utils/handel_null.js";
+import { checkedObjectId } from "../utils/checkedOthers.js";
 
 export const {
     getAll,
@@ -28,10 +29,12 @@ export const {
         }
     },
 
-    updateName: async (id, name) => {
+    updateName: async (cateID, name) => {
         try {
+            checkedObjectId(cateID, "Category ID");
+
             const savedCate = await Category.findByIdAndUpdate(
-                id,
+                cateID,
                 { $set: { name: name } },
                 { new: true }
             );
@@ -50,10 +53,12 @@ export const {
         }
     },
 
-    updateImage: async (id, image) => {
+    updateImage: async (cateID, image) => {
         try {
+            checkedObjectId(cateID, "Category ID");
+
             const savedCate = await Category.findByIdAndUpdate(
-                id,
+                cateID,
                 { $set: { image: image } },
             );
             return {
@@ -71,27 +76,34 @@ export const {
         }
     },
 
-    deleteById: async (id) => {
+    deleteById: async (cateID) => {
         try {
-            const deletedCate = await Category.findByIdAndDelete(id);
+            checkedObjectId(cateID, "Category ID");
+
+            const deletedCate = await Category.findByIdAndDelete(cateID);
+            checkedNull(deletedCate, "Category doens't exist !!!");
+
             return {
                 success: true,
                 status: 200,
                 message: "Delete Successful!!!",
-                data: checkedNull(deletedCate),
+                data: deletedCate,
             }
         } catch (err) {
             return {
                 success: false,
                 status: err.status || 500,
-                message: err.message,
+                message: err.message || "Something went wrong in Category Service !!!",
             }
         }
     },
 
-    getById: async (id) => {
+    getById: async (cateID) => {
         try {
-            const getedCate = await Category.findById(id);
+            checkedObjectId(cateID, "Category ID");
+
+            const getedCate = await Category.findById(cateID)
+                .select("-createdAt -updatedAt -__v");
             return {
                 success: true,
                 status: 200,
@@ -107,9 +119,12 @@ export const {
         }
     },
 
-    getAll: async () => {
+    getAll: async (pageSize, pageNumber) => {
         try {
-            const listCate = await Category.find();
+            const listCate = await Category.find()
+                .limit(pageSize)
+                .skip(pageSize * (pageNumber - 1))
+                .select("-createdAt -updatedAt -__v");
             return {
                 success: true,
                 status: 200,
