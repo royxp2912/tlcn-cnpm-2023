@@ -13,7 +13,7 @@ export type SignUp = {
 };
 
 export type User = {
-    id: string;
+    _id: string;
     fullName: string;
     email?: string;
     gender: string;
@@ -23,7 +23,7 @@ export type User = {
 };
 
 export type updatePassword = {
-    userId: string;
+    user: string;
     oldPass: string;
     newPass: string;
 };
@@ -48,7 +48,7 @@ export type Product = {
     rating?: number;
     sold?: number;
     status?: string;
-    variant: Variant[];
+    variant: Variant;
 };
 
 export type Variant = {
@@ -69,14 +69,21 @@ export type Address = {
 };
 
 export type ItemCart = {
-    userId: string;
-    productID: string;
+    user: string;
+    product: string;
     image: string;
     name: string;
     color: string;
     size: string;
     quantity: number;
     price: number;
+};
+
+export type Cart = {
+    _id: string;
+    user: string;
+    total: number;
+    items: ItemCart[];
 };
 
 export type Order = {

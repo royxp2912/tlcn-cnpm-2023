@@ -12,8 +12,8 @@ import {
 
 export const getAllCategory = async (req, res, next) => {
     try {
-        const pageSize = req.body.pageSize || 8;
-        const pageNumber = req.body.pageNumber || 1;
+        const pageSize = req.query.pageSize || 8;
+        const pageNumber = req.query.pageNumber || 1;
         const { success, message, data, status } = await getAll(pageSize, pageNumber);
         if (!success) return next(createError(status, message));
 
@@ -30,7 +30,7 @@ export const getAllCategory = async (req, res, next) => {
 
 export const getByIdCategory = async (req, res, next) => {
     try {
-        const { success, message, data, status } = await getById(req.body.category);
+        const { success, message, data, status } = await getById(req.query.category);
         if (!success) return next(createError(status, message));
 
         res.status(status).send({

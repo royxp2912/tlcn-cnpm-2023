@@ -4,7 +4,7 @@ import axios from '../utils/axios';
 const usersApi = {
     getUser: (user: string) => {
         const url = '/users/detail';
-        return axios.get(url, { data: { user } });
+        return axios.get(url, { params: { user: user } });
     },
     getAllUser: () => {
         const url = '/users';
@@ -39,11 +39,11 @@ const usersApi = {
         return axios.get(url, { data: { keyword } });
     },
     updateUserPasswordByUserId: (item: updatePassword) => {
-        const url = `/users/password`;
+        const url = '/users/password';
         return axios.patch(url, item);
     },
     updateUserEmailByUserId: (email: updateEmail) => {
-        const url = `/users/email`;
+        const url = '/users/email';
         return axios.patch(url, email);
     },
 };

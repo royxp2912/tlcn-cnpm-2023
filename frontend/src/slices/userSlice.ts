@@ -14,7 +14,7 @@ export const getUser = createAsyncThunk('users/getUser', async (userId: string, 
 export const updateUser = createAsyncThunk('users/updateUser', async (user: User, { dispatch, rejectWithValue }) => {
     try {
         const res = await usersApi.updateUser(user);
-        await dispatch(getUser(user.id));
+        await dispatch(getUser(user._id));
         return res;
     } catch (err: any) {
         return rejectWithValue(err.res.data);
@@ -41,7 +41,7 @@ export const updateUserPasswordByUserId = createAsyncThunk(
             const res = await usersApi.updateUserPasswordByUserId(user);
             return res;
         } catch (err: any) {
-            return rejectWithValue(err.res.data);
+            return rejectWithValue(err.response.data);
         }
     },
 );

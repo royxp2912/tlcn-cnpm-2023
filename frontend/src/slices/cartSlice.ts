@@ -1,5 +1,5 @@
 import cartsApi from '@/apis/carts';
-import { ItemCart, RemoveItemCart } from '@/types/type';
+import { Cart, ItemCart, RemoveItemCart } from '@/types/type';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 export const getCartByUserId = createAsyncThunk(
@@ -28,7 +28,7 @@ export const addItemToCartByUserId = createAsyncThunk(
     async (item: ItemCart, { dispatch, rejectWithValue }) => {
         try {
             const res = await cartsApi.addItemToCartByUserId(item);
-            await dispatch(getCartByUserId(item.userId));
+            await dispatch(getCartByUserId(item.user));
             return res;
         } catch (err: any) {
             return rejectWithValue(err.res.data);
@@ -52,7 +52,7 @@ export const removeItemFromCartByUserId = createAsyncThunk(
 export const cartSlice = createSlice({
     name: 'carts',
     initialState: {
-        cartItem: [],
+        cartItem: {},
         loading: false,
         error: null as string | null,
     },
@@ -88,7 +88,7 @@ export const cartSlice = createSlice({
         });
         builder.addCase(getCartByUserId.fulfilled, (state, action) => {
             state.loading = false;
-            state.cartItem = action.payload.data;
+            state.cartItem = action.payload.data.data;
         });
         builder.addCase(removeItemFromCartByUserId.pending, (state) => {
             state.loading = true;

@@ -44,7 +44,7 @@ export const updateAddressByAddressId = createAsyncThunk(
         try {
             const res = await addressApi.updateAddressByAddressId(address);
             await dispatch(getAllAddressByUserId(address.user));
-            await dispatch(getAddressByAddressId(address.id));
+            await dispatch(getAddressByAddressId(address._id));
             return res;
         } catch (err: any) {
             return rejectWithValue(err.res.data);
@@ -58,7 +58,7 @@ export const setDefaultAddressByAddressId = createAsyncThunk(
         try {
             const res = await addressApi.setDefaultAddressByAddressId(address);
             await dispatch(getAllAddressByUserId(address.user));
-            await dispatch(getAddressByAddressId(address.id));
+            await dispatch(getAddressByAddressId(address._id));
             return res;
         } catch (err: any) {
             return rejectWithValue(err.res.data);
@@ -71,7 +71,7 @@ export const unsetDefaultAddressByAddressId = createAsyncThunk(
         try {
             const res = await addressApi.unsetDefaultAddressByAddressId(address);
             await dispatch(getAllAddressByUserId(address.user));
-            await dispatch(getAddressByAddressId(address.id));
+            await dispatch(getAddressByAddressId(address._id));
             return res;
         } catch (err: any) {
             return rejectWithValue(err.res.data);

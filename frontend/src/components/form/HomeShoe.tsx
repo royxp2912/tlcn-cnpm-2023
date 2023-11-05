@@ -5,9 +5,11 @@ import Image from 'next/image';
 import { Rating } from '@mui/material';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import { useDispatch, useSelector } from 'react-redux';
-import { Product } from '@/types/type';
+import { ItemCart, Product, User } from '@/types/type';
 import { AppDispatch } from '@/utils/store';
 import { getProductById } from '@/slices/productSlice';
+import { addItemToCartByUserId } from '@/slices/cartSlice';
+import { toast } from 'react-toastify';
 
 const HomeShoe = () => {
     const { productHots, productDetail }: { productHots: Product[]; productDetail: Product } = useSelector(
@@ -16,6 +18,19 @@ const HomeShoe = () => {
     const dispatch = useDispatch<AppDispatch>();
     const [id, setId] = useState<string>('');
     const [count, setCount] = useState(0);
+
+    const userString = localStorage.getItem('user');
+    let user: User | null = null;
+
+    if (userString !== null) {
+        try {
+            user = JSON.parse(userString) as User;
+        } catch (error) {
+            console.error('Error parsing user data:', error);
+        }
+    }
+    const idUser = user?._id as string;
+
     useEffect(() => {
         if (productHots.length > 0) {
             setId(productHots[0]._id);
@@ -38,11 +53,33 @@ const HomeShoe = () => {
 
             const nextId = productHots[nextIndex]._id;
             setId(nextId);
-        }, 100000);
+        }, 10000);
 
         return () => clearTimeout(timeout);
     }, [id, productHots, count]);
 
+    const handleAddtoCart = async ({ product, image, name, color, size, quantity, price }: ItemCart) => {
+        try {
+            const cart = {
+                user: idUser,
+                product,
+                image,
+                name,
+                color,
+                size,
+                quantity,
+                price,
+            };
+
+            const res = await dispatch(addItemToCartByUserId(cart));
+            console.log(res);
+            // if((res.payload as { status: number }).status === 201){
+            //     toast.success((res.payload as { status: string }).data.message)
+            // }
+        } catch (error) {
+            console.log(error);
+        }
+    };
     return (
         <div className="bg-bg">
             <HomeShoeCard />
@@ -74,7 +111,21 @@ const HomeShoe = () => {
                                         </div>
                                         <FavoriteBorderOutlinedIcon className="w-5 h-5 text-orange" />
                                     </div>
-                                    <button className="mt-3 px-2 py-2 border-2 border-orange font-bold text-orange rounded-lg">
+                                    <button
+                                        className="mt-3 px-2 py-2 border-2 border-orange font-bold text-orange rounded-lg"
+                                        onClick={() =>
+                                            handleAddtoCart({
+                                                user: idUser,
+                                                product: productHot._id,
+                                                image: 'abc',
+                                                name: productHot.name,
+                                                color: 'Red',
+                                                size: 'M',
+                                                quantity: 1,
+                                                price: productHot.price,
+                                            })
+                                        }
+                                    >
                                         ADD TO CART!
                                     </button>
                                 </div>

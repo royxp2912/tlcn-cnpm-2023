@@ -8,7 +8,7 @@ import {
 
 export const getCartByUserID = async (req, res, next) => {
     try {
-        const { success, status, message, data } = await getByUserID(req.body.user);
+        const { success, status, message, data } = await getByUserID(req.query.user);
         if (!success) return next(createError(status, message));
 
         res.status(status).send({

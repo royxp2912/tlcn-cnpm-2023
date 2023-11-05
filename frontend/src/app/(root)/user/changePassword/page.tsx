@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/utils/store';
 import { updateUserPasswordByUserId, uploadAvatar } from '@/slices/userSlice';
-import { Password, User } from '@/types/type';
+import { User, updatePassword } from '@/types/type';
 
 type Pass = {
     oldPass: string;
@@ -45,20 +45,19 @@ const ChangePassword = () => {
             return;
         }
     };
+
     const handleSubmit = async () => {
         try {
-            const password: Password = {
+            const item = {
+                user: id,
                 oldPass: passwords.oldPass,
                 newPass: passwords.newPass,
             };
-            const params = {
-                userId: id,
-                password: password,
-            };
+            console.log(user);
 
-            handleCheck();
-            const res = await dispatch(updateUserPasswordByUserId(id, password));
-            console.log(res);
+            // handleCheck();
+            dispatch(updateUserPasswordByUserId(item));
+            // console.log(res);
         } catch (error) {
             console.log(error);
         }

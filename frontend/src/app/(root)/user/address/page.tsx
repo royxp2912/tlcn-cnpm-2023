@@ -27,7 +27,7 @@ const Address = () => {
     }, [id]);
     console.log(address);
     return (
-        <div className="flex px-20 mt-10 gap-5">
+        <div className="flex justify-center px-20 mt-10 gap-5">
             <UserNav />
 
             <div className="flex flex-col w-[1100px] shadow-lg rounded-lg gap-[10px] py-10 px-[50px]">

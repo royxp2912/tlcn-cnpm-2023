@@ -7,8 +7,12 @@ const ordersApi = {
         return axios.get(url);
     },
     getAllOrderByUserId: (userId: string) => {
-        const url = `/orders/user/${userId}`;
-        return axios.get(url);
+        const url = '/orders/user';
+        return axios.get(url, {
+            params: {
+                user: userId,
+            },
+        });
     },
     getAllOrderByOrderStatus: (status: string) => {
         const url = `/orders?status=${status}`;
