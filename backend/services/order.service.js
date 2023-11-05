@@ -1,4 +1,5 @@
 import Order from "../models/Order.js";
+import { checkedObjectId } from "../utils/checkedOthers.js";
 import { checkedNull } from "../utils/handel_null.js";
 import { getUserByID } from "./user.service.js";
 
@@ -60,6 +61,8 @@ export const {
 
     deliveryConfirm: async (orderID) => {
         try {
+            checkedObjectId(orderID, "Order ID");
+
             const result = await Order.findByIdAndUpdate(
                 orderID,
                 { $set: { isDelivered: true } },
@@ -82,6 +85,8 @@ export const {
 
     paymentConfirm: async (orderID) => {
         try {
+            checkedObjectId(orderID, "Order ID");
+
             const result = await Order.findByIdAndUpdate(
                 orderID,
                 { $set: { isPaid: true } },
@@ -104,6 +109,8 @@ export const {
 
     cancelOrder: async (orderID) => {
         try {
+            checkedObjectId(orderID, "Order ID");
+
             const result = await Order.findByIdAndUpdate(
                 orderID,
                 { $set: { status: "Cancel" } },
@@ -126,6 +133,8 @@ export const {
 
     updateStatus: async (orderID, status) => {
         try {
+            checkedObjectId(orderID, "Order ID");
+
             if (status !== "Confirmming" &&
                 status !== "Delivering" &&
                 status !== "Successful" &&
@@ -181,6 +190,8 @@ export const {
 
     getByID: async (orderID) => {
         try {
+            checkedObjectId(orderID, "Order ID");
+
             const result = await Order.findById(orderID)
                 .populate({ path: 'deliveryAddress', select: '-createdAt -updatedAt -__v -user' })
                 .select("-updatedAt -createdAt -__v");
@@ -236,6 +247,8 @@ export const {
 
     getAllByUserID: async (userID, pageSize, pageNumber) => {
         try {
+            checkedObjectId(userID, "User ID");
+
             const existUser = await getUserByID(userID);
             if (!existUser.success) return existUser;
 

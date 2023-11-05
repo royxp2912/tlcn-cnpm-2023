@@ -15,9 +15,9 @@ import {
 
 export const searchOrderByKeyword = async (req, res, next) => {
     try {
-        const keyword = req.body.keyword || "";
-        const pageSize = req.body.pageSize || 5;
-        const pageNumber = req.body.pageNumber || 1;
+        const keyword = req.query.keyword || "";
+        const pageSize = req.query.pageSize || 5;
+        const pageNumber = req.query.pageNumber || 1;
 
         const { success, status, message, data } = await findByKeyword(keyword, pageSize, pageNumber);
         if (!success) return next(createError(status, message));
@@ -98,7 +98,7 @@ export const updateOrderStatus = async (req, res, next) => {
 
 export const getOrderByID = async (req, res, next) => {
     try {
-        const { success, status, message, data } = await getByID(req.body.order);
+        const { success, status, message, data } = await getByID(req.query.order);
         if (!success) return next(createError(status, message));
 
         res.status(status).send({
@@ -113,9 +113,9 @@ export const getOrderByID = async (req, res, next) => {
 
 export const getAllOrderByUserID = async (req, res, next) => {
     try {
-        const pageSize = req.body.pageSize || 5;
-        const pageNumber = req.body.pageNumber || 1;
-        const { success, status, message, data } = await getAllByUserID(req.body.user, pageSize, pageNumber);
+        const pageSize = req.query.pageSize || 5;
+        const pageNumber = req.query.pageNumber || 1;
+        const { success, status, message, data } = await getAllByUserID(req.query.user, pageSize, pageNumber);
         if (!success) return next(createError(status, message));
 
         res.status(status).send({
@@ -131,9 +131,9 @@ export const getAllOrderByUserID = async (req, res, next) => {
 
 export const getAllOrder = async (req, res, next) => {
     try {
-        const orderStatus = req.body.status;
-        const pageSize = req.body.pageSize || 5;
-        const pageNumber = req.body.pageNumber || 1;
+        const orderStatus = req.query.status;
+        const pageSize = req.query.pageSize || 5;
+        const pageNumber = req.query.pageNumber || 1;
         if (orderStatus) {
             const { success, status, message, data } = await getAllByStatus(orderStatus, pageSize, pageNumber);
             if (!success) return next(createError(status, message));

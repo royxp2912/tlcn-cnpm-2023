@@ -120,12 +120,14 @@ export const {
         }
     },
 
-    getAllByUserID: async (userID) => {
+    getAllByUserID: async (userID, pageSize, pageNumber) => {
         try {
             const existUser = await getUserByID(userID);
             if (!existUser) return existUser;
 
             const listAddress = await Address.find({ user: userID })
+                .limit(pageSize)
+                .skip(pageSize * (pageNumber - 1))
                 .sort({ createdAt: -1 })
                 .select("-createdAt -updatedAt -__v");
 

@@ -1,4 +1,5 @@
 import Cart from "../models/Cart.js";
+import { checkedObjectId } from "../utils/checkedOthers.js";
 import { checkedNull } from "../utils/handel_null.js";
 import { getUserByID } from "./user.service.js";
 
@@ -12,6 +13,8 @@ export const {
 
     getByUserID: async (userID) => {
         try {
+            checkedObjectId(userID, "User ID");
+
             const result = await Cart.findOne({ user: userID })
                 .select("-createdAt -updatedAt -__v");
             checkedNull(result, "Cart don't exist !!!");
@@ -33,6 +36,9 @@ export const {
 
     removeFromCart: async (userID, proID) => {
         try {
+            checkedObjectId(userID, "User ID");
+            checkedObjectId(proID, "Product ID");
+
             const result = await Cart.findOneAndUpdate(
                 { user: userID },
                 {
@@ -114,6 +120,8 @@ export const {
 
     calcTotal: async (cartID) => {
         try {
+            checkedObjectId(cartID, "Cart ID");
+
             const result = await Cart.findById(cartID);
             checkedNull(result, "Cart don't exist !!!");
 
@@ -139,6 +147,7 @@ export const {
 
     create: async (userID) => {
         try {
+            checkedObjectId(userID, "User ID");
             // const existUser = await getUserByID(userID);
             // if (!existUser.success) return existUser;
 

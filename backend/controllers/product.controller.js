@@ -107,7 +107,7 @@ export const updateProduct = async (req, res, next) => {
 
 export const deleteProduct = async (req, res, next) => {
     try {
-        const { success, message, data, status } = await deleteById(req.query.product);
+        const { success, message, data, status } = await deleteById(req.body.product);
         if (!success) return next(createError(status, message));
 
         if (data.images.length !== 0) {

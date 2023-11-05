@@ -11,7 +11,7 @@ import {
 
 export const getColorOfProductBySizeAndProID = async (req, res, next) => {
     try {
-        const { success, status, message, data } = await getColorBySizeAndProID(req.body.product, req.body.size);
+        const { success, status, message, data } = await getColorBySizeAndProID(req.query.product, req.query.size);
         if (!success) return next(createError(status, message));
 
         res.status(status).send({
@@ -27,7 +27,7 @@ export const getColorOfProductBySizeAndProID = async (req, res, next) => {
 
 export const getSizeOfProductByColorAndProID = async (req, res, next) => {
     try {
-        const { success, status, message, data } = await getSizeByColorAndProID(req.body.product, req.body.color);
+        const { success, status, message, data } = await getSizeByColorAndProID(req.query.product, req.query.color);
         if (!success) return next(createError(status, message));
 
         res.status(status).send({
@@ -43,7 +43,7 @@ export const getSizeOfProductByColorAndProID = async (req, res, next) => {
 
 export const getAllVarByProID = async (req, res, next) => {
     try {
-        const { success, status, message, data } = await getListVarByProID(req.body.product);
+        const { success, status, message, data } = await getListVarByProID(req.query.product);
         if (!success) return next(createError(status, message));
 
         res.status(status).send({
@@ -59,7 +59,7 @@ export const getAllVarByProID = async (req, res, next) => {
 
 export const getVariantByID = async (req, res, next) => {
     try {
-        const { success, status, message, data } = await getVarByID(req.body.variant);
+        const { success, status, message, data } = await getVarByID(req.query.variant);
         if (!success) return next(createError(status, message));
 
         res.status(status).send({

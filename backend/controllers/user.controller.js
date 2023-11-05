@@ -45,10 +45,10 @@ export const updateUserPassword = async (req, res, next) => {
 
 export const findUserByKeyword = async (req, res, next) => {
     try {
-        const pageSize = req.body.pageSize || 10;
-        const pageNumber = req.body.pageNumber || 1;
+        const pageSize = req.query.pageSize || 10;
+        const pageNumber = req.query.pageNumber || 1;
 
-        const { success, status, message, data } = await findByKeyword(req.body.keyword, pageSize, pageNumber);
+        const { success, status, message, data } = await findByKeyword(req.query.keyword, pageSize, pageNumber);
         if (!success) return next(createError(status, message));
 
         if (data.length === 0) {
@@ -165,9 +165,9 @@ export const editUserByID = async (req, res, next) => {
 
 export const findAllUser = async (req, res, next) => {
     try {
-        const pageSize = 10;
-        const userStatus = req.body.status;
-        const pageNumber = req.body.pageNumber || 1;
+        const pageSize = req.query.pageSize || 10;
+        const userStatus = req.query.status;
+        const pageNumber = req.query.pageNumber || 1;
 
         if (userStatus) {
             if (userStatus === "Locked" || userStatus === "Available") {
@@ -203,7 +203,7 @@ export const findAllUser = async (req, res, next) => {
 
 export const findUserByID = async (req, res, next) => {
     try {
-        const { success, status, message, data } = await getUserByID(req.body.user);
+        const { success, status, message, data } = await getUserByID(req.query.user);
         if (!success) return next(createError(status, message));
 
         res.status(status).json({
@@ -218,7 +218,7 @@ export const findUserByID = async (req, res, next) => {
 
 export const isExistUser = async (req, res, next) => {
     try {
-        const { success, status, message, data } = await getUserByID(req.params.userID);
+        const { success, status, message, data } = await getUserByID(req.query.user);
         if (!success) return next(createError(status, message));
 
         next();
