@@ -85,7 +85,7 @@ export const updateAddressByID = async (req, res, next) => {
 
 export const getAddressByID = async (req, res, next) => {
     try {
-        const { success, status, message, data } = await getByID(req.body.address);
+        const { success, status, message, data } = await getByID(req.query.address);
         if (!success) return next(createError(status, message));
 
         res.status(status).send({
@@ -100,7 +100,9 @@ export const getAddressByID = async (req, res, next) => {
 
 export const getAllAddressByUserID = async (req, res, next) => {
     try {
-        const { success, status, message, data } = await getAllByUserID(req.body.user);
+        const pageSize = req.query.pageSize || 5;
+        const pageNumber = req.query.pageNumber || 1;
+        const { success, status, message, data } = await getAllByUserID(req.query.user, pageSize, pageNumber);
         if (!success) return next(createError(status, message));
 
         res.status(status).send({

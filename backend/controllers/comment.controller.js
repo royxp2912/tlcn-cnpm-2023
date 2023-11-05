@@ -42,9 +42,9 @@ export const updateCommentLike = async (req, res, next) => {
 
 export const getAllCommentByUserID = async (req, res, next) => {
     try {
-        const pageSize = req.body.pageSize || 5;
-        const pageNumber = req.body.pageNumber || 1;
-        const { success, status, message, data } = await getAllByUserID(req.body.user, pageSize, pageNumber);
+        const pageSize = req.query.pageSize || 5;
+        const pageNumber = req.query.pageNumber || 1;
+        const { success, status, message, data } = await getAllByUserID(req.query.user, pageSize, pageNumber);
         if (!success) return next(createError(status, message));
 
         res.status(status).json({
@@ -60,9 +60,9 @@ export const getAllCommentByUserID = async (req, res, next) => {
 
 export const getAllCommentByProID = async (req, res, next) => {
     try {
-        const pageSize = req.body.pageSize || 5;
-        const pageNumber = req.body.pageNumber || 1;
-        const { success, status, message, data } = await getAllByProID(req.body.product, pageSize, pageNumber);
+        const pageSize = req.query.pageSize || 5;
+        const pageNumber = req.query.pageNumber || 1;
+        const { success, status, message, data } = await getAllByProID(req.query.product, pageSize, pageNumber);
         if (!success) return next(createError(status, message));
 
         res.status(status).json({
@@ -78,7 +78,7 @@ export const getAllCommentByProID = async (req, res, next) => {
 
 export const getCommentByID = async (req, res, next) => {
     try {
-        const { success, status, message, data } = await getByCmtID(req.body.comment);
+        const { success, status, message, data } = await getByCmtID(req.query.comment);
         if (!success) return next(createError(status, message));
 
         res.status(status).json({
