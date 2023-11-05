@@ -4,7 +4,7 @@ import axios from '../utils/axios';
 const addressApi = {
     getAllAddressByUserId: (user: string) => {
         const url = '/address/user';
-        return axios.get(url, { data: { user } });
+        return axios.get(url, { params: { user: user } });
     },
     getAddressByAddressId: (address: string) => {
         const url = '/address/detail';

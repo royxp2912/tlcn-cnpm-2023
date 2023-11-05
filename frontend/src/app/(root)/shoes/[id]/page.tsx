@@ -21,7 +21,7 @@ const ShoesSinglePage = () => {
         productHots,
         productDetail,
         variants,
-    }: { products: Product[]; productHots: Product[]; productDetail: Product; variants: Variant[] } = useSelector(
+    }: { products: Product[]; productHots: Product[]; productDetail: Product; variants: Variant } = useSelector(
         (state: any) => state.products,
     );
     const dispatch = useDispatch<AppDispatch>();
@@ -73,21 +73,26 @@ const ShoesSinglePage = () => {
                     <div className="flex items-center mt-[25px] mb-5">
                         <span className="font-medium flex-1">Color:</span>
                         <div className="font-bold text-white flex gap-1">
-                            {variants.map((variant) => (
-                                <div className="text-sm w-9 h-7 bg-size2 rounded-md flex items-center justify-center">
-                                    {variant.color}
-                                </div>
-                            ))}
+                            {variants.listColor &&
+                                variants.listColor.map((color) => (
+                                    <div
+                                        key={color}
+                                        className="text-sm w-9 h-7 bg-size2 rounded-md flex items-center justify-center"
+                                    >
+                                        {color}
+                                    </div>
+                                ))}
                         </div>
                     </div>
                     <div className="flex items-center mt-[25px] mb-5">
                         <span className="font-medium flex-1">Size:</span>
                         <div className="font-bold text-white flex gap-1">
-                            {variants.map((variant) => (
-                                <div className="text-sm w-9 h-7 bg-size2 rounded-md flex items-center justify-center">
-                                    {variant.size}
-                                </div>
-                            ))}
+                            {variants.listSize &&
+                                variants.listSize.map((size) => (
+                                    <div className="text-sm w-9 h-7 bg-size2 rounded-md flex items-center justify-center">
+                                        {size}
+                                    </div>
+                                ))}
                         </div>
                     </div>
 
