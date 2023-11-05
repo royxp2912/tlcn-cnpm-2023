@@ -1,6 +1,6 @@
 import Product from "../models/Product.js";
 import Category from "../models/Category.js";
-import { checkedNull, checkedNullAndFormatData } from "../utils/handel_null.js";
+import { checkedNull } from "../utils/handel_null.js";
 import { deleteAllByProID } from "./comment.service.js";
 import {
     createList,

@@ -10,12 +10,16 @@ import { AppDispatch } from '@/utils/store';
 import { getProductById } from '@/slices/productSlice';
 
 const HomeShoe = () => {
-    const { productHots } = useSelector((state: any) => state.products) as { productHots: Product[] };
+    const { productHots, productDetail }: { productHots: Product[]; productDetail: Product } = useSelector(
+        (state: any) => state.products,
+    );
     const dispatch = useDispatch<AppDispatch>();
-    const [id, setId] = useState<string>(productHots[0]?._id);
+    const [id, setId] = useState<string>('');
     const [count, setCount] = useState(0);
-
     useEffect(() => {
+        if (productHots.length > 0) {
+            setId(productHots[0]._id);
+        }
         dispatch(getProductById(id));
         const timeout = setTimeout(() => {
             const currentIndex = productHots.findIndex((productHot) => productHot._id === id);
@@ -34,14 +38,14 @@ const HomeShoe = () => {
 
             const nextId = productHots[nextIndex]._id;
             setId(nextId);
-        }, 10000);
+        }, 100000);
 
         return () => clearTimeout(timeout);
     }, [id, productHots, count]);
 
     return (
         <div className="bg-bg">
-            <HomeShoeCard id={id} />
+            <HomeShoeCard />
 
             <div className="flex items-center justify-between py-10 px-14 gap-16">
                 <div>

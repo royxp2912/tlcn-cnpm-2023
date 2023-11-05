@@ -38,7 +38,7 @@ export type Category = {
 };
 
 export type Product = {
-    id: string;
+    _id: string;
     name: string;
     image: string[];
     desc: string;
@@ -52,13 +52,13 @@ export type Product = {
 };
 
 export type Variant = {
-    color: string;
-    size: string;
+    listColor: string[];
+    listSize: string[];
     quantity: number;
 };
 
 export type Address = {
-    id: string;
+    _id: string;
     user: string;
     receiver: string;
     phone: string;
@@ -80,7 +80,7 @@ export type ItemCart = {
 };
 
 export type Order = {
-    id: string;
+    _id: string;
     items: ItemCart[];
     userId: string;
     deliveryAddress: string;

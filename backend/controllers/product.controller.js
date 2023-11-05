@@ -1,6 +1,6 @@
-import { createError } from "../utils/createError.js";
+import { createError } from '../utils/createError.js';
 import { extractPublicId } from 'cloudinary-build-url';
-import cloudinary from "../utils/cloudinary_config.js";
+import cloudinary from '../utils/cloudinary_config.js';
 import {
     create,
     update,
@@ -13,7 +13,7 @@ import {
     findByColor,
     findByColorAndSort,
     getHotDeal,
-} from "../services/product.service.js";
+} from '../services/product.service.js';
 
 export const findProductByColor = async (req, res, next) => {
     try {
@@ -28,7 +28,7 @@ export const findProductByColor = async (req, res, next) => {
             res.status(status).json({
                 success: success,
                 message: message,
-                data: data
+                data: data,
             });
         }
 
@@ -46,12 +46,12 @@ export const findProductByColor = async (req, res, next) => {
             success: success,
             message: message,
             total: data.length,
-            data: data
+            data: data,
         });
     } catch (err) {
         next(err);
     }
-}
+};
 
 export const findProductByKeyword = async (req, res, next) => {
     try {
@@ -66,7 +66,7 @@ export const findProductByKeyword = async (req, res, next) => {
             res.status(status).json({
                 success: success,
                 message: message,
-                data: data
+                data: data,
             });
         }
 
@@ -84,12 +84,12 @@ export const findProductByKeyword = async (req, res, next) => {
             success: success,
             message: message,
             total: data.length,
-            data: data
+            data: data,
         });
     } catch (err) {
         next(err);
     }
-}
+};
 
 export const updateProduct = async (req, res, next) => {
     try {
@@ -114,7 +114,8 @@ export const deleteProduct = async (req, res, next) => {
             // Xóa tất cả các ảnh (nếu có) nếu delete thành công !!!
             const listPublicId = data?.images.map((path) => extractPublicId(path));
             const result = await cloudinary.api.delete_resources(listPublicId);
-            if (Object.values(result.deleted)[0] === "not_found") return next(createError(404, "Delete Image Failed !!!"));
+            if (Object.values(result.deleted)[0] === 'not_found')
+                return next(createError(404, 'Delete Image Failed !!!'));
         }
 
         res.status(status).send({
@@ -128,18 +129,18 @@ export const deleteProduct = async (req, res, next) => {
 
 export const getByIdProduct = async (req, res, next) => {
     try {
-        const { success, message, data, status } = await getById(req.body.product);
+        const { success, message, data, status } = await getById(req.query.product);
         if (!success) return next(createError(status, message));
 
         res.status(status).json({
             success: success,
             message: message,
-            data: data
+            data: data,
         });
     } catch (err) {
         next(err);
     }
-}
+};
 
 export const getAllProductByCategory = async (req, res, next) => {
     try {
@@ -153,12 +154,12 @@ export const getAllProductByCategory = async (req, res, next) => {
             success: success,
             message: message,
             total: data.length,
-            data: data
+            data: data,
         });
     } catch (err) {
         next(err);
     }
-}
+};
 
 export const getAllProduct = async (req, res, next) => {
     try {
@@ -172,12 +173,12 @@ export const getAllProduct = async (req, res, next) => {
             success: success,
             message: message,
             total: data.length,
-            data: data
+            data: data,
         });
     } catch (err) {
         next(err);
     }
-}
+};
 
 export const getProductHotDeal = async (req, res, next) => {
     try {
@@ -191,12 +192,12 @@ export const getProductHotDeal = async (req, res, next) => {
             success: success,
             message: message,
             total: data.length,
-            data: data
+            data: data,
         });
     } catch (err) {
         next(err);
     }
-}
+};
 
 export const createProduct = async (req, res, next) => {
     const images = req.files.map((image) => image.path);
@@ -207,7 +208,8 @@ export const createProduct = async (req, res, next) => {
             // Xóa tất cả các ảnh nếu create thất bại !!!
             const listPublicId = images.map((path) => extractPublicId(path));
             const result = await cloudinary.api.delete_resources(listPublicId);
-            if (Object.values(result.deleted)[0] === "not_found") return next(createError(404, "Delete Image Failed !!!"));
+            if (Object.values(result.deleted)[0] === 'not_found')
+                return next(createError(404, 'Delete Image Failed !!!'));
 
             return next(createError(status, message));
         }
@@ -219,4 +221,4 @@ export const createProduct = async (req, res, next) => {
     } catch (err) {
         next(err);
     }
-}
+};

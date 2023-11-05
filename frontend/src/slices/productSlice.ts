@@ -72,7 +72,7 @@ export const productSlice = createSlice({
         products: [],
         productHots: [],
         productDetail: {},
-        variants: [],
+        variants: {},
         loading: false,
         error: null as string | null,
     },

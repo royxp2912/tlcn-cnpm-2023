@@ -7,8 +7,8 @@ const productsApi = {
         return axios.get(url);
     },
     getProductById: (product: string) => {
-        const url = `/products/detail`;
-        return axios.get(url, { data: { product } });
+        const url = '/products/detail';
+        return axios.get(url, { params: { product: product } });
     },
     getAllProductByCateId: (category: string) => {
         const url = '/products/category';

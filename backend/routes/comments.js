@@ -9,27 +9,29 @@ import {
     getAllCommentByProID,
     getAllCommentByUserID,
     deleteAllCommentByUserID,
+    deleteAllCommentByProID,
 } from "../controllers/comment.controller.js";
 
 const router = express.Router();
 
 // get
-router.get("/:cmtID", getCommentByID);
-router.get("/product/:proID", getAllCommentByProID);
-router.get("/user/:userID", getAllCommentByUserID);
+router.get("/", getCommentByID);
+router.get("/product", getAllCommentByProID);
+router.get("/user", getAllCommentByUserID);
 
 // create
 router.post("/", createComment);
 
 // put - update 1
-router.put("/:cmtID", updateCommentByID);
+router.put("/", updateCommentByID);
 
 // patch - update 1
-router.patch("/:cmtID/like", updateCommentLike);
+router.patch("/like", updateCommentLike);
 
 // delete
 router.delete("/", deleteAllComment);
-router.delete("/:cmtID", deleteCommentByID);
-router.delete("/user/:userID", deleteAllCommentByUserID);
+router.delete("/one", deleteCommentByID);
+router.delete("/product", deleteAllCommentByProID);
+router.delete("/user", deleteAllCommentByUserID);
 
 export default router
