@@ -23,7 +23,7 @@ export const getCartByUserID = async (req, res, next) => {
 
 export const removeItemFromCart = async (req, res, next) => {
     try {
-        const { success, status, message } = await removeFromCart(req.body.user, req.body.product);
+        const { success, status, message } = await removeFromCart(req.query.user, req.query.product);
         if (!success) return next(createError(status, message));
 
         res.status(status).send({
