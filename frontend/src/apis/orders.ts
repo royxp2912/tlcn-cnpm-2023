@@ -24,7 +24,15 @@ const ordersApi = {
     },
     createOrder: (item: Order) => {
         const url = '/orders';
-        return axios.post(url, item);
+        const data = {
+            items: item.items,
+            userId: item.userId,
+            deliveryAddress: item.deliveryAddress,
+            paymentMethod: item.paymentMethod,
+            total: item.total,
+        };
+        console.log(data);
+        return axios.post(url, data);
     },
     updateOrderStatusByOrderId: (order: updateOrder) => {
         const url = `/orders/${order.orderId}`;

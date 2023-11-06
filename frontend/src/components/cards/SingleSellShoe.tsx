@@ -48,7 +48,7 @@ const SingleSellShoe = ({ products, productHots, active }: Props) => {
                             <div className="border-2 border-gray2 w-max rounded-md p-1">
                                 {/* Single Product */}
                                 <div className="bg-bg_sell rounded-md">
-                                    <Image src="/nike.png" alt="Nike" width={292} height={236} />
+                                    <Image src={product.images[0]} alt="Nike" width={292} height={236} />
                                 </div>
                                 <div className="px-5 py-1 flex flex-col items-center gap-2">
                                     <div className="flex items-center justify-between mt-3 mb-3 w-full">
@@ -88,7 +88,7 @@ const SingleSellShoe = ({ products, productHots, active }: Props) => {
                           <div className="border-2 border-gray2 w-max rounded-md p-1">
                               {/* Single Product */}
                               <div className="bg-bg_sell rounded-md">
-                                  <Image src="/nike.png" alt="Nike" width={292} height={236} />
+                                  <Image src={product.images[0]} alt="Nike" width={292} height={236} />
                               </div>
                               <div className="px-5 py-1 flex flex-col items-center gap-2">
                                   <div className="flex items-center justify-between mt-3 mb-3 w-full">
@@ -122,7 +122,7 @@ const SingleSellShoe = ({ products, productHots, active }: Props) => {
                           <div className="border-2 border-gray2 w-max rounded-md p-1">
                               {/* Single Product */}
                               <div className="bg-bg_sell rounded-md">
-                                  <Image src="/nike.png" alt="Nike" width={292} height={236} />
+                                  <Image src={product.images[0]} alt="Nike" width={292} height={236} />
                               </div>
                               <div className="px-5 py-1 flex flex-col items-center gap-2">
                                   <div className="flex items-center justify-between mt-3 mb-3 w-full">
