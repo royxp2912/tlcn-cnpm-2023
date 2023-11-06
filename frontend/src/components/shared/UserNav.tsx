@@ -33,7 +33,7 @@ const UserNav = () => {
             {userNav.map((item) => (
                 <div
                     key={item.label}
-                    className="mt-5 flex items-center gap-5 font-semibold"
+                    className="mt-5 flex items-center gap-5 font-semibold cursor-pointer"
                     onClick={() => router.push(item.route)}
                 >
                     <item.icon />

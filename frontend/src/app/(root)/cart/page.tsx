@@ -3,6 +3,7 @@ import CartShoe from '@/components/cards/CartShoe';
 import Border from '@/components/shared/Border';
 import { getCartByUserId } from '@/slices/cartSlice';
 import { Cart, User } from '@/types/type';
+import axios from '@/utils/axios';
 import { AppDispatch } from '@/utils/store';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -20,10 +21,23 @@ const Cart = () => {
             console.error('Error parsing user data:', error);
         }
     }
+    const length = cartItem.items && cartItem.items.length;
     const id = user?._id as string;
     useEffect(() => {
         dispatch(getCartByUserId(id));
-    }, [id]);
+    }, [length]);
+    const handleCheckout = async () => {
+        try {
+            const { data } = await axios.post('/orders/create_payment_url', {
+                amount: 50000,
+                bankCode: 'VNBANK',
+            });
+            window.open(data.vnpUrl);
+            console.log(data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
     return (
         <div className="flex flex-col items-center px-10">
             <span className="font-bold text-3xl text-blue">Cart</span>
@@ -32,9 +46,6 @@ const Cart = () => {
                 <span>Select all</span>
                 <span>Delete all</span>
                 <span>Delete selected Items</span>
-            </div>
-            <div className="w-full">
-                <Border />
             </div>
 
             <div className="flex gap-5 w-full">
@@ -58,7 +69,12 @@ const Cart = () => {
                         <span>Total</span>
                         <span>${cartItem.total}</span>
                     </div>
-                    <button className="bg-bluev4 w-full h-[60px] rounded-lg font-bold text-white">Check out</button>
+                    <button
+                        className="bg-bluev4 w-full h-[60px] rounded-lg font-bold text-white"
+                        onClick={handleCheckout}
+                    >
+                        Check out
+                    </button>
                 </div>
             </div>
         </div>

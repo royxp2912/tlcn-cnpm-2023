@@ -1,10 +1,5 @@
-import { createError } from "../utils/createError.js";
-import {
-    addToCart,
-    create,
-    getByUserID,
-    removeFromCart,
-} from "../services/cart.service.js";
+import { createError } from '../utils/createError.js';
+import { addToCart, create, getByUserID, removeFromCart } from '../services/cart.service.js';
 
 export const getCartByUserID = async (req, res, next) => {
     try {
@@ -19,7 +14,7 @@ export const getCartByUserID = async (req, res, next) => {
     } catch (err) {
         next(err);
     }
-}
+};
 
 export const removeItemFromCart = async (req, res, next) => {
     try {
@@ -33,7 +28,7 @@ export const removeItemFromCart = async (req, res, next) => {
     } catch (err) {
         next(err);
     }
-}
+};
 
 export const addItemToCart = async (req, res, next) => {
     try {
@@ -47,7 +42,7 @@ export const addItemToCart = async (req, res, next) => {
     } catch (err) {
         next(err);
     }
-}
+};
 
 export const createCart = async (req, res, next) => {
     try {
@@ -61,4 +56,4 @@ export const createCart = async (req, res, next) => {
     } catch (err) {
         next(err);
     }
-}
+};
