@@ -10,6 +10,7 @@ import {
     deleteByID,
     getAllByUserID,
     deleteAllByUserID,
+    getDefaultByUserID,
 } from "../services/address.service.js";
 
 export const deleteAddressByID = async (req, res, next) => {
@@ -103,6 +104,22 @@ export const getAllAddressByUserID = async (req, res, next) => {
         const pageSize = req.query.pageSize || 5;
         const pageNumber = req.query.pageNumber || 1;
         const { success, status, message, data } = await getAllByUserID(req.query.user, pageSize, pageNumber);
+        if (!success) return next(createError(status, message));
+
+        res.status(status).send({
+            success,
+            message,
+            total: data.length,
+            data,
+        });
+    } catch (err) {
+        next(err);
+    }
+}
+
+export const getDefaultAddressByUserID = async (req, res, next) => {
+    try {
+        const { success, status, message, data } = await getDefaultByUserID(req.query.user);
         if (!success) return next(createError(status, message));
 
         res.status(status).send({

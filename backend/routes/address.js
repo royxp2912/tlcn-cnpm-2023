@@ -10,6 +10,7 @@ import {
     deleteAllAddress,
     deleteAddressByID,
     deleteAllAddressByUerID,
+    getDefaultAddressByUserID,
 } from "../controllers/address.controller.js";
 
 const router = express.Router();
@@ -18,6 +19,7 @@ const router = express.Router();
 router.get("", getAllAddress);
 router.get("/detail", getAddressByID);
 router.get("/user", getAllAddressByUserID);
+router.get("/user/default", getDefaultAddressByUserID);
 
 // create
 router.post("/", createAddress);
