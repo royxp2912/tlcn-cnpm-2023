@@ -1,6 +1,7 @@
 import Address from "../models/Address.js";
 import { getUserByID } from "./user.service.js";
 import { checkedNull } from "../utils/handel_null.js";
+import { checkedObjectId } from "../utils/checkedOthers.js";
 
 export const {
     create,
@@ -11,8 +12,9 @@ export const {
     deleteAll,
     deleteByID,
     setDefault,
-    deleteAllByUserID,
     getAllByUserID,
+    deleteAllByUserID,
+    getDefaultByUserID,
 } = {
 
     deleteAllByUserID: async (userID) => {
@@ -110,6 +112,31 @@ export const {
                 success: true,
                 status: 200,
                 message: "Update Address Successful!!!",
+            }
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong in Address !!!",
+            }
+        }
+    },
+
+    getDefaultByUserID: async (userID) => {
+        try {
+            checkedObjectId(userID, "User ID");
+
+            const existUser = await getUserByID(userID);
+            if (!existUser) return existUser;
+
+            const addressDefault = await Address.findOne({ user: userID, default: true })
+                .select("-user -createdAt -updatedAt -__v");
+
+            return {
+                success: true,
+                status: 200,
+                message: "Get Default Address Of User Successful!!!",
+                data: addressDefault,
             }
         } catch (err) {
             return {

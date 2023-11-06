@@ -39,6 +39,12 @@ export const {
             checkedObjectId(userID, "User ID");
             checkedObjectId(proID, "Product ID");
 
+            const existProduct = await Cart.findOne({
+                user: userID,
+                "items.product": proID,
+            })
+            checkedNull(existProduct, "The product does not exist in the shopping cart !!!");
+
             const result = await Cart.findOneAndUpdate(
                 { user: userID },
                 {
@@ -46,13 +52,11 @@ export const {
                 },
                 { new: true }
             );
-            checkedNull(result, "Cart don't exist !!!");
-
             await calcTotal(result._id);
 
             return {
                 success: true,
-                status: 201,
+                status: 200,
                 message: "Remove Item From Cart Successful!!!",
             }
         } catch (err) {
@@ -70,13 +74,6 @@ export const {
             const existCart = await Cart.findOne({ user: user });
             checkedNull(existCart, "Cart don't exist !!!");
 
-            // const isExist = await Cart.findOne(
-            //     {
-            //         _id: existCart._id,
-            //         items: { $elemMatch: { product: body.product } },
-            //     },
-            // )
-
             const isExist = existCart.items.filter((item) => item.product.toString() === others.product);
 
             if (isExist.length !== 0) {
@@ -90,7 +87,6 @@ export const {
                     },
                     { new: true },
                 )
-                console.log("false");
             } else {
                 await Cart.findByIdAndUpdate(
                     existCart._id,

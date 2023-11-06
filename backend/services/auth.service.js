@@ -194,7 +194,7 @@ export const {
             if (existAuth) return {
                 success: false,
                 status: 400,
-                message: "User đã và đang login !!! Vui lòng logout và thử lại !!!",
+                message: "User has been logged in!!! Please logout and try again!!!",
             }
 
             const newAuth = new Auth({
