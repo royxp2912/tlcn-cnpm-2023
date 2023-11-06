@@ -40,7 +40,7 @@ export type Category = {
 export type Product = {
     _id: string;
     name: string;
-    image: string[];
+    images: string[];
     desc: string;
     category: Category;
     brand: string;
@@ -98,8 +98,8 @@ export type Order = {
 };
 
 export type RemoveItemCart = {
-    userId: string;
-    productId: string;
+    user: string;
+    product: string;
 };
 
 export type updateOrder = {

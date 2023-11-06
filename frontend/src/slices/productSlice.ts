@@ -97,7 +97,7 @@ export const productSlice = createSlice({
             state.error = action.error.message || null;
         });
         builder.addCase(getProductById.fulfilled, (state, action) => {
-            state.loading = false;
+            state.loading = true;
             state.productDetail = action.payload.data.data.product;
             state.variants = action.payload.data.data.variants;
         });

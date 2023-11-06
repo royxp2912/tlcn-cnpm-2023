@@ -1,6 +1,6 @@
-import crypto from "crypto";
-import querystring from "qs";
-import moment from "moment";
+import crypto from 'crypto';
+import querystring from 'qs';
+import moment from 'moment';
 
 const sortObject = (obj) => {
     let sorted = {};
@@ -13,10 +13,10 @@ const sortObject = (obj) => {
     }
     str.sort();
     for (key = 0; key < str.length; key++) {
-        sorted[str[key]] = encodeURIComponent(obj[str[key]]).replace(/%20/g, "+");
+        sorted[str[key]] = encodeURIComponent(obj[str[key]]).replace(/%20/g, '+');
     }
     return sorted;
-}
+};
 
 const createPaymentUrl = (req) => {
     process.env.TZ = 'Asia/Ho_Chi_Minh';
@@ -24,7 +24,8 @@ const createPaymentUrl = (req) => {
     let date = new Date();
     let createDate = moment(date).format('YYYYMMDDHHmmss');
 
-    let ipAddr = req.headers['x-forwarded-for'] ||
+    let ipAddr =
+        req.headers['x-forwarded-for'] ||
         req.connection.remoteAddress ||
         req.socket.remoteAddress ||
         req.connection.socket.remoteAddress;
@@ -62,12 +63,12 @@ const createPaymentUrl = (req) => {
     vnp_Params = sortObject(vnp_Params);
 
     let signData = querystring.stringify(vnp_Params, { encode: false });
-    let hmac = crypto.createHmac("sha512", secretKey);
-    let signed = hmac.update(new Buffer(signData, 'utf-8')).digest("hex");
+    let hmac = crypto.createHmac('sha512', secretKey);
+    let signed = hmac.update(new Buffer(signData, 'utf-8')).digest('hex');
     vnp_Params['vnp_SecureHash'] = signed;
     vnpUrl += '?' + querystring.stringify(vnp_Params, { encode: false });
 
     return vnpUrl;
-}
+};
 
-export default createPaymentUrl
+export default createPaymentUrl;

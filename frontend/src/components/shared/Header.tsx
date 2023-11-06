@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import React from 'react';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
@@ -9,6 +9,13 @@ import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined
 
 const Header = () => {
     const pathname = usePathname();
+    const router = useRouter();
+    const user = localStorage.getItem('user');
+    console.log(user);
+    const handleUser = () => {
+        if (!user) router.push('/sign-in');
+        else router.push('/user');
+    };
     return (
         <div className={`${pathname === '/' ? 'bg-bg' : 'bg-white'} flex flex-col items-center`}>
             <div className=" flex items-center justify-between px-20 pt-6 pb-5 w-full">
@@ -21,10 +28,6 @@ const Header = () => {
                     />
                 </div>
                 <div className="flex items-center gap-10">
-                    <div className={pathname === '/' ? 'text-[#FFD6AE]' : 'text-blue'}>
-                        <span className="opacity-60">Account balance:</span>
-                        <span className="font-semibold ml-2">$20000</span>
-                    </div>
                     <div className="flex items-center gap-8">
                         <div className="relative">
                             <FavoriteBorderOutlinedIcon
@@ -38,7 +41,7 @@ const Header = () => {
                                 <span className="text-white text-xs ml-[0.2rem] absolute">2</span>
                             </div>
                         </div>
-                        <div className="relative ">
+                        <div className="relative cursor-pointer" onClick={() => router.push('/cart')}>
                             <ShoppingCartOutlinedIcon
                                 className={`w-7 h-7 ${pathname === '/' ? 'text-orange' : 'text-blue'}`}
                             />
@@ -52,8 +55,9 @@ const Header = () => {
                         </div>
 
                         <PersonOutlineOutlinedIcon
-                            className={`${pathname === '/' ? 'text-orange' : 'text-blue'}`}
+                            className={`${pathname === '/' ? 'text-orange' : 'text-blue'} cursor-pointer`}
                             fontSize="large"
+                            onClick={handleUser}
                         />
                     </div>
                 </div>
