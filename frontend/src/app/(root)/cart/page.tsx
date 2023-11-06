@@ -5,12 +5,14 @@ import { getCartByUserId } from '@/slices/cartSlice';
 import { Cart, User } from '@/types/type';
 import axios from '@/utils/axios';
 import { AppDispatch } from '@/utils/store';
+import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 const Cart = () => {
     const dispatch = useDispatch<AppDispatch>();
     const { cartItem }: { cartItem: Cart } = useSelector((state: any) => state.carts);
+    const router = useRouter();
 
     const userString = localStorage.getItem('user');
     let user: User | null = null;
@@ -27,16 +29,7 @@ const Cart = () => {
         dispatch(getCartByUserId(id));
     }, [length]);
     const handleCheckout = async () => {
-        try {
-            const { data } = await axios.post('/orders/create_payment_url', {
-                amount: 50000,
-                bankCode: 'VNBANK',
-            });
-            window.open(data.vnpUrl);
-            console.log(data);
-        } catch (error) {
-            console.log(error);
-        }
+        router.push('/order');
     };
     return (
         <div className="flex flex-col items-center px-10">

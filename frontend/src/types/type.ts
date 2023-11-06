@@ -69,7 +69,7 @@ export type Address = {
 };
 
 export type ItemCart = {
-    user: string;
+    user?: string;
     product: string;
     image: string;
     name: string;
@@ -87,14 +87,14 @@ export type Cart = {
 };
 
 export type Order = {
-    _id: string;
+    _id?: string;
     items: ItemCart[];
     userId: string;
     deliveryAddress: string;
     paymentMethod: string;
     total: number;
-    status: string;
-    isPaid: boolean;
+    status?: string;
+    isPaid?: boolean;
 };
 
 export type RemoveItemCart = {
