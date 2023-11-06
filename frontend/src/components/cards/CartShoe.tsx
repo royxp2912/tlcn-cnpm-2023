@@ -10,8 +10,11 @@ import Paper from '@mui/material/Paper';
 import Image from 'next/image';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import { useSelector } from 'react-redux';
-import { Cart } from '@/types/type';
+import { useDispatch, useSelector } from 'react-redux';
+import { Cart, RemoveItemCart, User } from '@/types/type';
+import { AppDispatch } from '@/utils/store';
+import { removeItemFromCartByUserId } from '@/slices/cartSlice';
+import { toast } from 'react-toastify';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -34,7 +37,42 @@ const CartShoe = () => {
     //         typeof value === 'string' ? value.split(',') : value,
     //     );
     // };
+    const dispatch = useDispatch<AppDispatch>();
     const { cartItem }: { cartItem: Cart } = useSelector((state: any) => state.carts);
+
+    const userString = localStorage.getItem('user');
+    let user: User | null = null;
+    if (userString !== null) {
+        try {
+            user = JSON.parse(userString) as User;
+        } catch (error) {
+            console.error('Error parsing user data:', error);
+        }
+    }
+    const id = user?._id as string;
+
+    const handleDelete = async (product: string) => {
+        {
+            console.log(product);
+            try {
+                const item: RemoveItemCart = {
+                    user: id,
+                    product: product,
+                };
+
+                console.log(item);
+                const res = await dispatch(removeItemFromCartByUserId(item));
+                // if ((res.payload as { status: number }).status === 200) {
+                //     toast.success('Success');
+                // } else {
+                //     toast.error('Error');
+                // }
+                console.log(res);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    };
     return (
         <TableContainer component={Paper} className="shadow-xl h-max">
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -85,7 +123,13 @@ const CartShoe = () => {
                                 <TableCell align="center">{item.quantity}</TableCell>
                                 <TableCell align="center">${item.price}</TableCell>
                                 <TableCell align="center">${cartItem.total}</TableCell>
-                                <TableCell align="center">X</TableCell>
+                                <TableCell
+                                    align="center"
+                                    className="text-orange text-2xl cursor-pointer"
+                                    onClick={() => handleDelete(item.product)}
+                                >
+                                    X
+                                </TableCell>
                             </TableRow>
                         ))}
                 </TableBody>

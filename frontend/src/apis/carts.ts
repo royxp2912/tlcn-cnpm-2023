@@ -26,7 +26,13 @@ const cartsApi = {
     },
     removeItemFromCartByUserId: (item: RemoveItemCart) => {
         const url = '/carts/remove';
-        return axios.delete(url, { data: { item } });
+
+        return axios.delete(url, {
+            params: {
+                user: item.user,
+                product: item.product,
+            },
+        });
     },
 };
 

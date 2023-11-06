@@ -14,6 +14,7 @@ import { AppDispatch } from '@/utils/store';
 import { useParams } from 'next/navigation';
 import { getProductById, getProductHotDeal } from '@/slices/productSlice';
 import { Product, Variant } from '@/types/type';
+import { log } from 'console';
 
 const ShoesSinglePage = () => {
     const {
@@ -28,32 +29,38 @@ const ShoesSinglePage = () => {
 
     const { id } = useParams() as { id: string };
     const [idColor, setIdColor] = useState<string>();
+    const [number, setNumber] = useState<number>(0);
+    console.log(id);
 
+    const handleImage = (i: number) => {
+        setNumber(i);
+    };
     useEffect(() => {
         dispatch(getProductHotDeal()).unwrap();
-        dispatch(getProductById(id)).unwrap();
+        dispatch(getProductById(id));
+
+        console.log('////////////////////////////////////');
     }, []);
-    console.log(variants);
+    console.log(productDetail);
+
     return (
         <div className="flex flex-col items-center">
             <div className="flex justify-between  gap-[100px] mt-[52px] mb-[116px] w-[1020px]">
                 <div className="w-[420px]">
                     <div className="h-[328px] relative bg-bg_sell rounded-lg border-gray border-2">
-                        <Image src="/nike.png" alt="giày" fill />
+                        <Image src={productDetail.images && productDetail.images[number]} alt="giày" fill />
                     </div>
                     <div className="flex gap-5 mt-5">
-                        <div className="w-[90px] h-[90px] relative bg-bg_sell rounded-lg border-gray border-4">
-                            <Image src="/nike.png" alt="giày" fill />
-                        </div>
-                        <div className="w-[90px] h-[90px] relative bg-bg_sell rounded-lg border-gray border-4">
-                            <Image src="/nike.png" alt="giày" fill />
-                        </div>
-                        <div className="w-[90px] h-[90px] relative bg-bg_sell rounded-lg border-gray border-4">
-                            <Image src="/nike.png" alt="giày" fill />
-                        </div>
-                        <div className="w-[90px] h-[90px] relative bg-bg_sell rounded-lg border-gray border-4">
-                            <Image src="/nike.png" alt="giày" fill />
-                        </div>
+                        {productDetail &&
+                            productDetail.images &&
+                            productDetail.images.map((item, i) => (
+                                <div
+                                    key={i}
+                                    className="w-[90px] h-[90px] relative bg-bg_sell rounded-lg border-gray border-4"
+                                >
+                                    <Image src={item} alt="giày" fill onClick={() => handleImage(i)} />
+                                </div>
+                            ))}
                     </div>
                 </div>
                 <div>
@@ -136,8 +143,8 @@ const ShoesSinglePage = () => {
                     </div>
                 </div>
                 {/* view about shoes info and review*/}
-                {/* <ShoeInfo /> */}
-                <Reviews />
+                <ShoeInfo />
+                {/* <Reviews /> */}
             </div>
             <div className="mt-24 flex flex-col items-center">
                 <span className="font-bold text-3xl text-blue">Hot Shoes</span>

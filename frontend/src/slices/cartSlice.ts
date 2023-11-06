@@ -41,7 +41,7 @@ export const removeItemFromCartByUserId = createAsyncThunk(
     async (item: RemoveItemCart, { dispatch, rejectWithValue }) => {
         try {
             const res = await cartsApi.removeItemFromCartByUserId(item);
-            await dispatch(getCartByUserId(item.userId));
+            await dispatch(getCartByUserId(item.user));
             return res;
         } catch (err: any) {
             return rejectWithValue(err.res.data);
