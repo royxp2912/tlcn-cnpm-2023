@@ -110,25 +110,25 @@ const CartShoe = ({ checkedAll, setCheckedAll, quantity, setQuantity, price, set
         });
     };
 
-    React.useEffect(() => {
-        if (cartItem.items) {
-            const updatedCheckedItems: { [key: string]: boolean } = {};
-            for (const item of cartItem.items) {
-                updatedCheckedItems[item.product] = checkedAll;
-            }
-            setCheckedItems(updatedCheckedItems);
-            const updatedQuantity: QuantityMap = {};
-            const updatedPrice: PriceMap = {};
-            for (const [key, value] of Object.entries(updatedCheckedItems)) {
-                if (value) {
-                    updatedQuantity[key] = cartItem.items.find((item) => item.product === key)?.quantity!;
-                    updatedPrice[key] = cartItem.items.find((item) => item.product === key)?.price!;
-                }
-            }
-            setQuantity(updatedQuantity);
-            setPrice(updatedPrice);
-        }
-    }, [checkedAll]);
+    // React.useEffect(() => {
+    //     if (cartItem.items) {
+    //         const updatedCheckedItems: { [key: string]: boolean } = {};
+    //         for (const item of cartItem.items) {
+    //             updatedCheckedItems[item.product] = checkedAll;
+    //         }
+    //         setCheckedItems(updatedCheckedItems);
+    //         const updatedQuantity: QuantityMap = {};
+    //         const updatedPrice: PriceMap = {};
+    //         for (const [key, value] of Object.entries(updatedCheckedItems)) {
+    //             if (value) {
+    //                 updatedQuantity[key] = cartItem.items.find((item) => item.product === key)?.quantity!;
+    //                 updatedPrice[key] = cartItem.items.find((item) => item.product === key)?.price!;
+    //             }
+    //         }
+    //         setQuantity(updatedQuantity);
+    //         setPrice(updatedPrice);
+    //     }
+    // }, [checkedAll]);
 
     React.useEffect(() => {
         const allChecked = Object.values(checkedItems).every((value) => value === true);
@@ -148,8 +148,8 @@ const CartShoe = ({ checkedAll, setCheckedAll, quantity, setQuantity, price, set
 
     // console.log(totalQuantity);
     // console.log(totalPrice);
-    console.log("checkedItems: ", checkedItems);
-    console.log("checkedAll: ", checkedAll);
+    console.log('checkedItems: ', checkedItems);
+    console.log('checkedAll: ', checkedAll);
 
     return (
         <TableContainer component={Paper} className="shadow-xl h-max">

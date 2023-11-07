@@ -41,11 +41,11 @@ const SingleSellShoe = ({ products, productHots, active }: Props) => {
     };
     if (pathname !== '/') {
         return (
-            <div className="flex gap-[10px]">
-                {productHots &&
-                    productHots.map((product: Product, index: number) => (
+            <div className="flex gap-[50px]">
+                {products &&
+                    products.map((product: Product, index: number) => (
                         <div key={product._id} className="flex gap-2" onClick={() => handleDetail(product._id)}>
-                            <div className="border-2 border-gray2 w-max rounded-md p-1">
+                            <div className="border-2 border-gray2 rounded-md p-1 w-[300px]">
                                 {/* Single Product */}
                                 <div className="bg-bg_sell rounded-md">
                                     <Image src={product.images[0]} alt="Nike" width={292} height={236} />
@@ -65,7 +65,7 @@ const SingleSellShoe = ({ products, productHots, active }: Props) => {
                                           />
                                       )} */}
                                     </div>
-                                    <h1 className="font-bold text-lg">{product.name}</h1>
+                                    <h1 className="font-bold text-lg truncate w-full">{product.name}</h1>
                                     <Rating name="read-only" value={product.rating} readOnly />
                                     <span className="font-bold text-money">${product.price}</span>
                                     <div className="w-full flex items-center justify-between text-gray font-bold">
@@ -85,7 +85,7 @@ const SingleSellShoe = ({ products, productHots, active }: Props) => {
                 ? products &&
                   products.map((product: Product, index: number) => (
                       <div key={product._id} className="flex gap-2 " onClick={() => handleDetail(product._id)}>
-                          <div className="border-2 border-gray2 w-max rounded-md p-1">
+                          <div className="border-2 border-gray2 w-[300px] rounded-md p-1">
                               {/* Single Product */}
                               <div className="bg-bg_sell rounded-md">
                                   <Image src={product.images[0]} alt="Nike" width={292} height={236} />
@@ -105,7 +105,9 @@ const SingleSellShoe = ({ products, productHots, active }: Props) => {
                                           />
                                       )} */}
                                   </div>
-                                  <h1 className="font-bold text-lg">{product.name}</h1>
+
+                                  <p className="font-bold text-lg truncate w-full">{product.name}</p>
+
                                   <Rating name="read-only" value={product.rating} readOnly />
                                   <span className="font-bold text-money">${product.price}</span>
                                   <div className="w-full flex items-center justify-between text-gray font-bold">
@@ -119,7 +121,7 @@ const SingleSellShoe = ({ products, productHots, active }: Props) => {
                 : productHots &&
                   productHots.map((product: Product) => (
                       <div key={product._id} className="flex gap-2" onClick={() => handleDetail(product._id)}>
-                          <div className="border-2 border-gray2 w-max rounded-md p-1">
+                          <div className="border-2 border-gray2 w-[300px] rounded-md p-1">
                               {/* Single Product */}
                               <div className="bg-bg_sell rounded-md">
                                   <Image src={product.images[0]} alt="Nike" width={292} height={236} />
@@ -139,7 +141,7 @@ const SingleSellShoe = ({ products, productHots, active }: Props) => {
                                           />
                                       )} */}
                                   </div>
-                                  <h1 className="font-bold text-lg">{product.name}</h1>
+                                  <h1 className="font-bold text-lg truncate w-full">{product.name}</h1>
                                   <Rating name="read-only" value={product.rating} readOnly />
                                   <span className="font-bold text-money">${product.price}</span>
                                   <div className="w-full flex items-center justify-between text-gray font-bold">

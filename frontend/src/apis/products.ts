@@ -12,7 +12,7 @@ const productsApi = {
     },
     getAllProductByCateId: (category: string) => {
         const url = '/products/category';
-        return axios.get(url, { data: { category } });
+        return axios.get(url, { params: { category: category } });
     },
     createProduct: (product: Product) => {
         const url = `/products`;
@@ -54,6 +54,10 @@ const productsApi = {
     getProductHotDeal: () => {
         const url = '/products/search/hotDeal';
         return axios.get(url, { params: { pageSize: 4 } });
+    },
+    getQtyOfBrand: () => {
+        const url = '/products/brand';
+        return axios.get(url);
     },
 };
 

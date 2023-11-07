@@ -52,7 +52,7 @@ export const categorySlice = createSlice({
         });
         builder.addCase(getCategoryById.fulfilled, (state, action) => {
             state.loading = false;
-            state.category = action.payload.data;
+            state.category = action.payload.data.data;
         });
     },
 });

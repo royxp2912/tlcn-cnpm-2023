@@ -12,6 +12,7 @@ const categoriesApi = {
     },
     createCategory: (category: Category) => {
         const url = '/categories';
+        const item = {}; //TODO add category
         return axios.post(url, category);
     },
     updateCateName: (categoryId: string, name: string) => {

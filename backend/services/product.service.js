@@ -1,13 +1,8 @@
-import Product from "../models/Product.js";
-import Category from "../models/Category.js";
-import { checkedNull } from "../utils/handel_null.js";
-import { deleteAllByProID } from "./comment.service.js";
-import {
-    createList,
-    getListVarByProID,
-    deleteListVarByProID,
-    findProIDByColor,
-} from "./variant.service.js";
+import Product from '../models/Product.js';
+import Category from '../models/Category.js';
+import { checkedNull } from '../utils/handel_null.js';
+import { deleteAllByProID } from './comment.service.js';
+import { createList, getListVarByProID, deleteListVarByProID, findProIDByColor } from './variant.service.js';
 
 export const {
     create,
@@ -25,7 +20,6 @@ export const {
     getQuantityByEachBrand,
     getQuantityByBrandName,
 } = {
-
     getQuantityByEachBrand: async () => {
         try {
             const listBrand = ['Adidas', 'Nike', 'Vans', 'Balenciaga', 'Converse', 'Puma'];
@@ -34,15 +28,15 @@ export const {
             return {
                 success: true,
                 status: 200,
-                message: "Get All Infomation Of Brand Successful!!!",
+                message: 'Get All Infomation Of Brand Successful!!!',
                 data: infoListBrand,
-            }
+            };
         } catch (err) {
             return {
                 success: false,
                 status: err.status || 500,
                 message: err.message,
-            }
+            };
         }
     },
 
@@ -53,36 +47,32 @@ export const {
             return {
                 brand: brand,
                 quantity: result.length,
-            }
+            };
         } catch (err) {
             return {
                 success: false,
                 status: err.status || 500,
                 message: err.message,
-            }
+            };
         }
     },
 
     updateSoldOfProduct: async (proID, quantity) => {
         try {
-            const savedProduct = await Product.findByIdAndUpdate(
-                proID,
-                { $inc: { sold: quantity } },
-                { new: true }
-            );
+            const savedProduct = await Product.findByIdAndUpdate(proID, { $inc: { sold: quantity } }, { new: true });
             checkedNull(savedProduct, "Product doen't exist !!!");
 
             return {
                 success: true,
                 status: 200,
-                message: "Update Sold Of Product Successful!!!",
-            }
+                message: 'Update Sold Of Product Successful!!!',
+            };
         } catch (err) {
             return {
                 success: false,
                 status: err.status || 500,
-                message: err.message || "Something went wrong in Product Service !!!",
-            }
+                message: err.message || 'Something went wrong in Product Service !!!',
+            };
         }
     },
 
@@ -90,58 +80,73 @@ export const {
         try {
             const listProduct = await findProIDByColor(color);
             let limitResult = [];
-            if (sort === "pDESC") {
-                const result = await Promise.all(listProduct.map((pro) =>
-                    Product.findById(pro.product)
-                        .populate({ path: 'category', select: 'name' })
-                        .select("-status -createdAt -updatedAt -__v"))
+            if (sort === 'pDESC') {
+                const result = await Promise.all(
+                    listProduct.map((pro) =>
+                        Product.findById(pro.product)
+                            .populate({ path: 'category', select: 'name' })
+                            .select('-status -createdAt -updatedAt -__v'),
+                    ),
                 );
 
-                limitResult = result.slice((pageNumber - 1) * pageSize, pageNumber * pageSize)
+                limitResult = result
+                    .slice((pageNumber - 1) * pageSize, pageNumber * pageSize)
                     .sort((a, b) => b.price - a.price);
             }
 
-            if (sort === "pASC") {
-                const result = await Promise.all(listProduct.map((pro) =>
-                    Product.findById(pro.product)
-                        .populate({ path: 'category', select: 'name' })
-                        .select("-status -createdAt -updatedAt -__v"))
+            if (sort === 'pASC') {
+                const result = await Promise.all(
+                    listProduct.map((pro) =>
+                        Product.findById(pro.product)
+                            .populate({ path: 'category', select: 'name' })
+                            .select('-status -createdAt -updatedAt -__v'),
+                    ),
                 );
 
-                limitResult = result.slice((pageNumber - 1) * pageSize, pageNumber * pageSize)
+                limitResult = result
+                    .slice((pageNumber - 1) * pageSize, pageNumber * pageSize)
                     .sort((a, b) => a.price - b.price);
             }
 
-            if (sort === "rDESC") {
-                const result = await Promise.all(listProduct.map((pro) =>
-                    Product.findById(pro.product)
-                        .populate({ path: 'category', select: 'name' })
-                        .select("-status -createdAt -updatedAt -__v"))
+            if (sort === 'rDESC') {
+                const result = await Promise.all(
+                    listProduct.map((pro) =>
+                        Product.findById(pro.product)
+                            .populate({ path: 'category', select: 'name' })
+                            .select('-status -createdAt -updatedAt -__v'),
+                    ),
                 );
 
-                limitResult = result.slice((pageNumber - 1) * pageSize, pageNumber * pageSize)
+                limitResult = result
+                    .slice((pageNumber - 1) * pageSize, pageNumber * pageSize)
                     .sort((a, b) => b.rating - a.rating);
             }
 
-            if (sort === "rASC") {
-                const result = await Promise.all(listProduct.map((pro) =>
-                    Product.findById(pro.product)
-                        .populate({ path: 'category', select: 'name' })
-                        .select("-status -createdAt -updatedAt -__v"))
+            if (sort === 'rASC') {
+                const result = await Promise.all(
+                    listProduct.map((pro) =>
+                        Product.findById(pro.product)
+                            .populate({ path: 'category', select: 'name' })
+                            .select('-status -createdAt -updatedAt -__v'),
+                    ),
                 );
 
-                limitResult = result.slice((pageNumber - 1) * pageSize, pageNumber * pageSize)
+                limitResult = result
+                    .slice((pageNumber - 1) * pageSize, pageNumber * pageSize)
                     .sort((a, b) => a.rating - b.rating);
             }
 
-            if (sort === "HOT") {
-                const result = await Promise.all(listProduct.map((pro) =>
-                    Product.findById(pro.product)
-                        .populate({ path: 'category', select: 'name' })
-                        .select("-status -createdAt -updatedAt -__v"))
+            if (sort === 'HOT') {
+                const result = await Promise.all(
+                    listProduct.map((pro) =>
+                        Product.findById(pro.product)
+                            .populate({ path: 'category', select: 'name' })
+                            .select('-status -createdAt -updatedAt -__v'),
+                    ),
                 );
 
-                limitResult = result.slice((pageNumber - 1) * pageSize, pageNumber * pageSize)
+                limitResult = result
+                    .slice((pageNumber - 1) * pageSize, pageNumber * pageSize)
                     .sort((a, b) => b.sold - a.sold);
             }
 
@@ -149,15 +154,15 @@ export const {
             return {
                 success: true,
                 status: 200,
-                message: "Find Successful !!!",
+                message: 'Find Successful !!!',
                 data: limitResult,
-            }
+            };
         } catch (err) {
             return {
                 success: false,
                 status: err.status || 500,
-                message: err.message || "Something went wrong in User Service !!!",
-            }
+                message: err.message || 'Something went wrong in User Service !!!',
+            };
         }
     },
 
@@ -165,10 +170,12 @@ export const {
         try {
             const listProduct = await findProIDByColor(color);
 
-            const result = await Promise.all(listProduct.map((pro) =>
-                Product.findById(pro.product)
-                    .populate({ path: 'category', select: 'name' })
-                    .select("-status -createdAt -updatedAt -__v"))
+            const result = await Promise.all(
+                listProduct.map((pro) =>
+                    Product.findById(pro.product)
+                        .populate({ path: 'category', select: 'name' })
+                        .select('-status -createdAt -updatedAt -__v'),
+                ),
             );
 
             const limitResult = result.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
@@ -177,15 +184,15 @@ export const {
             return {
                 success: true,
                 status: 200,
-                message: "Find Product By Color Successful !!!",
+                message: 'Find Product By Color Successful !!!',
                 data: limitResult,
-            }
+            };
         } catch (err) {
             return {
                 success: false,
                 status: err.status || 500,
-                message: err.message || "Something went wrong in User Service !!!",
-            }
+                message: err.message || 'Something went wrong in User Service !!!',
+            };
         }
     },
 
@@ -193,87 +200,87 @@ export const {
         try {
             let result = [];
             if (isNaN(keyword)) {
-                if (sort === "pDESC") {
+                if (sort === 'pDESC') {
                     result = await Product.find({
                         $or: [
                             { name: { $regex: keyword, $options: 'i' } },
                             { desc: { $regex: keyword, $options: 'i' } },
                             { brand: { $regex: keyword, $options: 'i' } },
                             { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
-                        ]
+                        ],
                     })
                         .limit(pageSize)
                         .skip(pageSize * (pageNumber - 1))
                         .populate({ path: 'category', select: 'name' })
-                        .select("-status -createdAt -updatedAt -__v")
+                        .select('-status -createdAt -updatedAt -__v')
                         .sort({ price: -1 });
                 }
 
-                if (sort === "pASC") {
+                if (sort === 'pASC') {
                     result = await Product.find({
                         $or: [
                             { name: { $regex: keyword, $options: 'i' } },
                             { desc: { $regex: keyword, $options: 'i' } },
                             { brand: { $regex: keyword, $options: 'i' } },
                             { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
-                        ]
+                        ],
                     })
                         .limit(pageSize)
                         .skip(pageSize * (pageNumber - 1))
                         .populate({ path: 'category', select: 'name' })
-                        .select("-status -createdAt -updatedAt -__v")
+                        .select('-status -createdAt -updatedAt -__v')
                         .sort({ price: 1 });
                 }
 
-                if (sort === "rDESC") {
+                if (sort === 'rDESC') {
                     result = await Product.find({
                         $or: [
                             { name: { $regex: keyword, $options: 'i' } },
                             { desc: { $regex: keyword, $options: 'i' } },
                             { brand: { $regex: keyword, $options: 'i' } },
                             { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
-                        ]
+                        ],
                     })
                         .limit(pageSize)
                         .skip(pageSize * (pageNumber - 1))
                         .populate({ path: 'category', select: 'name' })
-                        .select("-status -createdAt -updatedAt -__v")
+                        .select('-status -createdAt -updatedAt -__v')
                         .sort({ rating: -1 });
                 }
 
-                if (sort === "rASC") {
+                if (sort === 'rASC') {
                     result = await Product.find({
                         $or: [
                             { name: { $regex: keyword, $options: 'i' } },
                             { desc: { $regex: keyword, $options: 'i' } },
                             { brand: { $regex: keyword, $options: 'i' } },
                             { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
-                        ]
+                        ],
                     })
                         .limit(pageSize)
                         .skip(pageSize * (pageNumber - 1))
                         .populate({ path: 'category', select: 'name' })
-                        .select("-status -createdAt -updatedAt -__v")
+                        .select('-status -createdAt -updatedAt -__v')
                         .sort({ rating: 1 });
                 }
 
-                if (sort === "HOT") {
+                if (sort === 'HOT') {
                     result = await Product.find({
                         $or: [
                             { name: { $regex: keyword, $options: 'i' } },
                             { desc: { $regex: keyword, $options: 'i' } },
                             { brand: { $regex: keyword, $options: 'i' } },
                             { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
-                        ]
+                        ],
                     })
                         .limit(pageSize)
                         .skip(pageSize * (pageNumber - 1))
                         .populate({ path: 'category', select: 'name' })
-                        .select("-status -createdAt -updatedAt -__v")
+                        .select('-status -createdAt -updatedAt -__v')
                         .sort({ sold: -1 });
                 }
             } else {
-                if (sort === "pDESC") {
+                if (sort === 'pDESC') {
                     result = await Product.find({
                         $or: [
                             { name: { $regex: keyword, $options: 'i' } },
@@ -282,16 +289,16 @@ export const {
                             { sold: keyword },
                             { price: keyword },
                             { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
-                        ]
+                        ],
                     })
                         .limit(pageSize)
                         .skip(pageSize * (pageNumber - 1))
                         .populate({ path: 'category', select: 'name' })
-                        .select("-status -createdAt -updatedAt -__v")
+                        .select('-status -createdAt -updatedAt -__v')
                         .sort({ price: -1 });
                 }
 
-                if (sort === "pASC") {
+                if (sort === 'pASC') {
                     result = await Product.find({
                         $or: [
                             { name: { $regex: keyword, $options: 'i' } },
@@ -300,16 +307,16 @@ export const {
                             { sold: keyword },
                             { price: keyword },
                             { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
-                        ]
+                        ],
                     })
                         .limit(pageSize)
                         .skip(pageSize * (pageNumber - 1))
                         .populate({ path: 'category', select: 'name' })
-                        .select("-status -createdAt -updatedAt -__v")
+                        .select('-status -createdAt -updatedAt -__v')
                         .sort({ price: 1 });
                 }
 
-                if (sort === "rDESC") {
+                if (sort === 'rDESC') {
                     result = await Product.find({
                         $or: [
                             { name: { $regex: keyword, $options: 'i' } },
@@ -318,16 +325,16 @@ export const {
                             { sold: keyword },
                             { price: keyword },
                             { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
-                        ]
+                        ],
                     })
                         .limit(pageSize)
                         .skip(pageSize * (pageNumber - 1))
                         .populate({ path: 'category', select: 'name' })
-                        .select("-status -createdAt -updatedAt -__v")
+                        .select('-status -createdAt -updatedAt -__v')
                         .sort({ rating: -1 });
                 }
 
-                if (sort === "rASC") {
+                if (sort === 'rASC') {
                     result = await Product.find({
                         $or: [
                             { name: { $regex: keyword, $options: 'i' } },
@@ -336,16 +343,16 @@ export const {
                             { sold: keyword },
                             { price: keyword },
                             { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
-                        ]
+                        ],
                     })
                         .limit(pageSize)
                         .skip(pageSize * (pageNumber - 1))
                         .populate({ path: 'category', select: 'name' })
-                        .select("-status -createdAt -updatedAt -__v")
+                        .select('-status -createdAt -updatedAt -__v')
                         .sort({ rating: 1 });
                 }
 
-                if (sort === "HOT") {
+                if (sort === 'HOT') {
                     result = await Product.find({
                         $or: [
                             { name: { $regex: keyword, $options: 'i' } },
@@ -354,12 +361,12 @@ export const {
                             { sold: keyword },
                             { price: keyword },
                             { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
-                        ]
+                        ],
                     })
                         .limit(pageSize)
                         .skip(pageSize * (pageNumber - 1))
                         .populate({ path: 'category', select: 'name' })
-                        .select("-status -createdAt -updatedAt -__v")
+                        .select('-status -createdAt -updatedAt -__v')
                         .sort({ sold: -1 });
                 }
             }
@@ -368,15 +375,15 @@ export const {
             return {
                 success: true,
                 status: 200,
-                message: "Find Product By Keyword Successful !!!",
+                message: 'Find Product By Keyword Successful !!!',
                 data: result,
-            }
+            };
         } catch (err) {
             return {
                 success: false,
                 status: err.status || 500,
-                message: err.message || "Something went wrong in User Service !!!",
-            }
+                message: err.message || 'Something went wrong in User Service !!!',
+            };
         }
     },
 
@@ -390,12 +397,12 @@ export const {
                         { desc: { $regex: keyword, $options: 'i' } },
                         { brand: { $regex: keyword, $options: 'i' } },
                         { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
-                    ]
+                    ],
                 })
                     .limit(pageSize)
                     .skip(pageSize * (pageNumber - 1))
                     .populate({ path: 'category', select: 'name' })
-                    .select("-status -createdAt -updatedAt -__v");
+                    .select('-status -createdAt -updatedAt -__v');
             } else {
                 result = await Product.find({
                     $or: [
@@ -405,50 +412,46 @@ export const {
                         { sold: keyword },
                         { price: keyword },
                         { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
-                    ]
+                    ],
                 })
                     .limit(pageSize)
                     .skip(pageSize * (pageNumber - 1))
                     .populate({ path: 'category', select: 'name' })
-                    .select("-status -createdAt -updatedAt -__v");
+                    .select('-status -createdAt -updatedAt -__v');
             }
 
             if (!result) return false;
             return {
                 success: true,
                 status: 200,
-                message: "Find Product By Keyword Successful !!!",
+                message: 'Find Product By Keyword Successful !!!',
                 data: result,
-            }
+            };
         } catch (err) {
             return {
                 success: false,
                 status: err.status || 500,
-                message: err.message || "Something went wrong in User Service !!!",
-            }
+                message: err.message || 'Something went wrong in User Service !!!',
+            };
         }
     },
 
     update: async (body) => {
         try {
             const { product, ...others } = body;
-            const savedProduct = await Product.findByIdAndUpdate(
-                product,
-                { $set: others },
-                { new: true }
-            );
+            const savedProduct = await Product.findByIdAndUpdate(product, { $set: others }, { new: true });
             checkedNull(savedProduct, "Product doen't exist !!!");
             return {
                 success: true,
                 status: 200,
-                message: "Update Product Successful!!!",
-            }
+                message: 'Update Product Successful!!!',
+            };
         } catch (err) {
             return {
                 success: false,
                 status: err.status || 500,
-                message: err.message || "Something went wrong in Product Service !!!",
-            }
+                message: err.message || 'Something went wrong in Product Service !!!',
+            };
         }
     },
 
@@ -466,15 +469,15 @@ export const {
             return {
                 success: true,
                 status: 200,
-                message: "Delete Product Successful!!!",
+                message: 'Delete Product Successful!!!',
                 data: result,
-            }
+            };
         } catch (err) {
             return {
                 success: false,
                 status: err.status || 500,
                 message: err.message,
-            }
+            };
         }
     },
 
@@ -495,20 +498,20 @@ export const {
                     success: false,
                     status: status,
                     message: message,
-                }
+                };
             }
 
             return {
                 success: true,
                 status: 200,
-                message: "Create New Product Successful!!!",
-            }
+                message: 'Create New Product Successful!!!',
+            };
         } catch (err) {
             return {
                 success: false,
                 status: err.status || 500,
                 message: err.message,
-            }
+            };
         }
     },
 
@@ -516,7 +519,7 @@ export const {
         try {
             const result = await Product.findById(proID)
                 .populate({ path: 'category', select: 'name' })
-                .select("-createdAt -updatedAt -__v");
+                .select('-createdAt -updatedAt -__v');
 
             // Lấy variants thuộc product
             const { success, status, message, data } = await getListVarByProID(proID);
@@ -527,18 +530,18 @@ export const {
             return {
                 success: true,
                 status: 200,
-                message: "Get Product By Id Successful!!!",
+                message: 'Get Product By Id Successful!!!',
                 data: {
                     product: result,
                     variants: data,
                 },
-            }
+            };
         } catch (err) {
             return {
                 success: false,
                 status: err.status || 500,
                 message: err.message,
-            }
+            };
         }
     },
 
@@ -548,21 +551,21 @@ export const {
                 .limit(pageSize)
                 .skip(pageSize * (pageNumber - 1))
                 .populate({ path: 'category', select: 'name' })
-                .select("-createdAt -updatedAt -__v")
+                .select('-createdAt -updatedAt -__v')
                 .sort({ sold: -1 });
 
             return {
                 success: true,
                 status: 200,
-                message: "Get All Product Hot Deal Successful!!!",
+                message: 'Get All Product Hot Deal Successful!!!',
                 data: checkedNull(listProduct, "Resource doesn't exist !!!"),
-            }
+            };
         } catch (err) {
             return {
                 success: false,
                 status: err.status || 500,
                 message: err.message,
-            }
+            };
         }
     },
 
@@ -572,20 +575,20 @@ export const {
                 .limit(pageSize)
                 .skip(pageSize * (pageNumber - 1))
                 .populate({ path: 'category', select: 'name' })
-                .select("-createdAt -updatedAt -__v");
+                .select('-createdAt -updatedAt -__v');
 
             return {
                 success: true,
                 status: 200,
-                message: "Get All Product Successful!!!",
+                message: 'Get All Product Successful!!!',
                 data: checkedNull(listProduct, "Resource doesn't exist !!!"),
-            }
+            };
         } catch (err) {
             return {
                 success: false,
                 status: err.status || 500,
                 message: err.message,
-            }
+            };
         }
     },
 
@@ -594,20 +597,20 @@ export const {
             const listProduct = await Product.find({ category: cateID })
                 .limit(pageSize)
                 .skip(pageSize * (pageNumber - 1))
-                .select({ _id: 1, name: 1, brand: 1, price: 1, rating: 1, sold: 1 });
+                .select({ _id: 1, name: 1, desc: 1, images: 1, brand: 1, price: 1, rating: 1, sold: 1 });
 
             return {
                 success: true,
                 status: 200,
-                message: "Get All Product Of Category Successful!!!",
+                message: 'Get All Product Of Category Successful!!!',
                 data: checkedNull(listProduct, "Resource doesn't exist !!!"),
-            }
+            };
         } catch (err) {
             return {
                 success: false,
                 status: err.status || 500,
                 message: err.message,
-            }
+            };
         }
     },
-}
+};

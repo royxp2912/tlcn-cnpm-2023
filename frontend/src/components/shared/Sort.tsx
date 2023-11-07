@@ -49,8 +49,16 @@ const Sort = ({ setActive, active }: Props) => {
                 </div>
             </div>
             <div className="flex gap-4">
-                <AppsOutlined onClick={() => setActive(false)} fontSize="large" className="text-rv" />
-                <MenuOutlined onClick={() => setActive(true)} fontSize="large" className="text-[#40bfff]" />
+                <AppsOutlined
+                    onClick={() => setActive(false)}
+                    fontSize="large"
+                    className={`${!active ? 'text-[#40bfff]' : 'text-rv'}`}
+                />
+                <MenuOutlined
+                    onClick={() => setActive(true)}
+                    fontSize="large"
+                    className={`${active ? 'text-[#40bfff]' : 'text-rv'}`}
+                />
             </div>
         </div>
     );

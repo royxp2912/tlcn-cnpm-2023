@@ -66,6 +66,15 @@ export const getProductHotDeal = createAsyncThunk('products/getProductHotDeal', 
     }
 });
 
+export const getQtyOfBrand = createAsyncThunk('products/getQtyOfBrand', async (_, { rejectWithValue }) => {
+    try {
+        const res = await productsApi.getQtyOfBrand();
+        return res;
+    } catch (err: any) {
+        return rejectWithValue(err);
+    }
+});
+
 export const productSlice = createSlice({
     name: 'products',
     initialState: {
@@ -73,6 +82,7 @@ export const productSlice = createSlice({
         productHots: [],
         productDetail: {},
         variants: {},
+        brands: [],
         loading: false,
         error: null as string | null,
     },
@@ -110,7 +120,7 @@ export const productSlice = createSlice({
         });
         builder.addCase(getAllProductByCateId.fulfilled, (state, action) => {
             state.loading = false;
-            state.products = action.payload.data;
+            state.products = action.payload.data.data;
         });
         builder.addCase(findProductByKeyword.pending, (state) => {
             state.loading = true;
@@ -145,6 +155,17 @@ export const productSlice = createSlice({
         builder.addCase(getProductHotDeal.fulfilled, (state, action) => {
             state.loading = false;
             state.productHots = action.payload.data.data;
+        });
+        builder.addCase(getQtyOfBrand.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(getQtyOfBrand.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.error.message || null;
+        });
+        builder.addCase(getQtyOfBrand.fulfilled, (state, action) => {
+            state.loading = false;
+            state.brands = action.payload.data.data;
         });
     },
 });

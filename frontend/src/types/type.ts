@@ -33,6 +33,7 @@ export type updateEmail = {
 };
 
 export type Category = {
+    _id?: string;
     name: string;
     img: string;
 };
@@ -128,5 +129,10 @@ export type getSizeOfColor = {
 
 export type variantColor = {
     size: string;
+    quantity: number;
+};
+
+export type Brand = {
+    brand: string;
     quantity: number;
 };
