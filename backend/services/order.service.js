@@ -3,7 +3,7 @@ import { checkedObjectId } from '../utils/checkedOthers.js';
 import { checkedNull } from '../utils/handel_null.js';
 import { getUserByID } from './user.service.js';
 import { removeFromCart } from './cart.service.js';
-import { reduceQuantity } from './variant.service.js';
+import { checkedQuantity, reduceQuantity } from './variant.service.js';
 
 export const {
     create,

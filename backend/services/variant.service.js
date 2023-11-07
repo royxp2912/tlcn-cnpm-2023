@@ -1,5 +1,6 @@
 import Product from "../models/Product.js";
 import Variant from "../models/Variant.js";
+import { checkedObjectId } from "../utils/checkedOthers.js";
 import { checkedNull, checkedNullAndFormatData } from "../utils/handel_null.js";
 import { getById } from "./product.service.js";
 
@@ -7,16 +8,72 @@ export const {
     createOne,
     createList,
     getVarByID,
+    incQuantity,
     deleteVarByID,
     getOneByProID,
     updateVarByID,
     reduceQuantity,
+    checkedQuantity,
     findProIDByColor,
     getListVarByProID,
     deleteListVarByProID,
+    getVarByColorAndSize,
     getSizeByColorAndProID,
     getColorBySizeAndProID,
 } = {
+
+    checkedQuantity: async (proID, color, size, quantity) => {
+        try {
+            const resultVariant = await getVarByColorAndSize(proID, color, size);
+            if (!resultVariant.success) return resultVariant;
+
+            if (resultVariant.data.quantity < quantity) return {
+                success: false,
+                status: 404,
+                message: "The quantity of products in stock is not enough !!!"
+            }
+
+            return {
+                success: true,
+                status: 200,
+                message: "Quantity Stocking!!!",
+            };
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong on Variant !!!",
+            }
+        }
+    },
+
+
+    incQuantity: async (proID, color, size, quantity) => {
+        try {
+            await Variant.findOneAndUpdate(
+                {
+                    product: proID,
+                    color: color,
+                    color: size,
+                },
+                {
+                    quantity: { $inc: quantity }
+                },
+            );
+
+            return {
+                success: true,
+                status: 200,
+                message: "Reduce Quantity Of Variant Successfull !!!",
+            };
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong on Variant !!!",
+            }
+        }
+    },
 
     reduceQuantity: async (proID, color, size, quantity) => {
         try {
@@ -36,6 +93,31 @@ export const {
                 status: 200,
                 message: "Reduce Quantity Of Variant Successfull !!!",
             };
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong on Variant !!!",
+            }
+        }
+    },
+
+    getVarByColorAndSize: async (proID, color, size) => {
+        try {
+            const getedVariant = await Variant.findOne({
+                product: proID,
+                color: color,
+                size: size,
+            }).select("color size quantity");
+            checkedNull(getedVariant, "Variant doesn't exist !!!")
+
+            return {
+                success: true,
+                status: 200,
+                message: "Get Variant By Color And Size Successful !!!",
+                data: getedVariant,
+            }
+
         } catch (err) {
             return {
                 success: false,
@@ -294,12 +376,13 @@ export const {
         }
     },
 
-    updateVarByID: async (varID, size, quantity) => {
+    updateVarByID: async (varID, color, size, quantity) => {
         try {
             const savedVariant = await Variant.findByIdAndUpdate(
                 varID,
                 {
                     $set: {
+                        color: color,
                         szie: size,
                         quantity: quantity
                     }
