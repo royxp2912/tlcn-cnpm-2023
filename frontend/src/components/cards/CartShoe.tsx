@@ -75,7 +75,13 @@ const CartShoe = ({
     const id = user?._id as string;
     const handleDelete = async (product: string) => {
         {
-            console.log(product);
+            const storedItems = localStorage.getItem('itemOrders');
+            let storedItemsArray: ItemCart[] = [];
+
+            if (storedItems) {
+                storedItemsArray = JSON.parse(storedItems);
+            }
+
             try {
                 const item: RemoveItemCart = {
                     user: id,
@@ -84,6 +90,8 @@ const CartShoe = ({
 
                 console.log(item);
                 const res = await dispatch(removeItemFromCartByUserId(item));
+                storedItemsArray = storedItemsArray.filter((item) => item.product !== product);
+                localStorage.setItem('itemOrders', JSON.stringify(storedItemsArray));
                 // if ((res.payload as { status: number }).status === 200) {
                 //     toast.success('Success');
                 // } else {
