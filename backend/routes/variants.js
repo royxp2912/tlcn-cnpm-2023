@@ -7,6 +7,7 @@ import {
     updateVariantByID,
     getSizeOfProductByColorAndProID,
     getColorOfProductBySizeAndProID,
+    getOneVarByProID,
 } from "../controllers/variant.controller.js";
 
 const router = express.Router();
@@ -14,6 +15,7 @@ const router = express.Router();
 // get variant by varid
 router.get("/", getVariantByID);
 router.get("/product", getAllVarByProID);
+router.get("/product/one", getOneVarByProID);
 router.get("/product/size", getSizeOfProductByColorAndProID);
 router.get("/product/color", getColorOfProductBySizeAndProID);
 

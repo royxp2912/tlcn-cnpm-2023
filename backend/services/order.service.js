@@ -1,6 +1,7 @@
 import Order from '../models/Order.js';
 import { checkedObjectId } from '../utils/checkedOthers.js';
 import { checkedNull } from '../utils/handel_null.js';
+import { removeFromCart } from './cart.service.js';
 import { getUserByID } from './user.service.js';
 
 export const {
@@ -243,7 +244,8 @@ export const {
             const result = await Order.find({ user: userID })
                 .limit(pageSize)
                 .skip(pageSize * (pageNumber - 1))
-                .select('-updatedAt -createdAt -__v -user');
+                .select('-updatedAt -createdAt -__v -user')
+                .sort({ createdAt: -1 });
 
             return {
                 success: true,
@@ -265,7 +267,8 @@ export const {
             const result = await Order.find()
                 .limit(pageSize)
                 .skip(pageSize * (pageNumber - 1))
-                .select('-updatedAt -createdAt -__v');
+                .select('-updatedAt -createdAt -__v')
+                .sort({ createdAt: -1 });
 
             return {
                 success: true,
@@ -295,6 +298,8 @@ export const {
                 deliveryAddress: body.deliveryAddress,
             });
             await newOrder.save();
+
+            await Promise.all(body.items.map((item) => removeFromCart(body.userID, item.product)));
 
             return {
                 success: true,
