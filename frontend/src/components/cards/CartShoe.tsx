@@ -114,8 +114,14 @@ const CartShoe = ({
                     updatedPrice[key] = cartItem.items.find((item) => item.product === key)?.price!;
                     const itemInCart = cartItem.items.find((item) => item.product === key);
 
+                    console.log("updatedQuantity: ", updatedQuantity[key]);
+                    console.log("updatedPrice: ", updatedPrice[key]);
+                    console.log("itemInCart: ", itemInCart);
+
+
                     if (storedItems) {
                         storedItemsArray = JSON.parse(storedItems);
+                        console.log("storedItemsArray: ", storedItemsArray);
                     }
 
                     if (newState[product]) {

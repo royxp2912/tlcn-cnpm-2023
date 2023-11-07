@@ -132,7 +132,7 @@ const ShoesSinglePage = () => {
                                     key={i}
                                     className="w-[90px] h-[90px] relative bg-bg_sell rounded-lg border-gray border-4 overflow-hidden"
                                 >
-                                    <Image src={item} alt="giày" fill onClick={() => handleImage(i)} />
+                                    <Image src={item} alt="giày" fill onClick={() => handleImage(i)} className="cursor-pointer" />
                                 </div>
                             ))}
                     </div>
@@ -143,7 +143,7 @@ const ShoesSinglePage = () => {
                         <Rating value={4} readOnly emptyIcon={<StarIcon className="text-star" />} />
 
                         <span className="text-rv">0 review</span>
-                        <span className="text-blue">Submit a review</span>
+                        <span className="text-blue cursor-pointer">Submit a review</span>
                     </div>
                     <BorderBlack />
                     <span className="text-3xl text-money font-bold mt-[25px] mb-[25px] block">
@@ -158,7 +158,7 @@ const ShoesSinglePage = () => {
                                 variants.listColor.map((color) => (
                                     <div
                                         key={color}
-                                        className="text-sm w-9 h-7 bg-size2 rounded-md flex items-center justify-center"
+                                        className="text-sm w-9 h-7 bg-size2 rounded-md flex items-center justify-center cursor-pointer"
                                         onClick={() => setColor(color)}
                                     >
                                         {color}
@@ -173,7 +173,7 @@ const ShoesSinglePage = () => {
                                 variant.map((size: variantColor, i: number) => (
                                     <div
                                         key={i}
-                                        className="text-sm w-9 h-7 bg-size2 rounded-md flex items-center justify-center"
+                                        className="text-sm w-9 h-7 bg-size2 rounded-md flex items-center justify-center cursor-pointer"
                                         onClick={() => handleSizeQty(size)}
                                     >
                                         {size.size}
@@ -182,7 +182,7 @@ const ShoesSinglePage = () => {
                         </div>
                     </div>
 
-                    <div className="font-medium mb-[25px] flex">
+                    <div className="font-medium mb-[25px] flex ">
                         <span className="flex-1">Availability:</span>
                         <span>{sizeQty.quantity === 0 ? '' : sizeQty.quantity}</span>
                     </div>
@@ -190,7 +190,7 @@ const ShoesSinglePage = () => {
                     <div className="flex justify-between mt-5">
                         <div className="flex h-[50px] text-xl font-bold">
                             <span
-                                className="w-11 flex items-center justify-center bg-[#F6F7F8] rounded-tl-md rounded-bl-md text-blue"
+                                className="w-11 flex items-center justify-center bg-[#F6F7F8] rounded-tl-md rounded-bl-md text-blue cursor-pointer"
                                 onClick={handleDesc}
                             >
                                 -
@@ -199,21 +199,21 @@ const ShoesSinglePage = () => {
                                 {quantity}
                             </span>
                             <span
-                                className="w-11 flex items-center justify-center bg-[#F6F7F8] rounded-tr-md rounded-br-md text-blue"
+                                className="w-11 flex items-center justify-center bg-[#F6F7F8] rounded-tr-md rounded-br-md text-blue cursor-pointer"
                                 onClick={handleInsc}
                             >
                                 +
                             </span>
                         </div>
-                        <div className="flex gap-5">
+                        <div className="flex gap-5 ">
                             <div
                                 onClick={handleAddToCart}
-                                className="w-40 h-[50px] flex items-center justify-center gap-4 bg-buy text-blue rounded-md"
+                                className="w-40 h-[50px] flex items-center justify-center gap-4 bg-buy text-blue rounded-md cursor-pointer"
                             >
                                 <ShoppingCartOutlinedIcon />
                                 <span className="font-bold">Add To Cart</span>
                             </div>
-                            <div className="w-[50px] h-[50px] bg-buy flex items-center justify-center rounded-md">
+                            <div className="w-[50px] h-[50px] bg-buy flex items-center justify-center rounded-md cursor-pointer">
                                 <FavoriteBorderOutlinedIcon className="text-blue" />
                             </div>
                         </div>

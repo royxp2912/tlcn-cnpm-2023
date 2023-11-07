@@ -220,7 +220,8 @@ export const {
             const result = await Order.find({ status: status })
                 .limit(pageSize)
                 .skip(pageSize * (pageNumber - 1))
-                .select('-updatedAt -createdAt -__v');
+                .select('-updatedAt -createdAt -__v')
+                .sort({ createdAt: -1 });
 
             return {
                 success: true,
