@@ -12,7 +12,12 @@ const variantsApi = {
     },
     getColorOfSize: (item: getSizeOfColor) => {
         const url = '/variants/product/size';
-        return axios.get(url, { data: { item } });
+        return axios.get(url, {
+            params: {
+                product: item.id,
+                color: item.color,
+            },
+        });
     },
 };
 

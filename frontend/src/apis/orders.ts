@@ -11,6 +11,7 @@ const ordersApi = {
         return axios.get(url, {
             params: {
                 user: userId,
+                pageSize: 10,
             },
         });
     },
@@ -26,7 +27,7 @@ const ordersApi = {
         const url = '/orders';
         const data = {
             items: item.items,
-            userId: item.userId,
+            userID: item.userID,
             deliveryAddress: item.deliveryAddress,
             paymentMethod: item.paymentMethod,
             total: item.total,
@@ -35,12 +36,12 @@ const ordersApi = {
         return axios.post(url, data);
     },
     updateOrderStatusByOrderId: (order: updateOrder) => {
-        const url = `/orders/${order.orderId}`;
+        const url = `/orders/${order.order}`;
         return axios.patch(url, order);
     },
     cancelOrderByOrderId: (order: updateOrder) => {
         const url = `/orders/cancel`;
-        const id = order.orderId;
+        const id = order.order;
         return axios.patch(url, id);
     },
     comfirmPaymentOrderByOrderId: (order: string) => {

@@ -27,19 +27,34 @@ const MenuProps = {
     },
 };
 
-const CartShoe = () => {
-    // const handleChange = (event: SelectChangeEvent<typeof sort>) => {
-    //     const {
-    //         target: { value },
-    //     } = event;
-    //     setSort(
-    //         // On autofill we get a stringified value.
-    //         typeof value === 'string' ? value.split(',') : value,
-    //     );
-    // };
+type QuantityMap = {
+    [product: string]: number;
+};
+
+type PriceMap = {
+    [product: string]: number;
+};
+
+type Props = {
+    checkedAll: boolean;
+    setCheckedAll: React.Dispatch<React.SetStateAction<boolean>>;
+    quantity: { [product: string]: number };
+    setQuantity: React.Dispatch<React.SetStateAction<{ [product: string]: number }>>;
+    price: { [product: string]: number };
+    setPrice: React.Dispatch<React.SetStateAction<{ [product: string]: number }>>;
+    setQty: React.Dispatch<React.SetStateAction<number>>;
+    setTotal: React.Dispatch<React.SetStateAction<number>>;
+};
+const CartShoe = ({ checkedAll, setCheckedAll, quantity, setQuantity, price, setPrice, setQty, setTotal }: Props) => {
     const dispatch = useDispatch<AppDispatch>();
     const { cartItem }: { cartItem: Cart } = useSelector((state: any) => state.carts);
 
+    const initialCheckedItems = (cartItem.items ?? []).reduce((acc, item) => {
+        acc[item.product] = false;
+        return acc;
+    }, {} as { [key: string]: boolean });
+
+    const [checkedItems, setCheckedItems] = React.useState<{ [key: string]: boolean }>(initialCheckedItems);
     const userString = localStorage.getItem('user');
     let user: User | null = null;
     if (userString !== null) {
@@ -50,7 +65,6 @@ const CartShoe = () => {
         }
     }
     const id = user?._id as string;
-
     const handleDelete = async (product: string) => {
         {
             console.log(product);
@@ -73,6 +87,70 @@ const CartShoe = () => {
             }
         }
     };
+
+    const handleChecked = (product: string) => {
+        setCheckedItems((prevState) => {
+            const newState = {
+                ...prevState,
+                [product]: !prevState[product],
+            };
+
+            const updatedQuantity: QuantityMap = {};
+            const updatedPrice: PriceMap = {};
+            for (const [key, value] of Object.entries(newState)) {
+                if (value) {
+                    updatedQuantity[key] = cartItem.items.find((item) => item.product === key)?.quantity!;
+                    updatedPrice[key] = cartItem.items.find((item) => item.product === key)?.price!;
+                }
+            }
+            setQuantity(updatedQuantity);
+            setPrice(updatedPrice);
+
+            return newState;
+        });
+    };
+
+    React.useEffect(() => {
+        if (cartItem.items) {
+            const updatedCheckedItems: { [key: string]: boolean } = {};
+            for (const item of cartItem.items) {
+                updatedCheckedItems[item.product] = checkedAll;
+            }
+            setCheckedItems(updatedCheckedItems);
+            const updatedQuantity: QuantityMap = {};
+            const updatedPrice: PriceMap = {};
+            for (const [key, value] of Object.entries(updatedCheckedItems)) {
+                if (value) {
+                    updatedQuantity[key] = cartItem.items.find((item) => item.product === key)?.quantity!;
+                    updatedPrice[key] = cartItem.items.find((item) => item.product === key)?.price!;
+                }
+            }
+            setQuantity(updatedQuantity);
+            setPrice(updatedPrice);
+        }
+    }, [checkedAll]);
+
+    React.useEffect(() => {
+        const allChecked = Object.values(checkedItems).every((value) => value === true);
+        setCheckedAll(allChecked);
+    }, [checkedItems]);
+
+    React.useEffect(() => {
+        const totalQuantity = Object.values(quantity).reduce((acc, curr) => acc + curr, 0) as number;
+
+        const totalPrice = Object.entries(price).reduce((acc, [product, productPrice]) => {
+            const productQuantity = quantity[product] || 0;
+            return acc + productPrice * productQuantity;
+        }, 0) as number;
+        setTotal(totalPrice);
+        setQty(totalQuantity);
+    }, [quantity, price]);
+
+    // console.log(totalQuantity);
+    // console.log(totalPrice);
+    console.log(checkedItems);
+    console.log(checkedAll);
+
     return (
         <TableContainer component={Paper} className="shadow-xl h-max">
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -92,9 +170,14 @@ const CartShoe = () => {
                         cartItem.items.map((item) => (
                             <TableRow key={item.product} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                                 <TableCell component="th" scope="row" className="flex items-center gap-[10px]">
-                                    <input type="checkbox" className="w-5 h-5 " />
+                                    <input
+                                        type="checkbox"
+                                        className="w-5 h-5 "
+                                        checked={checkedAll ? checkedAll : checkedItems[item.product]}
+                                        onChange={() => handleChecked(item.product)}
+                                    />
                                     <Image
-                                        src="/nike.png"
+                                        src={item.image}
                                         alt=" Ảnh"
                                         width={120}
                                         height={120}
@@ -122,7 +205,7 @@ const CartShoe = () => {
                                 <TableCell align="center">{item.size}</TableCell>
                                 <TableCell align="center">{item.quantity}</TableCell>
                                 <TableCell align="center">${item.price}</TableCell>
-                                <TableCell align="center">${cartItem.total}</TableCell>
+                                <TableCell align="center">${item.quantity * item.price}</TableCell>
                                 <TableCell
                                     align="center"
                                     className="text-orange text-2xl cursor-pointer"

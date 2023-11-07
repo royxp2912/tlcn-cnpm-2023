@@ -49,7 +49,7 @@ const Order = () => {
         if (pay === 'VNPAY') {
             const item: Order = {
                 items: cartItem.items,
-                userId: id,
+                userID: id,
                 deliveryAddress: idAddress,
                 paymentMethod: pay,
                 total: cartItem.total,
@@ -63,13 +63,13 @@ const Order = () => {
         } else {
             const item: Order = {
                 items: cartItem.items,
-                userId: id,
+                userID: id,
                 deliveryAddress: idAddress,
                 paymentMethod: 'COD',
                 total: cartItem.total,
             };
             dispatch(createOrder(item));
-            // router.push('/user/orders');
+            router.push('/user/orders');
         }
     };
     console.log(cartItem.items);
@@ -119,9 +119,9 @@ const Order = () => {
                 <div>
                     {cartItem.items &&
                         cartItem.items.map((item) => (
-                            <div className="flex items-center gap-5 my-[10px]">
+                            <div key={item.product} className="flex items-center gap-5 my-[10px]">
                                 <Image
-                                    src="/nike.png"
+                                    src={item.image}
                                     alt="Ảnh"
                                     width={100}
                                     height={100}

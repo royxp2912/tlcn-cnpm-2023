@@ -13,8 +13,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '@/utils/store';
 import { useParams } from 'next/navigation';
 import { getProductById, getProductHotDeal } from '@/slices/productSlice';
-import { Product, Variant } from '@/types/type';
-import { log } from 'console';
+import { ItemCart, Product, User, Variant, getSizeOfColor, variantColor } from '@/types/type';
+import { getColorOfSize } from '@/slices/variantSlice';
+import { toast } from 'react-toastify';
+import { addItemToCartByUserId } from '@/slices/cartSlice';
 
 const ShoesSinglePage = () => {
     const {
@@ -25,29 +27,101 @@ const ShoesSinglePage = () => {
     }: { products: Product[]; productHots: Product[]; productDetail: Product; variants: Variant } = useSelector(
         (state: any) => state.products,
     );
+    const { variant }: { variant: variantColor[] } = useSelector((state: any) => state.variants);
     const dispatch = useDispatch<AppDispatch>();
 
+    const userString = localStorage.getItem('user');
+    let user: User | null = null;
+    if (userString !== null) {
+        try {
+            user = JSON.parse(userString) as User;
+        } catch (error) {
+            console.error('Error parsing user data:', error);
+        }
+    }
+    const idUser = user?._id as string;
+
     const { id } = useParams() as { id: string };
-    const [idColor, setIdColor] = useState<string>();
+    const [color, setColor] = useState<string>();
     const [number, setNumber] = useState<number>(0);
-    console.log(id);
+    const [sizeQty, setSizeQty] = useState<variantColor>({
+        size: '',
+        quantity: 0,
+    });
+    const [quantity, setQuantity] = useState<number>(1);
 
     const handleImage = (i: number) => {
         setNumber(i);
     };
+
+    const handleInsc = () => {
+        if (!color || !sizeQty.size) {
+            toast.error('Choose Color And Size');
+        } else {
+            if (quantity === sizeQty.quantity) return;
+            setQuantity((prev) => prev + 1);
+        }
+    };
+    const handleDesc = () => {
+        if (!color || !sizeQty.size) toast.error('Choose Color And Size');
+        else {
+            if (quantity === 1) return;
+            setQuantity((prev) => prev - 1);
+        }
+    };
+
+    const handleSizeQty = (size: variantColor) => {
+        setSizeQty({
+            size: size.size,
+            quantity: size.quantity,
+        });
+    };
+
+    const handleAddToCart = async () => {
+        if (!color || !sizeQty.size) {
+            toast.error('Choose Color And Size');
+            return;
+        }
+        if (sizeQty.quantity === 0) {
+            toast.error('Out of stock');
+            return;
+        }
+
+        const item: ItemCart = {
+            user: idUser,
+            product: id,
+            image: productDetail.images[0],
+            name: productDetail.name,
+            color: color as string,
+            size: sizeQty.size,
+            quantity: quantity,
+            price: productDetail.price,
+        };
+
+        const res = await dispatch(addItemToCartByUserId(item));
+        if ((res.payload as { status: number }).status === 201) {
+            toast.success('Add item to cart success');
+        }
+    };
     useEffect(() => {
+        const item: getSizeOfColor = {
+            id: id,
+            color: color as string,
+        };
+        setSizeQty((prev) => ({
+            ...prev,
+            quantity: 0,
+        }));
         dispatch(getProductHotDeal()).unwrap();
         dispatch(getProductById(id));
-
-        console.log('////////////////////////////////////');
-    }, []);
-    console.log(productDetail);
+        dispatch(getColorOfSize(item));
+    }, [color]);
 
     return (
         <div className="flex flex-col items-center">
             <div className="flex justify-between  gap-[100px] mt-[52px] mb-[116px] w-[1020px]">
                 <div className="w-[420px]">
-                    <div className="h-[328px] relative bg-bg_sell rounded-lg border-gray border-2">
+                    <div className="h-[328px] relative bg-bg_sell rounded-lg border-gray border-2 overflow-hidden">
                         <Image src={productDetail.images && productDetail.images[number]} alt="giày" fill />
                     </div>
                     <div className="flex gap-5 mt-5">
@@ -56,7 +130,7 @@ const ShoesSinglePage = () => {
                             productDetail.images.map((item, i) => (
                                 <div
                                     key={i}
-                                    className="w-[90px] h-[90px] relative bg-bg_sell rounded-lg border-gray border-4"
+                                    className="w-[90px] h-[90px] relative bg-bg_sell rounded-lg border-gray border-4 overflow-hidden"
                                 >
                                     <Image src={item} alt="giày" fill onClick={() => handleImage(i)} />
                                 </div>
@@ -85,6 +159,7 @@ const ShoesSinglePage = () => {
                                     <div
                                         key={color}
                                         className="text-sm w-9 h-7 bg-size2 rounded-md flex items-center justify-center"
+                                        onClick={() => setColor(color)}
                                     >
                                         {color}
                                     </div>
@@ -94,10 +169,14 @@ const ShoesSinglePage = () => {
                     <div className="flex items-center mt-[25px] mb-5">
                         <span className="font-medium flex-1">Size:</span>
                         <div className="font-bold text-white flex gap-1">
-                            {variants.listSize &&
-                                variants.listSize.map((size) => (
-                                    <div className="text-sm w-9 h-7 bg-size2 rounded-md flex items-center justify-center">
-                                        {size}
+                            {variant &&
+                                variant.map((size: variantColor, i: number) => (
+                                    <div
+                                        key={i}
+                                        className="text-sm w-9 h-7 bg-size2 rounded-md flex items-center justify-center"
+                                        onClick={() => handleSizeQty(size)}
+                                    >
+                                        {size.size}
                                     </div>
                                 ))}
                         </div>
@@ -105,23 +184,32 @@ const ShoesSinglePage = () => {
 
                     <div className="font-medium mb-[25px] flex">
                         <span className="flex-1">Availability:</span>
-                        <span></span>
+                        <span>{sizeQty.quantity === 0 ? '' : sizeQty.quantity}</span>
                     </div>
                     <BorderBlack />
                     <div className="flex justify-between mt-5">
                         <div className="flex h-[50px] text-xl font-bold">
-                            <span className="w-11 flex items-center justify-center bg-[#F6F7F8] rounded-tl-md rounded-bl-md text-blue">
+                            <span
+                                className="w-11 flex items-center justify-center bg-[#F6F7F8] rounded-tl-md rounded-bl-md text-blue"
+                                onClick={handleDesc}
+                            >
                                 -
                             </span>
                             <span className="w-[62px] flex items-center justify-center bg-[#FAFBFB] rounded-md ">
-                                2
+                                {quantity}
                             </span>
-                            <span className="w-11 flex items-center justify-center bg-[#F6F7F8] rounded-tr-md rounded-br-md text-blue">
+                            <span
+                                className="w-11 flex items-center justify-center bg-[#F6F7F8] rounded-tr-md rounded-br-md text-blue"
+                                onClick={handleInsc}
+                            >
                                 +
                             </span>
                         </div>
                         <div className="flex gap-5">
-                            <div className="w-40 h-[50px] flex items-center justify-center gap-4 bg-buy text-blue rounded-md">
+                            <div
+                                onClick={handleAddToCart}
+                                className="w-40 h-[50px] flex items-center justify-center gap-4 bg-buy text-blue rounded-md"
+                            >
                                 <ShoppingCartOutlinedIcon />
                                 <span className="font-bold">Add To Cart</span>
                             </div>
