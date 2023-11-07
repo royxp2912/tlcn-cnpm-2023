@@ -10,12 +10,40 @@ export const {
     deleteVarByID,
     getOneByProID,
     updateVarByID,
+    reduceQuantity,
     findProIDByColor,
     getListVarByProID,
     deleteListVarByProID,
     getSizeByColorAndProID,
     getColorBySizeAndProID,
 } = {
+
+    reduceQuantity: async (proID, color, size, quantity) => {
+        try {
+            await Variant.findOneAndUpdate(
+                {
+                    product: proID,
+                    color: color,
+                    color: size,
+                },
+                {
+                    quantity: { $inc: -quantity }
+                },
+            );
+
+            return {
+                success: true,
+                status: 200,
+                message: "Reduce Quantity Of Variant Successfull !!!",
+            };
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong on Variant !!!",
+            }
+        }
+    },
 
     getOneByProID: async (proID) => {
         try {
