@@ -13,7 +13,23 @@ import {
     findByColor,
     findByColorAndSort,
     getHotDeal,
+    getQuantityByEachBrand,
 } from '../services/product.service.js';
+
+export const getInfoOfEachBarnd = async (req, res, next) => {
+    try {
+        const { success, message, data, status } = await getQuantityByEachBrand();
+        if (!success) return next(createError(status, message));
+
+        res.status(status).json({
+            success: success,
+            message: message,
+            data: data,
+        });
+    } catch (err) {
+        next(err);
+    }
+};
 
 export const findProductByColor = async (req, res, next) => {
     try {

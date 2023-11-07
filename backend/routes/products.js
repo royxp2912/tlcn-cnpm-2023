@@ -1,21 +1,23 @@
-import express from "express";
 import uploadCloud from "../middlewares/multerCloudinary.js";
+import express from "express";
 import {
     createProduct,
     updateProduct,
     deleteProduct,
     getAllProduct,
     getByIdProduct,
-    getAllProductByCategory,
-    findProductByKeyword,
-    findProductByColor,
     getProductHotDeal,
+    findProductByColor,
+    getInfoOfEachBarnd,
+    findProductByKeyword,
+    getAllProductByCategory,
 } from "../controllers/product.controller.js";
 
 const router = express.Router();
 
 // GET ALL
 router.get("/", getAllProduct);
+router.get("/brand", getInfoOfEachBarnd);
 router.get("/detail", getByIdProduct);
 router.get("/category", getAllProductByCategory);
 

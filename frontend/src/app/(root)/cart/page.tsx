@@ -13,11 +13,11 @@ const Cart = () => {
     const dispatch = useDispatch<AppDispatch>();
     const { cartItem }: { cartItem: Cart } = useSelector((state: any) => state.carts);
     const router = useRouter();
-    const [checkedAll, setCheckedAll] = useState(false);
-    const [quantity, setQuantity] = useState({});
     const [price, setPrice] = useState({});
     const [qty, setQty] = useState<number>(0);
+    const [quantity, setQuantity] = useState({});
     const [total, setTotal] = useState<number>(0);
+    const [checkedAll, setCheckedAll] = useState(false);
 
     const userString = localStorage.getItem('user');
     let user: User | null = null;
@@ -30,9 +30,11 @@ const Cart = () => {
     }
     const length = cartItem.items && cartItem.items.length;
     const id = user?._id as string;
+
     useEffect(() => {
         dispatch(getCartByUserId(id));
     }, [length]);
+
     const handleCheckout = async () => {
         router.push('/order');
     };
@@ -80,7 +82,7 @@ const Cart = () => {
                     <Border />
                     <div className="text-2xl font-semibold flex justify-between my-5">
                         <span>Total</span>
-                        <span>${cartItem.total}</span>
+                        <span>${total}</span>
                     </div>
                     <button
                         className="bg-bluev4 w-full h-[60px] rounded-lg font-bold text-white"
