@@ -22,7 +22,46 @@ export const {
     findByColorAndSort,
     updateSoldOfProduct,
     findByKeywordAndSort,
+    getQuantityByEachBrand,
+    getQuantityByBrandName,
 } = {
+
+    getQuantityByEachBrand: async () => {
+        try {
+            const listBrand = ['Adidas', 'Nike', 'Vans', 'Balenciaga', 'Converse', 'Puma'];
+            const infoListBrand = await Promise.all(listBrand.map((item) => getQuantityByBrandName(item)));
+
+            return {
+                success: true,
+                status: 200,
+                message: "Get All Infomation Of Brand Successful!!!",
+                data: infoListBrand,
+            }
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message,
+            }
+        }
+    },
+
+    getQuantityByBrandName: async (brand) => {
+        try {
+            const result = await Product.find({ brand: brand });
+
+            return {
+                brand: brand,
+                quantity: result.length,
+            }
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message,
+            }
+        }
+    },
 
     updateSoldOfProduct: async (proID, quantity) => {
         try {

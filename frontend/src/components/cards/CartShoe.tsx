@@ -148,8 +148,8 @@ const CartShoe = ({ checkedAll, setCheckedAll, quantity, setQuantity, price, set
 
     // console.log(totalQuantity);
     // console.log(totalPrice);
-    console.log(checkedItems);
-    console.log(checkedAll);
+    console.log("checkedItems: ", checkedItems);
+    console.log("checkedAll: ", checkedAll);
 
     return (
         <TableContainer component={Paper} className="shadow-xl h-max">
