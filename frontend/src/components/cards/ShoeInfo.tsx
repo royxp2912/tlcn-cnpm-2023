@@ -4,7 +4,7 @@ const ShoeInfo = () => {
     return (
         <div className="flex flex-col">
             <span>Thông tin sản phẩm:</span>
-            <p>
+            <p className="text-justify">
                 Từ 0-3 tuổi, bàn chân bé được cấu tạo bởi 70% là sụn, sau này sẽ phát triển thành xương. Nếu trong giai
                 đoạn này, trẻ tập đi không đúng cách, hoặc đi những đôi giày không thoải mái sẽ gây nên sự biến dạng của
                 sụn, từ đó dẫn tới sự phát triển sai lệch của xương bàn chân và dễ gặp phải các bệnh như bàn chân bẹt,

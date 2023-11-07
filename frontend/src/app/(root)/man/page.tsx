@@ -12,12 +12,15 @@ import SingleSellShoe from '@/components/cards/SingleSellShoe';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '@/utils/store';
 import { getProductHotDeal } from '@/slices/productSlice';
+import { getAllCategory } from '@/slices/categorySlice';
 
 const ManShoes = () => {
     const { products, productHots } = useSelector((state: any) => state.products);
     const dispatch = useDispatch<AppDispatch>();
+    const [active, setActive] = useState(false);
     useEffect(() => {
         dispatch(getProductHotDeal()).unwrap();
+        dispatch(getAllCategory());
     }, []);
     return (
         <div className="flex px-[100px] gap-10 mt-5">
@@ -31,9 +34,8 @@ const ManShoes = () => {
                 <div className="w-full h-[280px] relative ">
                     <Image src="/layout.png" alt="Ảnh" fill />
                 </div>
-                <Sort />
-                {/* <ShoesWithTag /> */}
-                <SingleSellShoe products={products} productHots={productHots} active />
+                <Sort setActive={setActive} active={active} />
+                {!active ? <ShoesWithTag /> : <SingleSellShoe products={products} productHots={productHots} active />}
                 <Pagetination />
             </div>
         </div>

@@ -10,22 +10,42 @@ const Navbar = () => {
             <Link
                 href="/"
                 className={`w-[120px] h-10 text-center ${
-                    pathname === '/' ? 'text-orange border-orange' : 'text-blue border-blue'
-                } border-b-2 `}
+                    pathname === '/' ? 'text-orange border-orange border-b-2' : ' '
+                }  `}
             >
                 <span>Home</span>
             </Link>
-            <Link href="/man" className="w-[120px] h-10 text-center">
+            <Link
+                href="/man"
+                className={`w-[120px] h-10 text-center ${
+                    pathname === '/man' ? 'text-blue border-blue border-b-2' : ' '
+                }  `}
+            >
                 <span>Man</span>
             </Link>
-            <Link href="/women" className="w-[120px] h-10 text-center">
-                <span>Woman</span>
+            <Link
+                href="/woman"
+                className={`w-[120px] h-10 text-center ${
+                    pathname === '/woman' ? 'text-blue border-blue border-b-2' : ' '
+                }  `}
+            >
+                <span>Man</span>
             </Link>
-            <Link href="/kids" className="w-[120px] h-10 text-center">
+            <Link
+                href="/kids"
+                className={`w-[120px] h-10 text-center ${
+                    pathname === '/kids' ? 'text-blue border-blue border-b-2' : ' '
+                } `}
+            >
                 <span>Kids</span>
             </Link>
-            <Link href="/new" className="w-[120px] h-10 text-center">
-                <span>New</span>
+            <Link
+                href="/news"
+                className={`w-[120px] h-10 text-center ${
+                    pathname === '/news' ? 'text-blue border-blue border-b-2' : ''
+                } `}
+            >
+                <span>News</span>
             </Link>
         </div>
     );

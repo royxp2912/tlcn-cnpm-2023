@@ -117,7 +117,7 @@ const HomeShoe = () => {
                                             handleAddtoCart({
                                                 user: idUser,
                                                 product: productHot._id,
-                                                image: 'abc',
+                                                image: productHot.images[0],
                                                 name: productHot.name,
                                                 color: 'Red',
                                                 size: 'M',

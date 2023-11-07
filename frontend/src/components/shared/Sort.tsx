@@ -15,8 +15,12 @@ const MenuProps = {
         },
     },
 };
+type Props = {
+    setActive: React.Dispatch<React.SetStateAction<boolean>>;
+    active: boolean;
+};
 
-const Sort = () => {
+const Sort = ({ setActive, active }: Props) => {
     const [sort, setSort] = useState<string[]>(['Low to High']);
     const sorts = ['Low to High', 'High to Low'];
     const handleChange = (event: SelectChangeEvent<typeof sort>) => {
@@ -45,8 +49,8 @@ const Sort = () => {
                 </div>
             </div>
             <div className="flex gap-4">
-                <AppsOutlined fontSize="large" className="text-rv" />
-                <MenuOutlined fontSize="large" className="text-[#40bfff]" />
+                <AppsOutlined onClick={() => setActive(false)} fontSize="large" className="text-rv" />
+                <MenuOutlined onClick={() => setActive(true)} fontSize="large" className="text-[#40bfff]" />
             </div>
         </div>
     );

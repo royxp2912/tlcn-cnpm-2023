@@ -12,7 +12,7 @@ const addressApi = {
         const url = '/address/detail';
         const pageSize = 5;
         const pageNumber = 5;
-        return axios.get(url, { data: { address } });
+        return axios.get(url, { params: { address } });
     },
     createAddress: (address: Address) => {
         const url = '/address';
@@ -34,12 +34,12 @@ const addressApi = {
     },
     deleteAllAddressByUserId: (user: string) => {
         const url = '/address/user';
-        return axios.delete(url, { data: { user } });
+        return axios.delete(url, { params: { user } });
     },
     deleteAddressByAddressId: (address: Address) => {
         const url = '/address';
         const id = address._id;
-        return axios.delete(url, { data: { id } });
+        return axios.delete(url, { params: { id } });
     },
 };
 
