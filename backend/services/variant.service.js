@@ -7,14 +7,40 @@ export const {
     createOne,
     createList,
     getVarByID,
-    updateVarByID,
     deleteVarByID,
+    getOneByProID,
+    updateVarByID,
     findProIDByColor,
     getListVarByProID,
     deleteListVarByProID,
     getSizeByColorAndProID,
     getColorBySizeAndProID,
 } = {
+
+    getOneByProID: async (proID) => {
+        try {
+            const oneVariant = await Variant.findOne(
+                {
+                    product: proID,
+                    quantity: { $gte: 1 },
+                },
+            )
+                .select("color size quantity -_id");
+
+            return {
+                success: true,
+                status: 200,
+                message: "Get One Variant Of Product Successfull !!!",
+                data: oneVariant,
+            };
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong on Variant !!!",
+            }
+        }
+    },
 
     getColorBySizeAndProID: async (proID, size) => {
         try {

@@ -2,12 +2,29 @@ import { createError } from "../utils/createError.js";
 import {
     createOne,
     getVarByID,
-    updateVarByID,
     deleteVarByID,
+    updateVarByID,
+    getOneByProID,
     getListVarByProID,
     getSizeByColorAndProID,
     getColorBySizeAndProID,
 } from "../services/variant.service.js";
+
+export const getOneVarByProID = async (req, res, next) => {
+    try {
+        const { success, status, message, data } = await getOneByProID(req.query.product);
+        if (!success) return next(createError(status, message));
+
+        res.status(status).send({
+            success,
+            message,
+            total: data.length,
+            data
+        });
+    } catch (err) {
+        next(err);
+    }
+}
 
 export const getColorOfProductBySizeAndProID = async (req, res, next) => {
     try {
