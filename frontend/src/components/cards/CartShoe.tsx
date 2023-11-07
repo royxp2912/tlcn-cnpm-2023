@@ -36,6 +36,9 @@ type PriceMap = {
 };
 
 type Props = {
+    cartItem: Cart;
+    checkedItems: { [key: string]: boolean; };
+    setCheckedItems: React.Dispatch<React.SetStateAction<{ [key: string]: boolean; }>>;
     checkedAll: boolean;
     setCheckedAll: React.Dispatch<React.SetStateAction<boolean>>;
     quantity: { [product: string]: number };
@@ -45,16 +48,10 @@ type Props = {
     setQty: React.Dispatch<React.SetStateAction<number>>;
     setTotal: React.Dispatch<React.SetStateAction<number>>;
 };
-const CartShoe = ({ checkedAll, setCheckedAll, quantity, setQuantity, price, setPrice, setQty, setTotal }: Props) => {
+const CartShoe = ({ cartItem, checkedItems, setCheckedItems, checkedAll, setCheckedAll, quantity, setQuantity, price, setPrice, setQty, setTotal }: Props) => {
+
     const dispatch = useDispatch<AppDispatch>();
-    const { cartItem }: { cartItem: Cart } = useSelector((state: any) => state.carts);
 
-    const initialCheckedItems = (cartItem.items ?? []).reduce((acc, item) => {
-        acc[item.product] = false;
-        return acc;
-    }, {} as { [key: string]: boolean });
-
-    const [checkedItems, setCheckedItems] = React.useState<{ [key: string]: boolean }>(initialCheckedItems);
     const userString = localStorage.getItem('user');
     let user: User | null = null;
     if (userString !== null) {
@@ -111,27 +108,12 @@ const CartShoe = ({ checkedAll, setCheckedAll, quantity, setQuantity, price, set
     };
 
     React.useEffect(() => {
-        if (cartItem.items) {
-            const updatedCheckedItems: { [key: string]: boolean } = {};
-            for (const item of cartItem.items) {
-                updatedCheckedItems[item.product] = checkedAll;
-            }
-            setCheckedItems(updatedCheckedItems);
-            const updatedQuantity: QuantityMap = {};
-            const updatedPrice: PriceMap = {};
-            for (const [key, value] of Object.entries(updatedCheckedItems)) {
-                if (value) {
-                    updatedQuantity[key] = cartItem.items.find((item) => item.product === key)?.quantity!;
-                    updatedPrice[key] = cartItem.items.find((item) => item.product === key)?.price!;
-                }
-            }
-            setQuantity(updatedQuantity);
-            setPrice(updatedPrice);
+        let allChecked = false;
+        if (Object.keys(checkedItems).length !== 0) {
+            allChecked = Object.values(checkedItems).every((value) => value === true);
         }
-    }, [checkedAll]);
+        console.log("checkedItems in effect: ", checkedItems);
 
-    React.useEffect(() => {
-        const allChecked = Object.values(checkedItems).every((value) => value === true);
         setCheckedAll(allChecked);
     }, [checkedItems]);
 
@@ -148,8 +130,6 @@ const CartShoe = ({ checkedAll, setCheckedAll, quantity, setQuantity, price, set
 
     // console.log(totalQuantity);
     // console.log(totalPrice);
-    console.log("checkedItems: ", checkedItems);
-    console.log("checkedAll: ", checkedAll);
 
     return (
         <TableContainer component={Paper} className="shadow-xl h-max">

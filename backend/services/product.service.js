@@ -594,7 +594,7 @@ export const {
             const listProduct = await Product.find({ category: cateID })
                 .limit(pageSize)
                 .skip(pageSize * (pageNumber - 1))
-                .select({ _id: 1, name: 1, brand: 1, price: 1, rating: 1, sold: 1 });
+                .select({ _id: 1, name: 1, desc: 1, images: 1, brand: 1, price: 1, rating: 1, sold: 1 });
 
             return {
                 success: true,
