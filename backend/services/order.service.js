@@ -3,7 +3,8 @@ import { checkedObjectId } from '../utils/checkedOthers.js';
 import { checkedNull } from '../utils/handel_null.js';
 import { getUserByID } from './user.service.js';
 import { removeFromCart } from './cart.service.js';
-import { checkedQuantity, reduceQuantity } from './variant.service.js';
+import { reduceQuantity } from './variant.service.js';
+import { updateSoldOfProduct } from './product.service.js';
 
 export const {
     create,
@@ -306,6 +307,7 @@ export const {
             await Promise.all(body.items.map((item) => {
                 removeFromCart(body.userID, item.product);
                 reduceQuantity(item.product, item.color, item.size, item.quantity);
+                updateSoldOfProduct(item.product, item.quantity);
             }));
 
             return {

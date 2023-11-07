@@ -47,7 +47,6 @@ export const {
         }
     },
 
-
     incQuantity: async (proID, color, size, quantity) => {
         try {
             await Variant.findOneAndUpdate(
@@ -77,14 +76,14 @@ export const {
 
     reduceQuantity: async (proID, color, size, quantity) => {
         try {
-            await Variant.findOneAndUpdate(
+            const result = await Variant.findOneAndUpdate(
                 {
                     product: proID,
                     color: color,
-                    color: size,
+                    size: size,
                 },
                 {
-                    quantity: { $inc: -quantity }
+                    $inc: { quantity: -quantity }
                 },
             );
 
