@@ -243,7 +243,8 @@ export const {
             const result = await Order.find({ user: userID })
                 .limit(pageSize)
                 .skip(pageSize * (pageNumber - 1))
-                .select('-updatedAt -createdAt -__v -user');
+                .select('-updatedAt -createdAt -__v -user')
+                .sort({ createdAt: -1 });
 
             return {
                 success: true,
