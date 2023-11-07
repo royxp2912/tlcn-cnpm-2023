@@ -94,7 +94,7 @@ const HomeShoe = () => {
                             <div key={productHot._id} className="flex items-center rounded-xl h-40 ">
                                 <div className="w-[100px] bg-pink h-full flex items-center relative rounded-tl-lg rounded-bl-lg">
                                     <Image
-                                        src="/nike.png"
+                                        src={productHot.images[0]}
                                         alt="Nike"
                                         height={120}
                                         width={120}

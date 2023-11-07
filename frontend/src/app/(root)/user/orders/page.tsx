@@ -65,7 +65,7 @@ const Orders = () => {
                                 <Border />
                                 <div>
                                     {order.items.map((product) => (
-                                        <div key={product.productID}>
+                                        <div key={product.product}>
                                             <div className="flex items-center gap-5 my-[10px]">
                                                 <Image
                                                     src="/nike.png"

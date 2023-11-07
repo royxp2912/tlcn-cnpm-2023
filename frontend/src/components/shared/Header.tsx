@@ -10,8 +10,9 @@ import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined
 const Header = () => {
     const pathname = usePathname();
     const router = useRouter();
+
     const user = localStorage.getItem('user');
-    console.log(user);
+
     const handleUser = () => {
         if (!user) router.push('/sign-in');
         else router.push('/user');

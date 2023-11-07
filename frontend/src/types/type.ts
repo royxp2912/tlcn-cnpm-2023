@@ -80,7 +80,7 @@ export type ItemCart = {
 };
 
 export type Cart = {
-    _id: string;
+    _id?: string;
     user: string;
     total: number;
     items: ItemCart[];
@@ -89,7 +89,7 @@ export type Cart = {
 export type Order = {
     _id?: string;
     items: ItemCart[];
-    userId: string;
+    userID: string;
     deliveryAddress: string;
     paymentMethod: string;
     total: number;
@@ -103,8 +103,8 @@ export type RemoveItemCart = {
 };
 
 export type updateOrder = {
-    orderId: string;
-    userId: string;
+    order: string;
+    user: string;
     status: string;
 };
 
@@ -124,4 +124,9 @@ export type upAvatar = {
 export type getSizeOfColor = {
     id: string;
     color: string;
+};
+
+export type variantColor = {
+    size: string;
+    quantity: number;
 };
