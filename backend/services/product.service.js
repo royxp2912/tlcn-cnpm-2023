@@ -20,8 +20,32 @@ export const {
     findByKeyword,
     getAllByCateID,
     findByColorAndSort,
+    updateSoldOfProduct,
     findByKeywordAndSort,
 } = {
+
+    updateSoldOfProduct: async (proID, quantity) => {
+        try {
+            const savedProduct = await Product.findByIdAndUpdate(
+                proID,
+                { $inc: { sold: quantity } },
+                { new: true }
+            );
+            checkedNull(savedProduct, "Product doen't exist !!!");
+
+            return {
+                success: true,
+                status: 200,
+                message: "Update Sold Of Product Successful!!!",
+            }
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong in Product Service !!!",
+            }
+        }
+    },
 
     findByColorAndSort: async (color, pageSize, pageNumber, sort) => {
         try {

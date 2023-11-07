@@ -2,6 +2,7 @@ import Cart from "../models/Cart.js";
 import { checkedObjectId } from "../utils/checkedOthers.js";
 import { checkedNull } from "../utils/handel_null.js";
 import { getUserByID } from "./user.service.js";
+import { checkedQuantity } from "./variant.service.js";
 
 export const {
     create,
@@ -9,7 +10,93 @@ export const {
     calcTotal,
     getByUserID,
     removeFromCart,
+    updateQuantityInCart,
 } = {
+
+    updateQuantityInCart: async (userID, proID, color, size, quantity) => {
+        try {
+            checkedObjectId(userID, "User ID");
+            checkedObjectId(proID, "Product ID");
+
+            const existProduct = await Cart.findOne({
+                user: userID,
+                "items.product": proID,
+            })
+            checkedNull(existProduct, "The product does not exist in the shopping cart !!!");
+
+            const isStoking = await checkedQuantity(proID, color, size, quantity);
+            if (!isStoking.success) return isStoking;
+
+            const result = await Cart.findOneAndUpdate(
+                { user: userID, "items.product": proID },
+                {
+                    $set: { "items.$.quantity": quantity }
+                },
+                { new: true }
+            );
+            await calcTotal(result._id);
+
+            return {
+                success: true,
+                status: 200,
+                message: "Update Quantity Item From Cart Successful!!!",
+            }
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong in Cart !!!",
+            }
+        }
+    },
+
+    addToCart: async (body) => {
+        try {
+            const { user, ...others } = body;
+            const existCart = await Cart.findOne({ user: user });
+            checkedNull(existCart, "Cart don't exist !!!");
+
+            const isExist = existCart.items.filter((item) => item.product.toString() === others.product);
+            const isStoking = await checkedQuantity(others.product, others.color, others.size, others.quantity);
+            if (!isStoking.success) return isStoking;
+
+            if (isExist.length !== 0) {
+                await Cart.findOneAndUpdate(
+                    {
+                        user: user,
+                        items: { $elemMatch: { product: others.product } },
+                    },
+                    {
+                        $set: { "items.$": others },
+                    },
+                    { new: true },
+                )
+            } else {
+                await Cart.findByIdAndUpdate(
+                    existCart._id,
+                    {
+                        $push: { items: others },
+                    },
+                    { new: true },
+                )
+            }
+
+            // tinh toan lai total xog khi add item to cart
+            await calcTotal(existCart._id);
+
+            return {
+                success: true,
+                status: 201,
+                message: "Add Item To Cart Successful!!!",
+            }
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong in Cart !!!",
+            }
+        }
+    },
 
     getByUserID: async (userID) => {
         try {
@@ -68,56 +155,8 @@ export const {
         }
     },
 
-    addToCart: async (body) => {
-        try {
-            const { user, ...others } = body;
-            const existCart = await Cart.findOne({ user: user });
-            checkedNull(existCart, "Cart don't exist !!!");
-
-            const isExist = existCart.items.filter((item) => item.product.toString() === others.product);
-
-            if (isExist.length !== 0) {
-                await Cart.findOneAndUpdate(
-                    {
-                        user: user,
-                        items: { $elemMatch: { product: others.product } },
-                    },
-                    {
-                        $set: { "items.$": others },
-                    },
-                    { new: true },
-                )
-            } else {
-                await Cart.findByIdAndUpdate(
-                    existCart._id,
-                    {
-                        $push: { items: others },
-                    },
-                    { new: true },
-                )
-            }
-
-            // tinh toan lai total xog khi add item to cart
-            await calcTotal(existCart._id);
-
-            return {
-                success: true,
-                status: 201,
-                message: "Add Item To Cart Successful!!!",
-            }
-        } catch (err) {
-            return {
-                success: false,
-                status: err.status || 500,
-                message: err.message || "Something went wrong in Cart !!!",
-            }
-        }
-    },
-
     calcTotal: async (cartID) => {
         try {
-            checkedObjectId(cartID, "Cart ID");
-
             const result = await Cart.findById(cartID);
             checkedNull(result, "Cart don't exist !!!");
 

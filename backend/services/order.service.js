@@ -1,8 +1,10 @@
 import Order from '../models/Order.js';
 import { checkedObjectId } from '../utils/checkedOthers.js';
 import { checkedNull } from '../utils/handel_null.js';
-import { removeFromCart } from './cart.service.js';
 import { getUserByID } from './user.service.js';
+import { removeFromCart } from './cart.service.js';
+import { reduceQuantity } from './variant.service.js';
+import { updateSoldOfProduct } from './product.service.js';
 
 export const {
     create,
@@ -16,6 +18,7 @@ export const {
     paymentConfirm,
     deliveryConfirm,
 } = {
+
     findByKeyword: async (keyword, pageSize, pageNumber) => {
         try {
             let result = [];
@@ -287,6 +290,8 @@ export const {
 
     create: async (body) => {
         try {
+            checkedObjectId(body.userID, "User ID");
+
             const existUser = await getUserByID(body.userID);
             if (!existUser.success) return existUser;
 
@@ -299,7 +304,11 @@ export const {
             });
             await newOrder.save();
 
-            await Promise.all(body.items.map((item) => removeFromCart(body.userID, item.product)));
+            await Promise.all(body.items.map((item) => {
+                removeFromCart(body.userID, item.product);
+                reduceQuantity(item.product, item.color, item.size, item.quantity);
+                updateSoldOfProduct(item.product, item.quantity);
+            }));
 
             return {
                 success: true,
@@ -310,7 +319,7 @@ export const {
             return {
                 success: false,
                 status: err.status || 500,
-                message: err.message || 'Something went wrong in Order !!!',
+                message: err.message || 'Something went wrong in Order Service !!!',
             };
         }
     },

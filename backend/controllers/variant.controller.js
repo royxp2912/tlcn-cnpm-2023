@@ -105,7 +105,11 @@ export const deleteVariantByID = async (req, res, next) => {
 
 export const updateVariantByID = async (req, res, next) => {
     try {
-        const { success, status, message, data } = await updateVarByID(req.body.variant, req.body.size, req.body.quantity);
+        const variant = req.body.variant;
+        const color = req.body.color;
+        const size = req.body.size;
+        const quantity = req.body.quantity;
+        const { success, status, message, data } = await updateVarByID(variant, color, size, quantity);
         if (!success) return next(createError(status, message));
 
         res.status(status).send({
