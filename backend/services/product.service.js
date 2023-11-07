@@ -19,7 +19,49 @@ export const {
     findByKeywordAndSort,
     getQuantityByEachBrand,
     getQuantityByBrandName,
+    getQuantityHotDealByBrandName,
+    getQuantityHotDealByEachBrand,
 } = {
+    getQuantityHotDealByEachBrand: async () => {
+        try {
+            const listBrand = ['Adidas', 'Nike', 'Vans', 'Balenciaga', 'Converse', 'Puma'];
+            const infoListBrand = await Promise.all(listBrand.map((item) => getQuantityHotDealByBrandName(item)));
+
+            return {
+                success: true,
+                status: 200,
+                message: 'Get All Product Of Category Successful!!!',
+                data: infoListBrand,
+            };
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message,
+            };
+        }
+    },
+
+    getQuantityHotDealByBrandName: async (brand) => {
+        try {
+            const result = await Product.find({
+                brand: brand,
+                sold: { $gte: 10 },
+            });
+
+            return {
+                brand: brand,
+                quantity: result.length,
+            };
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message,
+            };
+        }
+    },
+
     getQuantityByEachBrand: async () => {
         try {
             const listBrand = ['Adidas', 'Nike', 'Vans', 'Balenciaga', 'Converse', 'Puma'];

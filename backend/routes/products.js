@@ -11,6 +11,7 @@ import {
     getInfoOfEachBarnd,
     findProductByKeyword,
     getAllProductByCategory,
+    getQuantityHotDealOfEachBarnd,
 } from "../controllers/product.controller.js";
 
 const router = express.Router();
@@ -18,6 +19,7 @@ const router = express.Router();
 // GET ALL
 router.get("/", getAllProduct);
 router.get("/brand", getInfoOfEachBarnd);
+router.get("/brand/hotDeal", getQuantityHotDealOfEachBarnd);
 router.get("/detail", getByIdProduct);
 router.get("/category", getAllProductByCategory);
 

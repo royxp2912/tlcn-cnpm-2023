@@ -59,6 +59,10 @@ const productsApi = {
         const url = '/products/brand';
         return axios.get(url);
     },
+    getQtyHotDealOfBrand: () => {
+        const url = 'products/brand/hotDeal';
+        return axios.get(url);
+    },
 };
 
 export default productsApi;

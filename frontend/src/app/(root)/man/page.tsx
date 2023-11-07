@@ -11,14 +11,14 @@ import Pagetination from '@/components/shared/Pagetination';
 import SingleSellShoe from '@/components/cards/SingleSellShoe';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '@/utils/store';
-import { getAllProductByCateId, getProductHotDeal, getQtyOfBrand } from '@/slices/productSlice';
+import { getAllProductByCateId, getProductHotDeal, getQtyHotDealOfBrand, getQtyOfBrand } from '@/slices/productSlice';
 import { getAllCategory } from '@/slices/categorySlice';
 import { Category } from '@/types/type';
 import { usePathname } from 'next/navigation';
 
 const ManShoes = () => {
     const { categories }: { categories: Category[] } = useSelector((state: any) => state.categories);
-    const { products, productHots, brands } = useSelector((state: any) => state.products);
+    const { products, productHots, brands, hotdeals } = useSelector((state: any) => state.products);
     const dispatch = useDispatch<AppDispatch>();
     const [active, setActive] = useState(false);
     const pathname = usePathname();
@@ -28,6 +28,7 @@ const ManShoes = () => {
             await dispatch(getProductHotDeal());
             await dispatch(getAllCategory());
             await dispatch(getQtyOfBrand());
+            await dispatch(getQtyHotDealOfBrand());
 
             const found =
                 categories &&
@@ -44,7 +45,7 @@ const ManShoes = () => {
     return (
         <div className="flex px-[100px] gap-10 mt-5">
             <div className="flex flex-col gap-5">
-                <HotDeals />
+                <HotDeals hotdeals={hotdeals} />
                 <Price />
                 <Color />
                 <Brand brands={brands} />

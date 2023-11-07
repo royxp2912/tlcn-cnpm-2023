@@ -75,6 +75,18 @@ export const getQtyOfBrand = createAsyncThunk('products/getQtyOfBrand', async (_
     }
 });
 
+export const getQtyHotDealOfBrand = createAsyncThunk(
+    'products/getQtyHotDealOfBrand',
+    async (_, { rejectWithValue }) => {
+        try {
+            const res = await productsApi.getQtyHotDealOfBrand();
+            return res;
+        } catch (err: any) {
+            return rejectWithValue(err);
+        }
+    },
+);
+
 export const productSlice = createSlice({
     name: 'products',
     initialState: {
@@ -83,6 +95,7 @@ export const productSlice = createSlice({
         productDetail: {},
         variants: {},
         brands: [],
+        hotdeals: [],
         loading: false,
         error: null as string | null,
     },
@@ -166,6 +179,17 @@ export const productSlice = createSlice({
         builder.addCase(getQtyOfBrand.fulfilled, (state, action) => {
             state.loading = false;
             state.brands = action.payload.data.data;
+        });
+        builder.addCase(getQtyHotDealOfBrand.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(getQtyHotDealOfBrand.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.error.message || null;
+        });
+        builder.addCase(getQtyHotDealOfBrand.fulfilled, (state, action) => {
+            state.loading = false;
+            state.hotdeals = action.payload.data.data;
         });
     },
 });

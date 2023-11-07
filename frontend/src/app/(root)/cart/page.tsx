@@ -19,6 +19,13 @@ const Cart = () => {
     const [total, setTotal] = useState<number>(0);
     const [checkedAll, setCheckedAll] = useState(false);
 
+    const initialCheckedItems = (cartItem.items ?? []).reduce((acc, item) => {
+        acc[item.product] = false;
+        return acc;
+    }, {} as { [key: string]: boolean });
+
+    const [checkedItems, setCheckedItems] = React.useState<{ [key: string]: boolean }>(initialCheckedItems);
+
     const userString = localStorage.getItem('user');
     let user: User | null = null;
     if (userString !== null) {
@@ -39,6 +46,32 @@ const Cart = () => {
         router.push('/order');
     };
 
+    const handleCheckedAll = async () => {
+        setCheckedAll((prev) => !prev);
+
+        if (!checkedAll) {
+            setTotal(cartItem.total);
+            setQty(cartItem.items.reduce((acc, cur) => acc + cur.quantity, 0));
+            const updatedCheckedItems: { [key: string]: boolean } = {};
+            for (const item of cartItem.items) {
+                updatedCheckedItems[item.product] = true;
+            }
+            localStorage.setItem('itemOrders', JSON.stringify(cartItem.items));
+            localStorage.setItem('totalPrice', JSON.stringify(cartItem.total));
+            setCheckedItems(updatedCheckedItems);
+        } else {
+            setTotal(0);
+            setQty(0);
+            const updatedCheckedItems: { [key: string]: boolean } = {};
+            for (const item of cartItem.items) {
+                updatedCheckedItems[item.product] = false;
+            }
+            localStorage.setItem('itemOrders', '');
+            localStorage.setItem('totalPrice', '');
+            setCheckedItems(updatedCheckedItems);
+        }
+    };
+
     return (
         <div className="flex flex-col items-center px-10">
             <span className="font-bold text-3xl text-blue">Cart</span>
@@ -46,7 +79,7 @@ const Cart = () => {
                 <input
                     type="checkbox"
                     checked={checkedAll}
-                    onChange={() => setCheckedAll((prev) => !prev)}
+                    onChange={handleCheckedAll}
                     className={`${checkedAll === true ? 'checked:accent-blue' : ''}`}
                 />
                 <span>Select all</span>
@@ -56,6 +89,9 @@ const Cart = () => {
 
             <div className="flex gap-5 w-full">
                 <CartShoe
+                    cartItem={cartItem}
+                    checkedItems={checkedItems}
+                    setCheckedItems={setCheckedItems}
                     checkedAll={checkedAll}
                     setCheckedAll={setCheckedAll}
                     quantity={quantity}

@@ -3,13 +3,14 @@ import Border from '@/components/shared/Border';
 import { getAllAddressByUserId } from '@/slices/addressSlice';
 import { getCartByUserId } from '@/slices/cartSlice';
 import { createOrder } from '@/slices/orderSlice';
-import { Address, Cart, Order, User } from '@/types/type';
+import { Address, Cart, ItemCart, Order, User } from '@/types/type';
 import axios from '@/utils/axios';
 import { AppDispatch } from '@/utils/store';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 
 const Order = () => {
     const userString = localStorage.getItem('user');
@@ -29,6 +30,11 @@ const Order = () => {
     const [datas, setDatas] = useState<Address>();
     const router = useRouter();
 
+    const itemOrders = localStorage.getItem('itemOrders');
+    const items: ItemCart[] = itemOrders ? JSON.parse(itemOrders) : [];
+    const total = localStorage.getItem('totalPrice');
+    const totalPrice: number = total ? parseFloat(total) : 0;
+
     const [pay, setPay] = useState<string>('');
     useEffect(() => {
         try {
@@ -46,15 +52,22 @@ const Order = () => {
     const idAddress = datas?._id as string;
 
     const handleOrder = async () => {
+        if (!pay) {
+            toast.error('Please chose method payment');
+            return;
+        }
+
         if (pay === 'VNPAY') {
             const item: Order = {
-                items: cartItem.items,
+                items: items,
                 userID: id,
                 deliveryAddress: idAddress,
                 paymentMethod: pay,
-                total: cartItem.total,
+                total: totalPrice,
             };
             await dispatch(createOrder(item));
+            localStorage.removeItem('itemOrders');
+            localStorage.removeItem('totalPrice');
             const { data } = await axios.post('/orders/create_payment_url', {
                 amount: 50000,
                 bankCode: 'VNBANK',
@@ -62,13 +75,15 @@ const Order = () => {
             window.open(data.vnpUrl);
         } else {
             const item: Order = {
-                items: cartItem.items,
+                items: items,
                 userID: id,
                 deliveryAddress: idAddress,
                 paymentMethod: 'COD',
-                total: cartItem.total,
+                total: totalPrice,
             };
             dispatch(createOrder(item));
+            localStorage.removeItem('itemOrders');
+            localStorage.removeItem('totalPrice');
             router.push('/user/orders');
         }
     };
@@ -117,8 +132,8 @@ const Order = () => {
                 <span className="font-bold mb-[15px] block">Detail</span>
                 <Border />
                 <div>
-                    {cartItem.items &&
-                        cartItem.items.map((item) => (
+                    {items &&
+                        items.map((item) => (
                             <div key={item.product} className="flex items-center gap-5 my-[10px]">
                                 <Image
                                     src={item.image}

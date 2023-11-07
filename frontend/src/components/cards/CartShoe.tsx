@@ -11,7 +11,7 @@ import Image from 'next/image';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { useDispatch, useSelector } from 'react-redux';
-import { Cart, RemoveItemCart, User } from '@/types/type';
+import { Cart, ItemCart, RemoveItemCart, User } from '@/types/type';
 import { AppDispatch } from '@/utils/store';
 import { removeItemFromCartByUserId } from '@/slices/cartSlice';
 import { toast } from 'react-toastify';
@@ -36,6 +36,9 @@ type PriceMap = {
 };
 
 type Props = {
+    cartItem: Cart;
+    checkedItems: { [key: string]: boolean };
+    setCheckedItems: React.Dispatch<React.SetStateAction<{ [key: string]: boolean }>>;
     checkedAll: boolean;
     setCheckedAll: React.Dispatch<React.SetStateAction<boolean>>;
     quantity: { [product: string]: number };
@@ -45,16 +48,21 @@ type Props = {
     setQty: React.Dispatch<React.SetStateAction<number>>;
     setTotal: React.Dispatch<React.SetStateAction<number>>;
 };
-const CartShoe = ({ checkedAll, setCheckedAll, quantity, setQuantity, price, setPrice, setQty, setTotal }: Props) => {
+const CartShoe = ({
+    cartItem,
+    checkedItems,
+    setCheckedItems,
+    checkedAll,
+    setCheckedAll,
+    quantity,
+    setQuantity,
+    price,
+    setPrice,
+    setQty,
+    setTotal,
+}: Props) => {
     const dispatch = useDispatch<AppDispatch>();
-    const { cartItem }: { cartItem: Cart } = useSelector((state: any) => state.carts);
 
-    const initialCheckedItems = (cartItem.items ?? []).reduce((acc, item) => {
-        acc[item.product] = false;
-        return acc;
-    }, {} as { [key: string]: boolean });
-
-    const [checkedItems, setCheckedItems] = React.useState<{ [key: string]: boolean }>(initialCheckedItems);
     const userString = localStorage.getItem('user');
     let user: User | null = null;
     if (userString !== null) {
@@ -97,41 +105,58 @@ const CartShoe = ({ checkedAll, setCheckedAll, quantity, setQuantity, price, set
 
             const updatedQuantity: QuantityMap = {};
             const updatedPrice: PriceMap = {};
+            const storedItems = localStorage.getItem('itemOrders');
+            let storedItemsArray: ItemCart[] = [];
+
             for (const [key, value] of Object.entries(newState)) {
                 if (value) {
                     updatedQuantity[key] = cartItem.items.find((item) => item.product === key)?.quantity!;
                     updatedPrice[key] = cartItem.items.find((item) => item.product === key)?.price!;
+                    const itemInCart = cartItem.items.find((item) => item.product === key);
+
+                    if (storedItems) {
+                        storedItemsArray = JSON.parse(storedItems);
+                    }
+
+                    if (newState[product]) {
+                        const existingItem = storedItemsArray.find((item) => item.product === product);
+                        if (!existingItem) {
+                            const newItem: ItemCart = {
+                                product: itemInCart?.product || '',
+                                image: itemInCart?.image || '',
+                                name: itemInCart?.name || '',
+                                color: itemInCart?.color || '',
+                                size: itemInCart?.size || '',
+                                quantity: updatedQuantity[product] || 0,
+                                price: updatedPrice[product] || 0,
+                            };
+                            storedItemsArray.push(newItem);
+                        }
+                    } else {
+                        // Xóa cartItem khỏi storedItemsArray nếu tồn tại
+                        const existingIndex = storedItemsArray.findIndex((item) => item.product === item.product);
+                        if (existingIndex !== -1) {
+                            storedItemsArray.splice(existingIndex, 1);
+                        }
+                    }
+
+                    localStorage.setItem('itemOrders', JSON.stringify(storedItemsArray));
                 }
             }
+
             setQuantity(updatedQuantity);
             setPrice(updatedPrice);
-
             return newState;
         });
     };
 
-    // React.useEffect(() => {
-    //     if (cartItem.items) {
-    //         const updatedCheckedItems: { [key: string]: boolean } = {};
-    //         for (const item of cartItem.items) {
-    //             updatedCheckedItems[item.product] = checkedAll;
-    //         }
-    //         setCheckedItems(updatedCheckedItems);
-    //         const updatedQuantity: QuantityMap = {};
-    //         const updatedPrice: PriceMap = {};
-    //         for (const [key, value] of Object.entries(updatedCheckedItems)) {
-    //             if (value) {
-    //                 updatedQuantity[key] = cartItem.items.find((item) => item.product === key)?.quantity!;
-    //                 updatedPrice[key] = cartItem.items.find((item) => item.product === key)?.price!;
-    //             }
-    //         }
-    //         setQuantity(updatedQuantity);
-    //         setPrice(updatedPrice);
-    //     }
-    // }, [checkedAll]);
-
     React.useEffect(() => {
-        const allChecked = Object.values(checkedItems).every((value) => value === true);
+        let allChecked = false;
+        if (Object.keys(checkedItems).length !== 0) {
+            allChecked = Object.values(checkedItems).every((value) => value === true);
+        }
+        console.log('checkedItems in effect: ', checkedItems);
+
         setCheckedAll(allChecked);
     }, [checkedItems]);
 
@@ -142,14 +167,13 @@ const CartShoe = ({ checkedAll, setCheckedAll, quantity, setQuantity, price, set
             const productQuantity = quantity[product] || 0;
             return acc + productPrice * productQuantity;
         }, 0) as number;
+        localStorage.setItem('totalPrice', JSON.stringify(totalPrice));
         setTotal(totalPrice);
         setQty(totalQuantity);
     }, [quantity, price]);
 
     // console.log(totalQuantity);
     // console.log(totalPrice);
-    console.log('checkedItems: ', checkedItems);
-    console.log('checkedAll: ', checkedAll);
 
     return (
         <TableContainer component={Paper} className="shadow-xl h-max">

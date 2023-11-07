@@ -14,7 +14,23 @@ import {
     findByColorAndSort,
     getHotDeal,
     getQuantityByEachBrand,
+    getQuantityHotDealByEachBrand,
 } from '../services/product.service.js';
+
+export const getQuantityHotDealOfEachBarnd = async (req, res, next) => {
+    try {
+        const { success, message, data, status } = await getQuantityHotDealByEachBrand();
+        if (!success) return next(createError(status, message));
+
+        res.status(status).json({
+            success: success,
+            message: message,
+            data: data,
+        });
+    } catch (err) {
+        next(err);
+    }
+};
 
 export const getInfoOfEachBarnd = async (req, res, next) => {
     try {
