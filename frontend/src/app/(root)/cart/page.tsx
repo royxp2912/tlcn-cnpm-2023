@@ -40,6 +40,8 @@ const Cart = () => {
 
     useEffect(() => {
         dispatch(getCartByUserId(id));
+        localStorage.setItem('itemOrders', '');
+        localStorage.setItem('totalPrice', '');
     }, [length]);
 
     const handleCheckout = async () => {

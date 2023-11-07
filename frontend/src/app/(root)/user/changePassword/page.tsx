@@ -8,6 +8,7 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/utils/store';
 import { updateUserPasswordByUserId, uploadAvatar } from '@/slices/userSlice';
 import { User, updatePassword } from '@/types/type';
+import axios from '@/utils/axios';
 
 type Pass = {
     oldPass: string;
@@ -42,8 +43,9 @@ const ChangePassword = () => {
     const handleCheck = () => {
         if (passwords.newPass !== passwords.rePass) {
             toast.error('Dont Match');
-            return;
+            return false;
         }
+        return true;
     };
 
     const handleSubmit = async () => {
@@ -53,13 +55,20 @@ const ChangePassword = () => {
                 oldPass: passwords.oldPass,
                 newPass: passwords.newPass,
             };
-            console.log(user);
+            const isValid = handleCheck();
 
-            // handleCheck();
-            dispatch(updateUserPasswordByUserId(item));
+            if (!isValid) {
+                return;
+            }
+
+            const { data } = await axios.patch('/users/password', item);
+            console.log(data);
+            if (data.success) {
+                toast.success('Update Password Success');
+            }
             // console.log(res);
         } catch (error) {
-            console.log(error);
+            toast.error('Wrong Old Password');
         }
     };
     return (

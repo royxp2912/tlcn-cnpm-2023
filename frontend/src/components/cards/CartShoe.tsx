@@ -103,50 +103,39 @@ const CartShoe = ({
                 [product]: !prevState[product],
             };
 
+            if (newState[product]) {
+                const storedItems = localStorage.getItem('itemOrders');
+                let storedItemsArray: ItemCart[] = [];
+
+                if (storedItems) {
+                    storedItemsArray = JSON.parse(storedItems);
+                }
+
+                const selectedItem = cartItem.items.find((item) => item.product === product);
+
+                if (selectedItem) {
+                    storedItemsArray = storedItemsArray.filter((item) => item.product !== product);
+                    storedItemsArray.push(selectedItem);
+                    localStorage.setItem('itemOrders', JSON.stringify(storedItemsArray));
+                }
+            } else {
+                const storedItems = localStorage.getItem('itemOrders');
+                let storedItemsArray: ItemCart[] = [];
+
+                if (storedItems) {
+                    storedItemsArray = JSON.parse(storedItems);
+                    storedItemsArray = storedItemsArray.filter((item) => item.product !== product);
+                    localStorage.setItem('itemOrders', JSON.stringify(storedItemsArray));
+                }
+            }
+
             const updatedQuantity: QuantityMap = {};
             const updatedPrice: PriceMap = {};
-            const storedItems = localStorage.getItem('itemOrders');
-            let storedItemsArray: ItemCart[] = [];
 
             for (const [key, value] of Object.entries(newState)) {
                 if (value) {
                     updatedQuantity[key] = cartItem.items.find((item) => item.product === key)?.quantity!;
                     updatedPrice[key] = cartItem.items.find((item) => item.product === key)?.price!;
-                    const itemInCart = cartItem.items.find((item) => item.product === key);
-
-                    console.log("updatedQuantity: ", updatedQuantity[key]);
-                    console.log("updatedPrice: ", updatedPrice[key]);
-                    console.log("itemInCart: ", itemInCart);
-
-
-                    if (storedItems) {
-                        storedItemsArray = JSON.parse(storedItems);
-                        console.log("storedItemsArray: ", storedItemsArray);
-                    }
-
-                    if (newState[product]) {
-                        const existingItem = storedItemsArray.find((item) => item.product === product);
-                        if (!existingItem) {
-                            const newItem: ItemCart = {
-                                product: itemInCart?.product || '',
-                                image: itemInCart?.image || '',
-                                name: itemInCart?.name || '',
-                                color: itemInCart?.color || '',
-                                size: itemInCart?.size || '',
-                                quantity: updatedQuantity[product] || 0,
-                                price: updatedPrice[product] || 0,
-                            };
-                            storedItemsArray.push(newItem);
-                        }
-                    } else {
-                        // Xóa cartItem khỏi storedItemsArray nếu tồn tại
-                        const existingIndex = storedItemsArray.findIndex((item) => item.product === item.product);
-                        if (existingIndex !== -1) {
-                            storedItemsArray.splice(existingIndex, 1);
-                        }
-                    }
-
-                    localStorage.setItem('itemOrders', JSON.stringify(storedItemsArray));
                 }
             }
 
