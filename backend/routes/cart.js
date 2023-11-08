@@ -1,6 +1,7 @@
 import express from "express";
 import {
     addItemToCart,
+    addItemToCartWithoutVariant,
     createCart,
     getCartByUserID,
     removeItemFromCart,
@@ -15,6 +16,7 @@ router.get("/", getCartByUserID);
 // create
 router.post("/", createCart);
 router.post("/addToCart", addItemToCart);
+router.post("/addToCart/randomVar", addItemToCartWithoutVariant);
 router.patch("/update/quantity", updateQuantityProInCart);
 
 // remove
