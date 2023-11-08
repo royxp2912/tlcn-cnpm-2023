@@ -45,6 +45,9 @@ module.exports = {
                 bluev4: '#71BDFF',
                 red: '#FF4252',
             },
+            boxShadow: {
+                form: '2px 2px 2px 0 rgba(0,0,0,0.2)',
+            },
             keyframes: {
                 'accordion-down': {
                     from: { height: 0 },

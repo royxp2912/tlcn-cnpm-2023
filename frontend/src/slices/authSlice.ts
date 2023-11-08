@@ -51,6 +51,7 @@ export const authSlice = createSlice({
     name: 'auth',
     initialState: {
         user: {},
+        code: {},
         accessToken: '',
         loading: false,
         error: null as string | null,
@@ -89,6 +90,7 @@ export const authSlice = createSlice({
         });
         builder.addCase(sendCode.fulfilled, (state, action) => {
             state.loading = false;
+            state.code = action.payload.data.data;
         });
         builder.addCase(refreshToken.pending, (state) => {
             state.loading = true;

@@ -6,8 +6,7 @@ import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/utils/store';
-import { updateUserPasswordByUserId, uploadAvatar } from '@/slices/userSlice';
-import { User, updatePassword } from '@/types/type';
+import { User } from '@/types/type';
 import axios from '@/utils/axios';
 
 type Pass = {

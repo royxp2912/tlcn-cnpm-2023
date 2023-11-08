@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import UserNav from '@/components/shared/UserNav';
 import AddLocationAltOutlinedIcon from '@mui/icons-material/AddLocationAltOutlined';
 import LoopOutlinedIcon from '@mui/icons-material/LoopOutlined';
@@ -8,6 +8,7 @@ import { Address, User } from '@/types/type';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '@/utils/store';
 import { getAllAddressByUserId } from '@/slices/addressSlice';
+import AddAddress from '@/components/form/AddAddress';
 
 const Address = () => {
     const userString = localStorage.getItem('user');
@@ -20,6 +21,7 @@ const Address = () => {
         }
     }
     const id = user?._id as string;
+    const [open, setOpen] = useState(false);
     const dispatch = useDispatch<AppDispatch>();
     const { address }: { address: Address[] } = useSelector((state: any) => state.address);
     useEffect(() => {
@@ -36,7 +38,10 @@ const Address = () => {
                         <span className="font-bold text-xl">Delivery Address</span>
                         <span className="font-bold">Where you can receive your orders!!!</span>
                     </div>
-                    <div className="w-[186px] h-10 bg-blue bg-opacity-20 text-blue flex gap-1 items-center justify-center rounded-full font-medium">
+                    <div
+                        onClick={() => setOpen(true)}
+                        className="w-[186px] h-10 bg-blue bg-opacity-20 text-blue flex gap-1 items-center justify-center rounded-full font-medium"
+                    >
                         <AddLocationAltOutlinedIcon />
                         <span>New Address</span>
                     </div>
@@ -87,6 +92,7 @@ const Address = () => {
                     ))}
                 </div>
             </div>
+            {open && <AddAddress setOpen={setOpen} />}
         </div>
     );
 };

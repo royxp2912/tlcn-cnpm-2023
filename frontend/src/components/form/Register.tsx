@@ -13,8 +13,11 @@ import axios from '@/utils/axios';
 import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/utils/store';
-import { signUp } from '@/slices/authSlice';
+import { sendCode, signUp } from '@/slices/authSlice';
 import { toast } from 'react-toastify';
+import { useState } from 'react';
+import Form1 from './email/Form1';
+import Form2 from './email/Form2';
 
 type data = {
     data: {
@@ -38,10 +41,17 @@ const Register = () => {
             birthDay: '',
         },
     });
+    const [open, setOpen] = useState(false);
+    const [open1, setOpen1] = useState(false);
+    const [regis, setRegis] = useState(false);
+    const [code, setCode] = useState<string>('');
+    const [email, setEmail] = useState('');
 
     // 2. Define a submit handler.
     const onSubmit = async (values: z.infer<typeof RegisterValidation>) => {
         try {
+            if (!regis) return;
+
             const res = await dispatch(signUp(values));
 
             if ((res.payload as { status: number }).status === 201) {
@@ -52,6 +62,27 @@ const Register = () => {
             }
         } catch (error: any) {
             toast.error(error);
+        }
+    };
+    const handleOpen = async () => {
+        const values = form.getValues();
+        if (
+            !values.email ||
+            !values.fullName ||
+            !values.password ||
+            !values.rePassword ||
+            !values.gender ||
+            !values.birthDay
+        ) {
+            return;
+        }
+        const { data } = await axios.post('/auth/sendCode', {
+            email: values.email,
+        });
+        if (data.success) {
+            setEmail(values.email);
+            setCode(data.code);
+            setOpen(true);
         }
     };
 
@@ -187,10 +218,21 @@ const Register = () => {
                     )}
                 />
 
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full" onClick={handleOpen}>
                     Sign Up
                 </Button>
             </form>
+            {open && <Form1 setOpen={setOpen} email={email} setOpen1={setOpen1} />}
+            {open1 && (
+                <Form2
+                    setOpen={setOpen}
+                    setOpen1={setOpen1}
+                    email={email}
+                    code={code}
+                    setCode={setCode}
+                    setRegis={setRegis}
+                />
+            )}
         </Form>
     );
 };

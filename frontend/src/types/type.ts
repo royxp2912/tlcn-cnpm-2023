@@ -59,7 +59,7 @@ export type Variant = {
 };
 
 export type Address = {
-    _id: string;
+    _id?: string;
     user: string;
     receiver: string;
     phone: string;
