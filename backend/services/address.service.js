@@ -199,7 +199,10 @@ export const {
             if (!existUser.success) return existUser;
 
             const newAddress = new Address(body);
-            await newAddress.save();
+            const createdAddress = await newAddress.save();
+
+            const reuslt = await Address.find({ user: body.user });
+            if (reuslt.length === 1) await setDefault(createdAddress._id);
 
             return {
                 success: true,

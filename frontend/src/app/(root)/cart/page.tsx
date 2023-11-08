@@ -82,7 +82,7 @@ const Cart = () => {
                     type="checkbox"
                     checked={checkedAll}
                     onChange={handleCheckedAll}
-                    className={`${checkedAll === true ? 'checked:accent-blue' : ''}`}
+                    className={`${checkedAll === true ? 'checked:accent-blue cursor-pointer' : 'cursor-pointer'}`}
                 />
                 <span>Select all</span>
                 <span>Delete all</span>

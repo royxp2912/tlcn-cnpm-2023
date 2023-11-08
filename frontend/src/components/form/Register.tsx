@@ -18,6 +18,7 @@ import { toast } from 'react-toastify';
 import { useState } from 'react';
 import Form1 from './email/Form1';
 import Form2 from './email/Form2';
+import * as React from 'react';
 
 type data = {
     data: {
@@ -64,6 +65,7 @@ const Register = () => {
             toast.error(error);
         }
     };
+
     const handleOpen = async () => {
         const values = form.getValues();
         if (
@@ -222,7 +224,7 @@ const Register = () => {
                     Sign Up
                 </Button>
             </form>
-            {open && <Form1 setOpen={setOpen} email={email} setOpen1={setOpen1} />}
+            {!regis && open && <Form1 setOpen={setOpen} email={email} setOpen1={setOpen1} />}
             {open1 && (
                 <Form2
                     setOpen={setOpen}

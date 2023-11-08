@@ -199,7 +199,7 @@ const CartShoe = ({
                                 <TableCell component="th" scope="row" className="flex items-center gap-[10px]">
                                     <input
                                         type="checkbox"
-                                        className="w-5 h-5 "
+                                        className="w-5 h-5 cursor-pointer"
                                         checked={checkedAll ? checkedAll : checkedItems[item.product]}
                                         onChange={() => handleChecked(item.product)}
                                     />

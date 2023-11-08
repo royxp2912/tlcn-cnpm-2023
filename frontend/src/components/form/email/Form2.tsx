@@ -51,7 +51,7 @@ const Form2 = ({ setOpen, email, setOpen1, code, setCode, setRegis }: Props) => 
     return (
         <div className="modal">
             <div className="p-10 flex flex-col bg-white items-center rounded-md shadow-lg">
-                <span className="font-bold text-xl">Get Confirmation Code</span>
+                <span className="font-bold text-xl mb-[20px]">Get Confirmation Code</span>
 
                 <OtpInput value={otp} valueLength={6} onChange={handleChange} />
                 {check && (
@@ -75,6 +75,9 @@ const Form2 = ({ setOpen, email, setOpen1, code, setCode, setRegis }: Props) => 
                         Complete
                     </button>
                 </div>
+                <span className="font-bold text-blue mt-[20px]" onClick={handleResend}>
+                    After successful confirmation, please press the Sign Up button again to complete the registration process.
+                </span>
             </div>
         </div>
     );

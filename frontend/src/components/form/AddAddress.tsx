@@ -75,7 +75,7 @@ const AddAddress = ({ setOpen }: Props) => {
             <div className="modal-container">
                 <div className="flex items-center justify-between mb-[10px]">
                     <span className="font-bold text-xl">New Delivery Address</span>
-                    <ClearRoundedIcon onClick={() => setOpen(false)} fontSize="large" className="text-orange" />
+                    <ClearRoundedIcon onClick={() => setOpen(false)} fontSize="large" className="text-orange cursor-pointer" />
                 </div>
                 <span className="font-medium">Where you want to receive your orders!!!</span>
                 <div className="flex gap-10 flex-col mt-10 mb-5">
@@ -129,10 +129,14 @@ const AddAddress = ({ setOpen }: Props) => {
                     </div>
                 </div>
                 <div className="flex items-center justify-between font-medium text-xl">
-                    <button className="w-[360px] h-[60px] text-red bg-red bg-opacity-20 rounded-full">Cancel</button>
+                    <button
+                        onClick={() => setOpen(false)}
+                        className="w-[360px] h-[60px] text-red bg-red bg-opacity-20 rounded-full">
+                        Cancel
+                    </button>
                     <div
                         onClick={handleCreate}
-                        className="w-[360px] h-[60px] flex items-center justify-center gap-[6px] text-blue bg-blue bg-opacity-20 rounded-full"
+                        className="w-[360px] h-[60px] cursor-pointer flex items-center justify-center gap-[6px] text-blue bg-blue bg-opacity-20 rounded-full"
                     >
                         <CloudUploadOutlinedIcon />
                         <span>Save</span>

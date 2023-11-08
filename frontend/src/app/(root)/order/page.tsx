@@ -87,6 +87,10 @@ const Order = () => {
             router.push('/user/orders');
         }
     };
+
+    const handleCancel = () => {
+        router.push('/cart');
+    }
     console.log(cartItem.items);
 
     return (
@@ -167,17 +171,15 @@ const Order = () => {
                 <span className="text-lg">Payment Method</span>
                 <button
                     onClick={() => setPay('VNPAY')}
-                    className={`w-[200px] h-10 text-white text-sm bg-blue ${
-                        pay === 'VNPAY' ? 'opacity-100' : 'opacity-50'
-                    }  hover:opacity-100`}
+                    className={`w-[200px] h-10 text-white text-sm bg-blue ${pay === 'VNPAY' ? 'opacity-100' : 'opacity-50'
+                        }  hover:opacity-100`}
                 >
                     VNPAY
                 </button>
                 <button
                     onClick={() => setPay('COD')}
-                    className={`w-[200px] h-10 text-white text-sm bg-blue ${
-                        pay === 'COD' ? 'opacity-100' : 'opacity-50'
-                    } hover:opacity-100`}
+                    className={`w-[200px] h-10 text-white text-sm bg-blue ${pay === 'COD' ? 'opacity-100' : 'opacity-50'
+                        } hover:opacity-100`}
                 >
                     COD
                 </button>
@@ -185,7 +187,7 @@ const Order = () => {
                 <span className="opacity-50">Shipping fee: Free</span>
             </div>
             <div className="flex items-center justify-end w-full font-bold gap-5 text-white">
-                <button className="w-[270px] h-[60px] bg-[#FF4747] opacity-60 hover:opacity-100">Cancel</button>
+                <button className="w-[270px] h-[60px] bg-[#FF4747] opacity-60 hover:opacity-100" onClick={handleCancel}>Cancel</button>
                 <button className="w-[270px] h-[60px] bg-blue opacity-70 hover:opacity-100" onClick={handleOrder}>
                     Confirm
                 </button>

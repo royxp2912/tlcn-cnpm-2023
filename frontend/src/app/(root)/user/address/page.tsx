@@ -40,7 +40,7 @@ const Address = () => {
                     </div>
                     <div
                         onClick={() => setOpen(true)}
-                        className="w-[186px] h-10 bg-blue bg-opacity-20 text-blue flex gap-1 items-center justify-center rounded-full font-medium"
+                        className="w-[186px] h-10 cursor-pointer bg-blue bg-opacity-20 text-blue flex gap-1 items-center justify-center rounded-full font-medium"
                     >
                         <AddLocationAltOutlinedIcon />
                         <span>New Address</span>
@@ -50,16 +50,16 @@ const Address = () => {
                     {address.map((item: Address, index: number) => (
                         <div
                             key={item._id}
-                            className="border border-black border-opacity-20 px-10 pt-10 pb-5 rounded-full relative"
+                            className="border border-black border-opacity-20 px-10 pt-8 pb-6 rounded-full relative"
                         >
                             <span className="opacity-60 top-[-14px] left-[100px] absolute block w-[100px] h-5 bg-white text-center">
                                 Address {index + 1}
                             </span>
                             <div className="flex gap-[10px] absolute top-[-14px] right-20">
-                                <div className="text-blue px-1 bg-white">
+                                <div className="text-blue px-1 bg-white cursor-pointer">
                                     <LoopOutlinedIcon />
                                 </div>
-                                <div className="text-red px-1 bg-white">
+                                <div className="text-red px-1 bg-white cursor-pointer">
                                     <CloseOutlinedIcon />
                                 </div>
                             </div>
