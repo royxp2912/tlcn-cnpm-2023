@@ -103,7 +103,7 @@ const HomeShoe = () => {
                                     />
                                 </div>
                                 <div className="x-4 p-4 pb-2 bg-white rounded-tr-lg rounded-br-lg h-40">
-                                    <h1 className="font-bold mb-[10px]">{productHot.name}</h1>
+                                    <h1 className="text-[14px] font-bold mb-[10px]">{productHot.name}</h1>
                                     <div className="flex items-center justify-between">
                                         <div className="flex flex-col">
                                             <Rating size="small" name="read-only" value={productHot.rating} readOnly />
@@ -112,7 +112,7 @@ const HomeShoe = () => {
                                         <FavoriteBorderOutlinedIcon className="w-5 h-5 text-orange" />
                                     </div>
                                     <button
-                                        className="mt-3 px-2 py-2 border-2 border-orange font-bold text-orange rounded-lg"
+                                        className="mt-3 px-2 py-2 border-2 border-orange text-[12px] font-bold text-orange rounded-lg"
                                         onClick={() =>
                                             handleAddtoCart({
                                                 user: idUser,

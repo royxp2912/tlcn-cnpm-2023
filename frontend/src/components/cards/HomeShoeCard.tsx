@@ -13,8 +13,8 @@ const HomeShoeCard = () => {
     return (
         <div className="flex items-center pt-[60px] px-[212px] gap-14">
             <div className="w-5/12 flex flex-col">
-                <h1 className="font-black text-2xl text-white mb-2 font-outline-2 uppercase">{productDetail.name}</h1>
-                <p className="text-gray text-justify">{productDetail.desc}</p>
+                <h1 className="font-black text-2xl text-white mb-2 uppercase">{productDetail.name}</h1>
+                <p className="text-gray text-[14px] text-justify">{productDetail.desc}</p>
 
                 <div className="flex items-center mt-8 mb-5">
                     <span className="text-white-60 font-bold w-[60px]">Color:</span>
