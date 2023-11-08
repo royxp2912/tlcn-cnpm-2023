@@ -65,6 +65,8 @@ const Order = () => {
                 paymentMethod: pay,
                 total: totalPrice,
             };
+            console.log(item);
+
             await dispatch(createOrder(item));
             localStorage.removeItem('itemOrders');
             localStorage.removeItem('totalPrice');

@@ -17,6 +17,7 @@ import { ItemCart, Product, User, Variant, getSizeOfColor, variantColor } from '
 import { getColorOfSize } from '@/slices/variantSlice';
 import { toast } from 'react-toastify';
 import { addItemToCartByUserId } from '@/slices/cartSlice';
+import { useRouter } from 'next/navigation';
 
 const ShoesSinglePage = () => {
     const {
@@ -29,6 +30,7 @@ const ShoesSinglePage = () => {
     );
     const { variant }: { variant: variantColor[] } = useSelector((state: any) => state.variants);
     const dispatch = useDispatch<AppDispatch>();
+    const router = useRouter();
 
     const userString = localStorage.getItem('user');
     let user: User | null = null;
@@ -78,6 +80,15 @@ const ShoesSinglePage = () => {
     };
 
     const handleAddToCart = async () => {
+        if (!user) {
+            toast.error('Please login before add to cart', {
+                onClose: () => {
+                    router.push('/sign-in');
+                },
+            });
+            return;
+        }
+
         if (!color || !sizeQty.size) {
             toast.error('Choose Color And Size');
             return;
