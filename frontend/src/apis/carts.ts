@@ -1,4 +1,4 @@
-import { Cart, ItemCart, RemoveItemCart } from '@/types/type';
+import { Cart, ItemCart, RemoveItemCart, itemCartRandomVari } from '@/types/type';
 import axios from '../utils/axios';
 
 const cartsApi = {
@@ -33,6 +33,10 @@ const cartsApi = {
                 product: item.product,
             },
         });
+    },
+    addItemToCartRandomVariant: (item: itemCartRandomVari) => {
+        const url = '/carts/addToCart/randomVar';
+        return axios.post(url, item);
     },
 };
 

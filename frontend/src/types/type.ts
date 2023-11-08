@@ -136,3 +136,11 @@ export type Brand = {
     brand: string;
     quantity: number;
 };
+
+export type itemCartRandomVari = {
+    user: string;
+    product: string;
+    image: string;
+    name: string;
+    price: number;
+};

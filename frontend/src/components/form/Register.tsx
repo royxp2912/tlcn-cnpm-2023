@@ -15,7 +15,7 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/utils/store';
 import { sendCode, signUp } from '@/slices/authSlice';
 import { toast } from 'react-toastify';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Form1 from './email/Form1';
 import Form2 from './email/Form2';
 import * as React from 'react';
@@ -48,7 +48,6 @@ const Register = () => {
     const [code, setCode] = useState<string>('');
     const [email, setEmail] = useState('');
 
-    // 2. Define a submit handler.
     const onSubmit = async (values: z.infer<typeof RegisterValidation>) => {
         try {
             if (!regis) return;
