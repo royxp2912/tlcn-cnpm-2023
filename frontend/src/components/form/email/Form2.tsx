@@ -76,7 +76,8 @@ const Form2 = ({ setOpen, email, setOpen1, code, setCode, setRegis }: Props) => 
                     </button>
                 </div>
                 <span className="font-bold text-blue mt-[20px]" onClick={handleResend}>
-                    After successful confirmation, please press the Sign Up button again to complete the registration process.
+                    After successful confirmation, please press the Sign Up button again to complete the registration
+                    process.
                 </span>
             </div>
         </div>

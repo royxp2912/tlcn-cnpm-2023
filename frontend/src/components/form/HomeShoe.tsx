@@ -5,11 +5,12 @@ import Image from 'next/image';
 import { Rating } from '@mui/material';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import { useDispatch, useSelector } from 'react-redux';
-import { ItemCart, Product, User } from '@/types/type';
+import { ItemCart, Product, User, itemCartRandomVari } from '@/types/type';
 import { AppDispatch } from '@/utils/store';
 import { getProductById } from '@/slices/productSlice';
-import { addItemToCartByUserId } from '@/slices/cartSlice';
+import { addItemToCartByUserId, addItemToCartRandomVariant } from '@/slices/cartSlice';
 import { toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
 
 const HomeShoe = () => {
     const { productHots, productDetail }: { productHots: Product[]; productDetail: Product } = useSelector(
@@ -18,6 +19,7 @@ const HomeShoe = () => {
     const dispatch = useDispatch<AppDispatch>();
     const [id, setId] = useState<string>('');
     const [count, setCount] = useState(0);
+    const router = useRouter();
 
     const userString = localStorage.getItem('user');
     let user: User | null = null;
@@ -58,27 +60,28 @@ const HomeShoe = () => {
         return () => clearTimeout(timeout);
     }, [id, productHots, count]);
 
-    const handleAddtoCart = async ({ product, image, name, color, size, quantity, price }: ItemCart) => {
-        try {
-            const cart = {
-                user: idUser,
-                product,
-                image,
-                name,
-                color,
-                size,
-                quantity,
-                price,
-            };
-
-            const res = await dispatch(addItemToCartByUserId(cart));
-            console.log(res);
-            // if((res.payload as { status: number }).status === 201){
-            //     toast.success((res.payload as { status: string }).data.message)
-            // }
-        } catch (error) {
-            console.log(error);
+    const handleAddtoCart = async ({ product, image, name, price }: itemCartRandomVari) => {
+        if (!user) {
+            toast.error('Please login before add to cart', {
+                onClose: () => {
+                    router.push('/sign-in');
+                },
+            });
+            return;
         }
+        const cart = {
+            user: idUser,
+            product,
+            image,
+            name,
+            price,
+        };
+
+        await dispatch(addItemToCartRandomVariant(cart));
+        toast.success('Add to cart success');
+        // if((res.payload as { status: number }).status === 201){
+        //     toast.success((res.payload as { status: string }).data.message)
+        // }
     };
     return (
         <div className="bg-bg">
@@ -119,9 +122,6 @@ const HomeShoe = () => {
                                                 product: productHot._id,
                                                 image: productHot.images[0],
                                                 name: productHot.name,
-                                                color: 'Red',
-                                                size: 'M',
-                                                quantity: 1,
                                                 price: productHot.price,
                                             })
                                         }
