@@ -10,9 +10,29 @@ export const {
     calcTotal,
     getByUserID,
     removeFromCart,
+    deleteCartByUserID,
     addToCartWithoutVar,
     updateQuantityInCart,
 } = {
+
+    deleteCartByUserID: async (userID) => {
+        try {
+            const deleted = await Cart.findOneAndDelete({ user: userID });
+            checkedNull(deleted, "Cart doesn't exist !!!");
+
+            return {
+                success: true,
+                status: 201,
+                message: "Add Item To Cart Successful!!!",
+            }
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong in Cart !!!",
+            }
+        }
+    },
 
     addToCartWithoutVar: async (body) => {
         try {

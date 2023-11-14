@@ -75,6 +75,7 @@ const Order = () => {
                 bankCode: 'VNBANK',
             });
             window.open(data.vnpUrl);
+            window.close()
         } else {
             const item: Order = {
                 items: items,

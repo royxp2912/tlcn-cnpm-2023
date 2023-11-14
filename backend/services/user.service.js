@@ -3,6 +3,7 @@ import User from '../models/User.js';
 import { checkedNull } from '../utils/handel_null.js';
 import { deleteAllByUserID } from './address.service.js';
 import { checkedObjectId } from '../utils/checkedOthers.js';
+import { deleteCartByUserID } from './cart.service.js';
 
 export const {
     lockUser,
@@ -18,6 +19,7 @@ export const {
     updateEmailByUserID,
     updatePasswordByUserID,
 } = {
+
     updateEmailByUserID: async (userID, newEmail) => {
         try {
             checkedObjectId(userID, 'User ID');
@@ -111,6 +113,9 @@ export const {
 
             // delete Address of User
             await deleteAllByUserID(userID);
+
+            // delete Cart of User
+            await deleteCartByUserID(userID);
 
             return {
                 success: true,

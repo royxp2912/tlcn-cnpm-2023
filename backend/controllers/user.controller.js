@@ -71,7 +71,8 @@ export const findUserByKeyword = async (req, res, next) => {
 
 export const deleteUserByUserID = async (req, res, next) => {
     try {
-        const { success, message, data, status } = await deleteUserByID(req.body.user);
+        const userID = req.query.user;
+        const { success, message, data, status } = await deleteUserByID(userID);
         if (!success) return next(createError(status, message));
 
         if (data.avatar !== "https://res.cloudinary.com/dtfei3453/image/upload/v1697015386/shoeshop/avatar_default_kf1ko4.png") {

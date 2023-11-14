@@ -60,7 +60,7 @@ const HomeShoeCard = () => {
             </div>
             <div className="w-7/12 flex items-center justify-center gap-10 ">
                 <div>
-                    <Image src="/nike.png" alt="Nike" width={380} height={380} className="rotate-[-16deg]" />
+                    <Image src={productDetail.images && productDetail.images[0]} alt="Nike" width={380} height={380} className="rounded-full" />
                 </div>
                 <div className="relative w-10 h-52 flex flex-col">
                     <Image
