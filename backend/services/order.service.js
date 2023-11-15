@@ -1,5 +1,6 @@
 import User from '../models/User.js';
 import Order from '../models/Order.js';
+import Product from '../models/Product.js';
 import { checkedObjectId } from '../utils/checkedOthers.js';
 import { checkedNull } from '../utils/handel_null.js';
 import { getUserByID, updateSpentByUserID } from './user.service.js';
@@ -19,8 +20,73 @@ export const {
     paymentConfirm,
     deliveryConfirm,
     listUserThisMonth,
+    listProductSoldThisMonth,
     totalSpentByUserIDThisMonth,
+    soldProductByProIDThisMonth,
 } = {
+
+    soldProductByProIDThisMonth: async (proID, firstOfMonth, firstOfNextMonth) => {
+        try {
+            const listOrder = await Order.find({
+                "items.product": proID,
+                createdAt: {
+                    $gte: firstOfMonth,
+                    $lte: firstOfNextMonth,
+                },
+            }).select("items");
+
+            const newList = listOrder.flatMap(cur => cur.items.map((item) => {
+                return {
+                    product: item.product,
+                    quantity: item.quantity,
+                }
+            }));
+
+            const result = newList.reduce((arc, item) => {
+                if (item.product.equals(proID)) {
+                    return arc + item.quantity;
+                }
+                return arc;
+            }, 0);
+
+            const info = await Product.findById(proID).select("images name");
+
+            return {
+                product: proID,
+                name: info.name,
+                image: info.images[0],
+                sold: result,
+            };
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || 'Something went wrong in Order Service !!!',
+            };
+        }
+    },
+
+    listProductSoldThisMonth: async (firstOfMonth, firstOfNextMonth) => {
+        try {
+            const listProduct = await Order.find({
+                createdAt: {
+                    $gte: firstOfMonth,
+                    $lte: firstOfNextMonth,
+                },
+            }).select("items.product");
+
+            const newList = listProduct.flatMap(cur => cur.items.map(item => item.product));
+            const result = [...new Set(newList.map(String))];
+
+            return result;
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || 'Something went wrong in Order Service !!!',
+            };
+        }
+    },
 
     listUserThisMonth: async (firstOfMonth, firstOfNextMonth) => {
         try {

@@ -1,26 +1,73 @@
 import User from "../models/User.js";
 import Order from "../models/Order.js";
 import { getStartAndEndOfDay, getStartAndEndOfMonth, getStartAndEndOfWeek } from "../utils/handelDate.js";
-import { listUserThisMonth, totalSpentByUserIDThisMonth } from "./order.service.js";
+import { listProductSoldThisMonth, listUserThisMonth, soldProductByProIDThisMonth, totalSpentByUserIDThisMonth } from "./order.service.js";
 
 export const {
     revenueOfDay,
-    newUserOfDay,
     revenueToday,
-    newUserToday,
     revenueOfWeek,
-    newUserOfWeek,
-    revenueOfMonth,
-    newUserOfMonth,
     revenueThisWeek,
-    newUserThisWeek,
+    revenueOfMonth,
     revenueThisMonth,
+
+    newUserOfDay,
+    newUserToday,
+    newUserOfWeek,
+    newUserThisWeek,
+    newUserOfMonth,
     newUserThisMonth,
     topUserThisMonth,
+
+    totalOrderOfDay,
+    totalOrderOfWeek,
+    totalOrderOfMonth,
+    totalOrderToday,
+    totalOrderThisWeek,
+    totalOrderThisMonth,
+
+    topProductThisMonth,
+    totalProductSoldOfDay,
+    totalProductSoldOfWeek,
+    totalProductSoldOfMonth,
+    totalProductSoldToday,
+    totalProductSoldThisWeek,
+    totalProductSoldThisMonth,
+
     detailNewUserOfMonth,
     detailRevenueOfMonth,
     detailRevenueThisWeek,
+    detailTotalOrderOfMonth,
+    detailTotalOrderThisWeek,
+    detailTotalProductSoldOfMonth,
 } = {
+
+    topProductThisMonth: async () => {
+        try {
+            const today = new Date();
+            const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+            const firstDayOfNextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+
+            const listProduct = await listProductSoldThisMonth(firstDayOfMonth, firstDayOfNextMonth);
+            const listSold = await Promise.all(listProduct.map((item) => soldProductByProIDThisMonth(item, firstDayOfMonth, firstDayOfNextMonth)));
+
+            listSold.sort((a, b) => b.total - a.total);
+            listSold.length = 5;
+
+            return {
+                success: true,
+                status: 200,
+                message: "Get Top Product Sold This Month Successful!!!",
+                data: listSold,
+            }
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong in Revenue Service !!!",
+            }
+        }
+    },
 
     topUserThisMonth: async () => {
         try {
@@ -39,6 +86,102 @@ export const {
                 status: 200,
                 message: "Get Top User This Month Successful!!!",
                 data: listTotal,
+            }
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong in Revenue Service !!!",
+            }
+        }
+    },
+
+    detailTotalProductSoldOfMonth: async (month, year) => {
+        try {
+            const firstDayOfMonth = new Date(year, month - 1, 1);
+            const firstDayOfNextMonth = new Date(year, month, 1);
+            const lastDayOfMonth = new Date(firstDayOfNextMonth.getTime() - 1);
+
+            let detailTotalSold = [];
+            let today = firstDayOfMonth.getDate();
+            let lastDay = lastDayOfMonth.getDate();
+            while (today <= lastDay) {
+                let totalToday = await totalProductSoldOfDay(today, month - 1, year);
+                detailTotalSold.push({ date: today, totalSold: totalToday.data });
+
+                today += 1;
+            }
+
+            return {
+                success: true,
+                status: 200,
+                message: "Get Detail Total Product Sold Of Month Successful!!!",
+                data: detailTotalSold,
+            }
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong in Revenue Service !!!",
+            }
+        }
+    },
+
+    detailTotalOrderOfMonth: async (month, year) => {
+        try {
+            const firstDayOfMonth = new Date(year, month - 1, 1);
+            const firstDayOfNextMonth = new Date(year, month, 1);
+            const lastDayOfMonth = new Date(firstDayOfNextMonth.getTime() - 1);
+
+            let detailTotalOrder = [];
+            let today = firstDayOfMonth.getDate();
+            let lastDay = lastDayOfMonth.getDate();
+            while (today <= lastDay) {
+                let totalToday = await totalOrderOfDay(today, month - 1, year);
+                detailTotalOrder.push({ date: today, totalOrder: totalToday.data });
+
+                today += 1;
+            }
+
+            return {
+                success: true,
+                status: 200,
+                message: "Get Detail Total Order Of Month Successful!!!",
+                data: detailTotalOrder,
+            }
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong in Revenue Service !!!",
+            }
+        }
+    },
+
+    detailTotalOrderThisWeek: async () => {
+        try {
+            const dayOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+            const today = new Date();
+            const result = getStartAndEndOfWeek(today.getDate(), today.getMonth(), today.getFullYear());
+            const endOfWeek = result.end;
+            const fristOfWeek = result.start;
+
+            let i = 0;
+            let detailTotalOrder = [];
+            let endDay = endOfWeek.getDate();
+            let firstDay = fristOfWeek.getDate();
+            while (firstDay < endDay) {
+                let totalToday = await totalOrderOfDay(firstDay - 1, today.getMonth(), today.getFullYear());
+                detailTotalOrder.push({ day: dayOfWeek[i], totalOrder: totalToday.data });
+                i += 1;
+                firstDay += 1;
+            }
+
+            return {
+                success: true,
+                status: 200,
+                message: "Get Detail Total Order This Week Successful!!!",
+                data: detailTotalOrder,
             }
         } catch (err) {
             return {
@@ -135,6 +278,276 @@ export const {
                 status: 200,
                 message: "Get Detail Revenue This Week Successful!!!",
                 data: detailRevenue,
+            }
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong in Revenue Service !!!",
+            }
+        }
+    },
+
+    totalProductSoldThisMonth: async () => {
+        try {
+            const today = new Date();
+            const totalThisMonth = await totalProductSoldOfMonth(today.getMonth() + 1, today.getFullYear());
+            const totalLastMonth = await totalProductSoldOfMonth(today.getMonth() - 1, today.getFullYear());
+
+            let type = "";
+            let percent = 0;
+
+            if (totalThisMonth.data < totalLastMonth.data) {
+                type = "Reduce";
+            } else {
+                type = "Increase";
+            }
+
+            if (totalLastMonth.data === 0) {
+                percent = 100;
+                if (totalThisMonth.data === 0) {
+                    percent = 0;
+                    type = "No Change";
+                }
+            } else {
+                percent = (((totalLastMonth.data - totalThisMonth.data) / totalLastMonth.data) * 100).toFixed(2);
+            }
+
+            return {
+                success: true,
+                status: 200,
+                message: "Get Total Product Sold This Month Successful!!!",
+                data: {
+                    totalSold: totalThisMonth.data,
+                    percent: Math.abs(percent),
+                    type,
+                },
+            }
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong in Revenue Service !!!",
+            }
+        }
+    },
+
+    totalProductSoldThisWeek: async () => {
+        try {
+            const today = new Date();
+            const totalThisWeek = await totalProductSoldOfWeek(today.getDate(), today.getMonth(), today.getFullYear());
+            const totalLastWeek = await totalProductSoldOfWeek(today.getDate() - 7, today.getMonth(), today.getFullYear());
+
+            let type = "";
+            let percent = 0;
+
+            if (totalThisWeek.data < totalLastWeek.data) {
+                type = "Reduce";
+            } else {
+                type = "Increase";
+            }
+
+            if (totalLastWeek.data === 0) {
+                percent = 100;
+                if (totalThisWeek.data === 0) {
+                    percent = 0;
+                    type = "No Change";
+                }
+            } else {
+                percent = (((totalLastWeek.data - totalThisWeek.data) / totalLastWeek.data) * 100).toFixed(2);
+            }
+
+            return {
+                success: true,
+                status: 200,
+                message: "Get Total Product Sold This Week Successful!!!",
+                data: {
+                    totalSold: totalThisWeek.data,
+                    percent: Math.abs(percent),
+                    type,
+                },
+            }
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong in Revenue Service !!!",
+            }
+        }
+    },
+
+    totalProductSoldToday: async () => {
+        try {
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(today.getDate() - 1);
+
+            const totalToday = await totalProductSoldOfDay(today.getDate(), today.getMonth(), today.getFullYear());
+            const totalYesterday = await totalProductSoldOfDay(today.getDate() - 1, today.getMonth(), today.getFullYear());
+
+            let type = "";
+            let percent = 0;
+
+            if (totalToday.data > totalYesterday.data) {
+                type = "Increase";
+            } else {
+                type = "Reduce";
+            }
+
+            if (totalYesterday.data === 0) {
+                percent = 100;
+                if (totalToday.data === 0) {
+                    percent = 0;
+                    type = "No Change";
+                }
+            } else {
+                percent = (((totalToday.data - totalYesterday.data) / totalYesterday.data) * 100).toFixed(2);
+            }
+
+            return {
+                success: true,
+                status: 200,
+                message: "Get Total Product Sold Today Successful!!!",
+                data: {
+                    totalSold: totalToday.data,
+                    percent: Math.abs(percent),
+                    type,
+                },
+            }
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong in Revenue Service !!!",
+            }
+        }
+    },
+
+    totalOrderThisMonth: async () => {
+        try {
+            const today = new Date();
+            const totalThisMonth = await totalOrderOfMonth(today.getMonth() + 1, today.getFullYear());
+            const totalLastMonth = await totalOrderOfMonth(today.getMonth() - 1, today.getFullYear());
+
+            let type = "";
+            let percent = 0;
+
+            if (totalThisMonth.data < totalLastMonth.data) {
+                type = "Reduce";
+            } else {
+                type = "Increase";
+            }
+
+            if (totalLastMonth.data === 0) {
+                percent = 100;
+                if (totalThisMonth.data === 0) {
+                    percent = 0;
+                    type = "No Change";
+                }
+            } else {
+                percent = (((totalLastMonth.data - totalThisMonth.data) / totalLastMonth.data) * 100).toFixed(2);
+            }
+
+            return {
+                success: true,
+                status: 200,
+                message: "Get Total Order This Month Successful!!!",
+                data: {
+                    totalNewUser: totalThisMonth.data,
+                    percent: Math.abs(percent),
+                    type,
+                },
+            }
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong in Revenue Service !!!",
+            }
+        }
+    },
+
+    totalOrderThisWeek: async () => {
+        try {
+            const today = new Date();
+            const totalThisWeek = await totalOrderOfWeek(today.getDate(), today.getMonth(), today.getFullYear());
+            const totalLastWeek = await totalOrderOfWeek(today.getDate() - 7, today.getMonth(), today.getFullYear());
+
+            let type = "";
+            let percent = 0;
+
+            if (totalThisWeek.data < totalLastWeek.data) {
+                type = "Reduce";
+            } else {
+                type = "Increase";
+            }
+
+            if (totalLastWeek.data === 0) {
+                percent = 100;
+                if (totalThisWeek.data === 0) {
+                    percent = 0;
+                    type = "No Change";
+                }
+            } else {
+                percent = (((totalLastWeek.data - totalThisWeek.data) / totalLastWeek.data) * 100).toFixed(2);
+            }
+
+            return {
+                success: true,
+                status: 200,
+                message: "Get Total Ordere This Week Successful!!!",
+                data: {
+                    totalNewUser: totalThisWeek.data,
+                    percent: Math.abs(percent),
+                    type,
+                },
+            }
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong in Revenue Service !!!",
+            }
+        }
+    },
+
+    totalOrderToday: async () => {
+        try {
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(today.getDate() - 1);
+
+            const totalToday = await totalOrderOfDay(today.getDate(), today.getMonth(), today.getFullYear());
+            const totalYesterday = await totalOrderOfDay(today.getDate() - 1, today.getMonth(), today.getFullYear());
+
+            let type = "";
+            let percent = 0;
+
+            if (totalToday.data > totalYesterday.data) {
+                type = "Increase";
+            } else {
+                type = "Reduce";
+            }
+
+            if (totalYesterday.data === 0) {
+                percent = 100;
+                if (totalToday.data === 0) {
+                    percent = 0;
+                    type = "No Change";
+                }
+            } else {
+                percent = (((totalToday.data - totalYesterday.data) / totalYesterday.data) * 100).toFixed(2);
+            }
+
+            return {
+                success: true,
+                status: 200,
+                message: "Get Total Order Today Successful!!!",
+                data: {
+                    totalNewUser: totalToday.data,
+                    percent: Math.abs(percent),
+                    type,
+                },
             }
         } catch (err) {
             return {
@@ -405,6 +818,156 @@ export const {
                     percent: Math.abs(percent),
                     type,
                 },
+            }
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong in Revenue Service !!!",
+            }
+        }
+    },
+
+    totalProductSoldOfDay: async (day, month, year) => {
+        try {
+            const result = getStartAndEndOfDay(day, month, year);
+            const today = result.start;
+            const tomorrow = result.end;
+
+            const listOrder = await Order.find({ createdAt: { $gte: today, $lte: tomorrow } })
+                .select("items.quantity");
+
+            const listQty = listOrder.flatMap(cur => cur.items.map(item => item.quantity));
+            const total = listQty.reduce((arc, cur) => arc + cur, 0);
+
+            return {
+                success: true,
+                status: 200,
+                message: "Get Total Product Sold Of Day Successful!!!",
+                data: total,
+            }
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong in Revenue Service !!!",
+            }
+        }
+    },
+
+    totalProductSoldOfWeek: async (day, month, year) => {
+        try {
+            const result = getStartAndEndOfWeek(day, month, year);
+            const startOfWeek = result.start;
+            const endOfWeek = result.end;
+
+            const listOrder = await Order.find({ createdAt: { $gte: startOfWeek, $lte: endOfWeek } })
+                .select("items.quantity");
+
+            const listQty = listOrder.flatMap(cur => cur.items.map(item => item.quantity));
+            const total = listQty.reduce((arc, cur) => arc + cur, 0);
+
+            return {
+                success: true,
+                status: 200,
+                message: "Get Total Product Sold Of Week Successful!!!",
+                data: total,
+            }
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong in Revenue Service !!!",
+            }
+        }
+    },
+
+    totalProductSoldOfMonth: async (month, year) => {
+        try {
+            const result = getStartAndEndOfMonth(month, year);
+            const firstDayOfMonth = result.start;
+            const firstDayOfNextMonth = result.end;
+
+            const listOrder = await Order.find({ createdAt: { $gte: firstDayOfMonth, $lte: firstDayOfNextMonth } })
+                .select("items.quantity");
+
+            const listQty = listOrder.flatMap(cur => cur.items.map(item => item.quantity));
+            const total = listQty.reduce((arc, cur) => arc + cur, 0);
+
+            return {
+                success: true,
+                status: 200,
+                message: "Get Total Product Sold Of Month Successful!!!",
+                data: total,
+            }
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong in Revenue Service !!!",
+            }
+        }
+    },
+
+    totalOrderOfDay: async (day, month, year) => {
+        try {
+            const result = getStartAndEndOfDay(day, month, year);
+            const today = result.start;
+            const tomorrow = result.end;
+
+            const listOrder = await Order.find({ createdAt: { $gte: today, $lte: tomorrow } });
+
+            return {
+                success: true,
+                status: 200,
+                message: "Get Total Order ToDay Successful!!!",
+                data: listOrder.length,
+            }
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong in Revenue Service !!!",
+            }
+        }
+    },
+
+    totalOrderOfWeek: async (day, month, year) => {
+        try {
+            const result = getStartAndEndOfWeek(day, month, year);
+            const startOfWeek = result.start;
+            const endOfWeek = result.end;
+
+            const listOrder = await Order.find({ createdAt: { $gte: startOfWeek, $lte: endOfWeek } });
+
+            return {
+                success: true,
+                status: 200,
+                message: "Get Total Order Of Week Successful!!!",
+                data: listOrder.length,
+            }
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong in Revenue Service !!!",
+            }
+        }
+    },
+
+    totalOrderOfMonth: async (month, year) => {
+        try {
+            const result = getStartAndEndOfMonth(month, year);
+            const firstDayOfMonth = result.start;
+            const firstDayOfNextMonth = result.end;
+
+            const listOrder = await Order.find({ createdAt: { $gte: firstDayOfMonth, $lte: firstDayOfNextMonth } });
+
+            return {
+                success: true,
+                status: 200,
+                message: "Get Total Order Of Month Successful!!!",
+                data: listOrder.length,
             }
         } catch (err) {
             return {
