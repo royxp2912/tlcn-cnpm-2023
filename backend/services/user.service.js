@@ -17,8 +17,29 @@ export const {
     updateUserByID,
     getAllUserByStatus,
     updateEmailByUserID,
+    updateSpentByUserID,
     updatePasswordByUserID,
 } = {
+
+    updateSpentByUserID: async (userID, spent) => {
+        try {
+            checkedObjectId(userID, 'User ID');
+            const result = await User.findByIdAndUpdate(userID, { $inc: { spent: spent } }, { new: true });
+            checkedNull(result, "User don't exist !!!");
+
+            return {
+                success: true,
+                status: 200,
+                message: 'Update User Spent Successful !!!',
+            };
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || 'Something went wrong in User Service !!!',
+            };
+        }
+    },
 
     updateEmailByUserID: async (userID, newEmail) => {
         try {
