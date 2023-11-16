@@ -1,6 +1,7 @@
 import Category from "../models/Category.js";
 import { checkedNull } from "../utils/handel_null.js";
 import { checkedObjectId } from "../utils/checkedOthers.js";
+import { countByCateID } from "./product.service.js";
 
 export const {
     getAll,
@@ -125,11 +126,14 @@ export const {
                 .limit(pageSize)
                 .skip(pageSize * (pageNumber - 1))
                 .select("-createdAt -updatedAt -__v");
+
+            const result = await Promise.all(listCate.map((cate) => countByCateID(cate._id)));
+
             return {
                 success: true,
                 status: 200,
                 message: "Get All Category Successful!!!",
-                data: listCate,
+                data: result,
             }
         } catch (err) {
             return {

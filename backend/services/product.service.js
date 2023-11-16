@@ -12,6 +12,7 @@ export const {
     getHotDeal,
     deleteById,
     findByColor,
+    countByCateID,
     findByKeyword,
     getAllByCateID,
     findByColorAndSort,
@@ -22,6 +23,27 @@ export const {
     getQuantityHotDealByBrandName,
     getQuantityHotDealByEachBrand,
 } = {
+
+    countByCateID: async (cateID) => {
+        try {
+            const totalProduct = await Product.find({ category: cateID });
+            const detail = await Category.findById(cateID)
+                .select("-createdAt -updatedAt -__v");
+            const result = {
+                ...detail._doc,
+                total: totalProduct.length
+            }
+
+            return result;
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message,
+            };
+        }
+    },
+
     getQuantityHotDealByEachBrand: async () => {
         try {
             const listBrand = ['Adidas', 'Nike', 'Vans', 'Balenciaga', 'Converse', 'Puma'];
