@@ -6,6 +6,7 @@ import { countByCateID } from "./product.service.js";
 export const {
     getAll,
     create,
+    update,
     getById,
     deleteById,
     updateName,
@@ -21,6 +22,41 @@ export const {
                 message: "Create Successful!!!",
                 data: savedCate,
             }
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message,
+            }
+        }
+    },
+
+    update: async (cateID, name, image) => {
+        try {
+            checkedObjectId(cateID, "Category ID");
+            let savedCate;
+            let oldUrl;
+            if (image) {
+                savedCate = await Category.findByIdAndUpdate(
+                    cateID,
+                    { $set: { image: image, } },
+                );
+                oldUrl = savedCate.image;
+            }
+            if (name) {
+                savedCate = await Category.findByIdAndUpdate(
+                    cateID,
+                    { $set: { name: name, } },
+                );
+            }
+
+            return {
+                success: true,
+                status: 200,
+                message: "Update Category Successful!!!",
+                data: oldUrl,
+            }
+
         } catch (err) {
             return {
                 success: false,
