@@ -3,6 +3,7 @@ import cloudinary from "../utils/cloudinary_config.js";
 import { extractPublicId } from 'cloudinary-build-url';
 import {
     create,
+    update,
     getAll,
     getById,
     updateName,
@@ -52,6 +53,39 @@ export const deleteCategory = async (req, res, next) => {
         const publicId = extractPublicId(data?.image);
         const result = await cloudinary.uploader.destroy(publicId);
         if (result.result !== "ok") return next(createError(404, "Xóa Hình ảnh trên Cloud thất bại!"));
+
+        res.status(status).send({
+            success: success,
+            message: message,
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const updateCategory = async (req, res, next) => {
+    let image;
+    if (req.file) image = req.file.path;
+    try {
+        const { success, message, data, status } = await update(req.body.category, req.body.name, image);
+        if (!success) {
+            if (image) {
+                // xóa image mới nếu update thất bại !!!
+                const publicId = extractPublicId(image);
+                const result = await cloudinary.uploader.destroy(publicId);
+                if (result.result !== "ok") return next(createError(404, "Xóa Hình ảnh trên Cloud thất bại!"));
+                return next(createError(status, message));
+            } else {
+                return next(createError(status, message));
+            }
+        }
+
+        if (image) {
+            // xóa image cũ nếu update image mới thành công!!!
+            const publicId = extractPublicId(data);
+            const result = await cloudinary.uploader.destroy(publicId);
+            if (result.result !== "ok") return next(createError(404, "Xóa Hình ảnh trên Cloud thất bại!"));
+        }
 
         res.status(status).send({
             success: success,

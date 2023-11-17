@@ -128,7 +128,7 @@ const SingleSellShoe = ({ products, productHots, active }: Props) => {
                             </div>
                             <div className="px-5 py-1 flex flex-col items-center gap-2">
                                 <div className="flex items-center justify-between mt-3 mb-3 w-full">
-                                    <span className="text-gray text-lg font-bold">{product.brand}</span>
+                                    <span className="text-gray text-[14px] font-bold">{product.brand}</span>
                                     {/* {hoveredItems[index] ? (
                                           <FavoriteRoundedIcon
                                               className="w-5 h-5 text-orange"
@@ -141,10 +141,10 @@ const SingleSellShoe = ({ products, productHots, active }: Props) => {
                                           />
                                       )} */}
                                 </div>
-                                <h1 className="font-bold text-lg truncate w-full">{product.name}</h1>
+                                <h1 className="font-bold text-[16px] text-center truncate w-full">{product.name}</h1>
                                 <Rating name="read-only" value={product.rating} readOnly />
-                                <span className="font-bold text-money">${product.price}</span>
-                                <div className="w-full flex items-center justify-between text-gray font-bold">
+                                <span className="font-bold text-[16px] text-money">${product.price}</span>
+                                <div className="w-full flex text-[14px] items-center justify-between text-gray font-bold">
                                     <span>Sold</span>
                                     <span>{product.sold}</span>
                                 </div>

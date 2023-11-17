@@ -15,7 +15,26 @@ import {
     getHotDeal,
     getQuantityByEachBrand,
     getQuantityHotDealByEachBrand,
+    getByStatus,
 } from '../services/product.service.js';
+
+export const getProductByStatus = async (req, res, next) => {
+    try {
+        const statusProduct = req.query.status || "Available";
+        const pageSize = req.query.pageSize || 8;
+        const pageNumber = req.query.pageNumber || 1;
+        const { success, message, data, status } = await getByStatus(statusProduct, pageSize, pageNumber);
+        if (!success) return next(createError(status, message));
+
+        res.status(status).json({
+            success: success,
+            message: message,
+            data: data,
+        });
+    } catch (err) {
+        next(err);
+    }
+};
 
 export const getQuantityHotDealOfEachBarnd = async (req, res, next) => {
     try {

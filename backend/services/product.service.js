@@ -11,7 +11,9 @@ export const {
     getById,
     getHotDeal,
     deleteById,
+    getByStatus,
     findByColor,
+    countByCateID,
     findByKeyword,
     getAllByCateID,
     findByColorAndSort,
@@ -22,6 +24,27 @@ export const {
     getQuantityHotDealByBrandName,
     getQuantityHotDealByEachBrand,
 } = {
+
+    countByCateID: async (cateID) => {
+        try {
+            const totalProduct = await Product.find({ category: cateID });
+            const detail = await Category.findById(cateID)
+                .select("-createdAt -updatedAt -__v");
+            const result = {
+                ...detail._doc,
+                total: totalProduct.length
+            }
+
+            return result;
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message,
+            };
+        }
+    },
+
     getQuantityHotDealByEachBrand: async () => {
         try {
             const listBrand = ['Adidas', 'Nike', 'Vans', 'Balenciaga', 'Converse', 'Puma'];
@@ -623,6 +646,29 @@ export const {
                 success: true,
                 status: 200,
                 message: 'Get All Product Successful!!!',
+                data: checkedNull(listProduct, "Resource doesn't exist !!!"),
+            };
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message,
+            };
+        }
+    },
+
+    getByStatus: async (status, pageSize, pageNumber) => {
+        try {
+            const listProduct = await Product.find({ status: status })
+                .limit(pageSize)
+                .skip(pageSize * (pageNumber - 1))
+                .populate({ path: 'category', select: 'name' })
+                .select('-createdAt -updatedAt -__v');
+
+            return {
+                success: true,
+                status: 200,
+                message: 'Get All Product By Status Successful!!!',
                 data: checkedNull(listProduct, "Resource doesn't exist !!!"),
             };
         } catch (err) {

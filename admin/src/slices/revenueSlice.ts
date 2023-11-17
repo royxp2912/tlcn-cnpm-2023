@@ -208,7 +208,7 @@ export const getDetailTotalProductSoldOfMonth = createAsyncThunk(
     },
 );
 
-export const userSlice = createSlice({
+export const revenueSlice = createSlice({
     name: 'revenue',
     initialState: {
         today: {},
@@ -265,7 +265,7 @@ export const userSlice = createSlice({
         });
         builder.addCase(getRevenueThisWeek.fulfilled, (state, action) => {
             state.loading = false;
-            state.detailMonth = action.payload.data.data;
+            state.thisWeek = action.payload.data.data;
         });
         builder.addCase(getDetailRevenueThisWeek.pending, (state) => {
             state.loading = true;
@@ -276,7 +276,7 @@ export const userSlice = createSlice({
         });
         builder.addCase(getDetailRevenueThisWeek.fulfilled, (state, action) => {
             state.loading = false;
-            state.detailMonth = action.payload.data.data;
+            state.detailWeek = action.payload.data.data;
         });
 
         //User
@@ -289,7 +289,7 @@ export const userSlice = createSlice({
         });
         builder.addCase(getToTalUser.fulfilled, (state, action) => {
             state.loading = false;
-            state.detailMonth = action.payload.data.data;
+            state.today = action.payload.data.data;
         });
         builder.addCase(getToTalUserThisMonth.pending, (state) => {
             state.loading = true;
@@ -300,7 +300,7 @@ export const userSlice = createSlice({
         });
         builder.addCase(getToTalUserThisMonth.fulfilled, (state, action) => {
             state.loading = false;
-            state.today = action.payload.data.data;
+            state.thisMonth = action.payload.data.data;
         });
         builder.addCase(getUserRevenueThisWeek.pending, (state) => {
             state.loading = true;
@@ -311,7 +311,7 @@ export const userSlice = createSlice({
         });
         builder.addCase(getUserRevenueThisWeek.fulfilled, (state, action) => {
             state.loading = false;
-            state.thisMonth = action.payload.data.data;
+            state.thisWeek = action.payload.data.data;
         });
         builder.addCase(getDetailTotalNewUserOfMonth.pending, (state) => {
             state.loading = true;
@@ -333,7 +333,7 @@ export const userSlice = createSlice({
         });
         builder.addCase(getTop5UserThisMonth.fulfilled, (state, action) => {
             state.loading = false;
-            state.detailMonth = action.payload.data.data;
+            state.top5 = action.payload.data.data;
         });
 
         //Orders
@@ -346,7 +346,7 @@ export const userSlice = createSlice({
         });
         builder.addCase(getTotalOrderToday.fulfilled, (state, action) => {
             state.loading = false;
-            state.detailMonth = action.payload.data.data;
+            state.today = action.payload.data.data;
         });
         builder.addCase(getTotalOrderThisWeek.pending, (state) => {
             state.loading = true;
@@ -357,7 +357,7 @@ export const userSlice = createSlice({
         });
         builder.addCase(getTotalOrderThisWeek.fulfilled, (state, action) => {
             state.loading = false;
-            state.today = action.payload.data.data;
+            state.thisWeek = action.payload.data.data;
         });
         builder.addCase(getTotalOrderThisMonth.pending, (state) => {
             state.loading = true;
@@ -379,7 +379,7 @@ export const userSlice = createSlice({
         });
         builder.addCase(getDetailTotalOrderThisWeek.fulfilled, (state, action) => {
             state.loading = false;
-            state.detailMonth = action.payload.data.data;
+            state.detailWeek = action.payload.data.data;
         });
         builder.addCase(getDetailTotalOrderOfMonth.pending, (state) => {
             state.loading = true;
@@ -403,7 +403,7 @@ export const userSlice = createSlice({
         });
         builder.addCase(getTotalProductSoldToday.fulfilled, (state, action) => {
             state.loading = false;
-            state.detailMonth = action.payload.data.data;
+            state.today = action.payload.data.data;
         });
         builder.addCase(getTotalProductSoldThisWeek.pending, (state) => {
             state.loading = true;
@@ -414,7 +414,7 @@ export const userSlice = createSlice({
         });
         builder.addCase(getTotalProductSoldThisWeek.fulfilled, (state, action) => {
             state.loading = false;
-            state.today = action.payload.data.data;
+            state.thisWeek = action.payload.data.data;
         });
         builder.addCase(getTotalProductSoldThisMonth.pending, (state) => {
             state.loading = true;
@@ -447,9 +447,9 @@ export const userSlice = createSlice({
         });
         builder.addCase(getTop5TotalProductSoldThisMonth.fulfilled, (state, action) => {
             state.loading = false;
-            state.detailMonth = action.payload.data.data;
+            state.top5 = action.payload.data.data;
         });
     },
 });
 
-export default userSlice.reducer;
+export default revenueSlice.reducer;

@@ -1,10 +1,12 @@
 import Category from "../models/Category.js";
 import { checkedNull } from "../utils/handel_null.js";
 import { checkedObjectId } from "../utils/checkedOthers.js";
+import { countByCateID } from "./product.service.js";
 
 export const {
     getAll,
     create,
+    update,
     getById,
     deleteById,
     updateName,
@@ -20,6 +22,41 @@ export const {
                 message: "Create Successful!!!",
                 data: savedCate,
             }
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message,
+            }
+        }
+    },
+
+    update: async (cateID, name, image) => {
+        try {
+            checkedObjectId(cateID, "Category ID");
+            let savedCate;
+            let oldUrl;
+            if (image) {
+                savedCate = await Category.findByIdAndUpdate(
+                    cateID,
+                    { $set: { image: image, } },
+                );
+                oldUrl = savedCate.image;
+            }
+            if (name) {
+                savedCate = await Category.findByIdAndUpdate(
+                    cateID,
+                    { $set: { name: name, } },
+                );
+            }
+
+            return {
+                success: true,
+                status: 200,
+                message: "Update Category Successful!!!",
+                data: oldUrl,
+            }
+
         } catch (err) {
             return {
                 success: false,
@@ -125,11 +162,14 @@ export const {
                 .limit(pageSize)
                 .skip(pageSize * (pageNumber - 1))
                 .select("-createdAt -updatedAt -__v");
+
+            const result = await Promise.all(listCate.map((cate) => countByCateID(cate._id)));
+
             return {
                 success: true,
                 status: 200,
                 message: "Get All Category Successful!!!",
-                data: listCate,
+                data: result,
             }
         } catch (err) {
             return {

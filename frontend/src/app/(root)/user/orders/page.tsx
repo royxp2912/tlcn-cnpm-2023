@@ -41,9 +41,8 @@ const Orders = () => {
                             const isActive = status === item;
                             return (
                                 <span
-                                    className={`w-[140px] h-max block pt-[10px] pb-[12px] text-center uppercase ${
-                                        isActive && 'text-blue border-b-2 border-b-blue'
-                                    }`}
+                                    className={`w-[140px] h-max block pt-[10px] pb-[12px] text-center uppercase ${isActive && 'text-blue border-b-2 border-b-blue'
+                                        }`}
                                     onClick={() => setStatus(item)}
                                     key={i}
                                 >
@@ -58,9 +57,9 @@ const Orders = () => {
                     ) : (
                         orders.map((order) => (
                             <div key={order._id} className="px-[15px] pt-[15px] pb-[10px] shadow-lg">
-                                <div className="flex justify-between mb-[15px]">
-                                    <h1>ID: abcscs</h1>
-                                    <h1 className="uppercase">{order.status}</h1>
+                                <div className="flex justify-between mb-[8px]">
+                                    <h1 className='ml-[12px] font-bold text-[14px]'>ID: {order._id}</h1>
+                                    <h1 className="mr-[12px] font-bold text-[14px] uppercase">{order.status}</h1>
                                 </div>
                                 <Border />
                                 <div>
@@ -68,7 +67,7 @@ const Orders = () => {
                                         <div key={product.product}>
                                             <div className="flex items-center gap-5 my-[10px]">
                                                 <Image
-                                                    src="/nike.png"
+                                                    src={product.image}
                                                     alt="Ảnh"
                                                     width={100}
                                                     height={100}
@@ -78,7 +77,7 @@ const Orders = () => {
                                                 <div className="w-full font-medium text-lg">
                                                     <div className="flex justify-between">
                                                         <span>{product.name}</span>
-                                                        <span className="text-blue opacity-60">Submit a review</span>
+                                                        <span className="text-blue text-[14px] opacity-60">Submit a review</span>
                                                     </div>
                                                     <div className="flex gap-[100px] mt-[18px] mb-[14px] text-sm opacity-70">
                                                         <span>Color: {product.color}</span>

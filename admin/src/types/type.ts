@@ -166,3 +166,8 @@ export type findUser = {
     pageSize: number;
     pageNumber: number;
 };
+
+export type revenue = {
+    revenue: number;
+    percent: number;
+};

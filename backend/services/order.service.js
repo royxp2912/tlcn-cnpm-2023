@@ -1,9 +1,11 @@
+import User from '../models/User.js';
 import Order from '../models/Order.js';
+import Product from '../models/Product.js';
 import { checkedObjectId } from '../utils/checkedOthers.js';
 import { checkedNull } from '../utils/handel_null.js';
-import { getUserByID } from './user.service.js';
+import { getUserByID, updateSpentByUserID } from './user.service.js';
 import { removeFromCart } from './cart.service.js';
-import { reduceQuantity } from './variant.service.js';
+import { reduceQuantity, checkedQuantity } from './variant.service.js';
 import { updateSoldOfProduct } from './product.service.js';
 
 export const {
@@ -17,7 +19,124 @@ export const {
     getAllByStatus,
     paymentConfirm,
     deliveryConfirm,
+    listUserThisMonth,
+    listProductSoldThisMonth,
+    totalSpentByUserIDThisMonth,
+    soldProductByProIDThisMonth,
 } = {
+
+    soldProductByProIDThisMonth: async (proID, firstOfMonth, firstOfNextMonth) => {
+        try {
+            const listOrder = await Order.find({
+                "items.product": proID,
+                createdAt: {
+                    $gte: firstOfMonth,
+                    $lte: firstOfNextMonth,
+                },
+            }).select("items");
+
+            const newList = listOrder.flatMap(cur => cur.items.map((item) => {
+                return {
+                    product: item.product,
+                    quantity: item.quantity,
+                }
+            }));
+
+            const result = newList.reduce((arc, item) => {
+                if (item.product.equals(proID)) {
+                    return arc + item.quantity;
+                }
+                return arc;
+            }, 0);
+
+            const info = await Product.findById(proID).select("images name");
+
+            return {
+                product: proID,
+                name: info.name,
+                image: info.images[0],
+                sold: result,
+            };
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || 'Something went wrong in Order Service !!!',
+            };
+        }
+    },
+
+    listProductSoldThisMonth: async (firstOfMonth, firstOfNextMonth) => {
+        try {
+            const listProduct = await Order.find({
+                createdAt: {
+                    $gte: firstOfMonth,
+                    $lte: firstOfNextMonth,
+                },
+            }).select("items.product");
+
+            const newList = listProduct.flatMap(cur => cur.items.map(item => item.product));
+            const result = [...new Set(newList.map(String))];
+
+            return result;
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || 'Something went wrong in Order Service !!!',
+            };
+        }
+    },
+
+    listUserThisMonth: async (firstOfMonth, firstOfNextMonth) => {
+        try {
+            const listUser = await Order.find({
+                createdAt: {
+                    $gte: firstOfMonth,
+                    $lte: firstOfNextMonth,
+                },
+            }).select("user");
+
+            const newList = listUser.map((item) => item.user);
+            const result = [...new Set(newList.map(String))];
+
+            return result;
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || 'Something went wrong in Order Service !!!',
+            };
+        }
+    },
+
+    totalSpentByUserIDThisMonth: async (userID, firstOfMonth, firstOfNextMonth) => {
+        try {
+            const listOrder = await Order.find({
+                user: userID,
+                createdAt: {
+                    $gte: firstOfMonth,
+                    $lte: firstOfNextMonth,
+                },
+            }).select("total");
+
+            const result = listOrder.reduce((arc, item) => arc + item.total, 0);
+            const info = await User.findById(userID).select("avatar fullName");
+
+            return {
+                user: userID,
+                fullName: info.fullName,
+                avatar: info.avatar,
+                total: result,
+            };
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || 'Something went wrong in Order Service !!!',
+            };
+        }
+    },
 
     findByKeyword: async (keyword, pageSize, pageNumber) => {
         try {
@@ -296,6 +415,20 @@ export const {
             const existUser = await getUserByID(body.userID);
             if (!existUser.success) return existUser;
 
+            const listCheck = await Promise.all(body.items.map((item) => {
+                let result = checkedQuantity(item.product, item.color, item.size, item.quantity);
+                return result;
+            }));
+
+            const isStocking = listCheck.reduce((arc, cur) => {
+                return {
+                    success: arc && cur.success,
+                    status: cur.status,
+                    message: cur.message,
+                }
+            }, true);
+            if (!isStocking.success) return isStocking
+
             const newOrder = new Order({
                 user: body.userID,
                 items: body.items,
@@ -310,6 +443,8 @@ export const {
                 reduceQuantity(item.product, item.color, item.size, item.quantity);
                 updateSoldOfProduct(item.product, item.quantity);
             }));
+
+            await updateSpentByUserID(body.userID, body.total);
 
             return {
                 success: true,

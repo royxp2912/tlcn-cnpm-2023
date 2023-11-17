@@ -3,6 +3,7 @@ import User from '../models/User.js';
 import { checkedNull } from '../utils/handel_null.js';
 import { deleteAllByUserID } from './address.service.js';
 import { checkedObjectId } from '../utils/checkedOthers.js';
+import { deleteCartByUserID } from './cart.service.js';
 
 export const {
     lockUser,
@@ -16,8 +17,30 @@ export const {
     updateUserByID,
     getAllUserByStatus,
     updateEmailByUserID,
+    updateSpentByUserID,
     updatePasswordByUserID,
 } = {
+
+    updateSpentByUserID: async (userID, spent) => {
+        try {
+            checkedObjectId(userID, 'User ID');
+            const result = await User.findByIdAndUpdate(userID, { $inc: { spent: spent } }, { new: true });
+            checkedNull(result, "User don't exist !!!");
+
+            return {
+                success: true,
+                status: 200,
+                message: 'Update User Spent Successful !!!',
+            };
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || 'Something went wrong in User Service !!!',
+            };
+        }
+    },
+
     updateEmailByUserID: async (userID, newEmail) => {
         try {
             checkedObjectId(userID, 'User ID');
@@ -111,6 +134,9 @@ export const {
 
             // delete Address of User
             await deleteAllByUserID(userID);
+
+            // delete Cart of User
+            await deleteCartByUserID(userID);
 
             return {
                 success: true,

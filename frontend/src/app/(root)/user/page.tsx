@@ -33,7 +33,7 @@ const Profile = () => {
     return (
         <div className="flex px-20 mt-10 gap-5">
             <UserNav />
-            <div className="shadow-lg py-[120px] pl-[90px] pr-[120px] flex rounded-lg items-center w-[1100px]">
+            <div className="shadow-lg py-[40px] pl-[90px] pr-[120px] flex rounded-lg items-center w-[1100px]">
                 <div className="flex flex-col items-center gap-5 mr-[100px]">
                     <Image src={user?.avatar ?? ''} alt="Avt" width={140} height={140} className="rounded-full" />
                     <div className="w-40 h-10 rounded-lg bg-blue bg-opacity-20 text-blue flex items-center justify-center gap-2">

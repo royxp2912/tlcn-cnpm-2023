@@ -1,11 +1,25 @@
+'use client';
+import { getRevenueThisMonth, getRevenueThisWeek, getRevenueToday } from '@/slices/revenueSlice';
+import { total } from '@/types/type';
+import { AppDispatch } from '@/utils/store';
 import Image from 'next/image';
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 type Props = {
     path: string;
 };
 
 const Revenue = ({ path }: Props) => {
+    const dispath = useDispatch<AppDispatch>();
+    const { today, thisWeek, thisMonth }: { today: total; thisWeek: total; thisMonth: total } = useSelector(
+        (state: any) => state.revenue,
+    );
+    useEffect(() => {
+        dispath(getRevenueToday());
+        dispath(getRevenueThisWeek());
+        dispath(getRevenueThisMonth());
+    }, [dispath]);
     return (
         <div className="flex gap-5 ">
             <div className="p-5 w-[400px] flex flex-col items-center shadow-revenue bg-white ">
@@ -15,17 +29,22 @@ const Revenue = ({ path }: Props) => {
                 </div>
                 <div className="flex gap-[50px] mt-5">
                     <Image
-                        src="/increase.png"
+                        src={`${today.percent >= 0 ? '/increase.png' : '/decrease.png'}`}
                         alt="increase"
                         width={54}
                         height={54}
-                        className="border-4 border-[#00BE98]"
+                        className={`border-4 ${today.percent >= 0 ? 'border-[#00BE98]' : 'border-red'}`}
                     />
                     <div className="flex flex-col gap-[6px] items-center">
-                        <span className="text-3xl text-[#00BE98]">$299,43</span>
+                        <span className={`text-3xl ${today.percent >= 0 ? 'text-[#00BE98]' : 'text-red'}`}>
+                            ${today.total}
+                        </span>
                         <div className="text-sm flex items-center gap-1">
-                            <span>Increase</span>
-                            <span className="font-bold text-[#00BE98]">+17%</span>
+                            <span>{today.percent >= 0 ? 'Increase' : 'Decrease'}</span>
+                            <span className={`font-bold ${today.percent >= 0 ? 'text-[#00BE98]' : 'text-red'}`}>
+                                {today.percent >= 0 ? '+' : '-'}
+                                {today.percent}%
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -33,21 +52,26 @@ const Revenue = ({ path }: Props) => {
             <div className="p-5 w-[400px] flex flex-col items-center shadow-revenue bg-white">
                 <div className="flex items-center justify-between w-full">
                     <span className="font-bold">{path}</span>
-                    <span className="font-medium text-sm opacity-60">Today</span>
+                    <span className="font-medium text-sm opacity-60">This Week</span>
                 </div>
                 <div className="flex gap-[50px] mt-5">
                     <Image
-                        src="/increase.png"
+                        src={`${thisWeek.percent >= 0 ? '/increase.png' : '/decrease.png'}`}
                         alt="increase"
                         width={54}
                         height={54}
-                        className="border-4 border-[#00BE98]"
+                        className={`border-4 ${thisWeek.percent >= 0 ? 'border-[#00BE98]' : 'border-red'}`}
                     />
                     <div className="flex flex-col gap-[6px] items-center">
-                        <span className="text-3xl text-[#00BE98]">$299,43</span>
+                        <span className={`text-3xl ${thisWeek.percent >= 0 ? 'text-[#00BE98]' : 'text-red'}`}>
+                            ${thisWeek.total}
+                        </span>
                         <div className="text-sm flex items-center gap-1">
-                            <span>Increase</span>
-                            <span className="font-bold text-[#00BE98]">+17%</span>
+                            <span>{thisWeek.percent >= 0 ? 'Increase' : 'Decrease'}</span>
+                            <span className={`font-bold ${thisWeek.percent >= 0 ? 'text-[#00BE98]' : 'text-red'}`}>
+                                {thisWeek.percent >= 0 ? '+' : '-'}
+                                {thisWeek.percent}%
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -55,21 +79,26 @@ const Revenue = ({ path }: Props) => {
             <div className="p-5 w-[400px] flex flex-col items-center shadow-revenue bg-white">
                 <div className="flex items-center justify-between w-full">
                     <span className="font-bold">{path}</span>
-                    <span className="font-medium text-sm opacity-60">Today</span>
+                    <span className="font-medium text-sm opacity-60">This Month</span>
                 </div>
                 <div className="flex gap-[50px] mt-5">
                     <Image
-                        src="/increase.png"
+                        src={`${thisMonth.percent >= 0 ? '/increase.png' : '/decrease.png'}`}
                         alt="increase"
                         width={54}
                         height={54}
-                        className="border-4 border-[#00BE98]"
+                        className={`border-4 ${thisMonth.percent >= 0 ? 'border-[#00BE98]' : 'border-red'}`}
                     />
                     <div className="flex flex-col gap-[6px] items-center">
-                        <span className="text-3xl text-[#00BE98]">$299,43</span>
+                        <span className={`text-3xl ${thisMonth.percent >= 0 ? 'text-[#00BE98]' : 'text-red'}`}>
+                            ${thisMonth.total}
+                        </span>
                         <div className="text-sm flex items-center gap-1">
-                            <span>Increase</span>
-                            <span className="font-bold text-[#00BE98]">+17%</span>
+                            <span>{thisMonth.percent >= 0 ? 'Increase' : 'Decrease'}</span>
+                            <span className={`font-bold ${thisMonth.percent >= 0 ? 'text-[#00BE98]' : 'text-red'}`}>
+                                {thisMonth.percent >= 0 ? '+' : '-'}
+                                {thisMonth.percent}%
+                            </span>
                         </div>
                     </div>
                 </div>

@@ -3,7 +3,7 @@ import Border from '@/components/shared/Border';
 import { getAllAddressByUserId } from '@/slices/addressSlice';
 import { getCartByUserId } from '@/slices/cartSlice';
 import { createOrder } from '@/slices/orderSlice';
-import { Address, Cart, ItemCart, Order, User } from '@/types/type';
+import type { Address, Cart, ItemCart, Order, User } from '@/types/type';
 import axios from '@/utils/axios';
 import { AppDispatch } from '@/utils/store';
 import Image from 'next/image';
@@ -65,6 +65,8 @@ const Order = () => {
                 paymentMethod: pay,
                 total: totalPrice,
             };
+            console.log(item);
+
             await dispatch(createOrder(item));
             localStorage.removeItem('itemOrders');
             localStorage.removeItem('totalPrice');
