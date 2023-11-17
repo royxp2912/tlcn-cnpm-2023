@@ -52,7 +52,16 @@ export const {
             const listSold = await Promise.all(listProduct.map((item) => soldProductByProIDThisMonth(item, firstDayOfMonth, firstDayOfNextMonth)));
 
             listSold.sort((a, b) => b.total - a.total);
-            listSold.length = 5;
+            if (listSold.length < 5) {
+                for (let i = listSold.length; i < 5; i++) {
+                    listSold.push({
+                        id: "",
+                        name: "",
+                        image: "",
+                        count: "",
+                    });
+                }
+            }
 
             return {
                 success: true,
