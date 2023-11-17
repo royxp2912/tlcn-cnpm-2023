@@ -1,8 +1,8 @@
-import ordersApi from '@/apis/orders';
-import { Order, updateOrder } from '@/types/type';
+import ordersApi from '@/apis/order';
+import { Order, deleteOrder, updateOrder } from '@/types/type';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-export const getAllOrder = createAsyncThunk('orders/getAllOrder', async (_, { rejectWithValue }) => {
+export const getAllOrders = createAsyncThunk('orders/getAllOrders', async (_, { rejectWithValue }) => {
     try {
         const res = await ordersApi.getAllOrder();
         return res;
@@ -51,7 +51,7 @@ export const createOrder = createAsyncThunk(
     async (item: Order, { dispatch, rejectWithValue }) => {
         try {
             const res = await ordersApi.createOrder(item);
-            await dispatch(getAllOrderByUserId(item.userID));
+            await dispatch(getAllOrderByUserId(item.user));
             return res;
         } catch (err: any) {
             return rejectWithValue(err.res.data);
@@ -64,8 +64,9 @@ export const updateOrderStatusByOrderId = createAsyncThunk(
     async (order: updateOrder, { dispatch, rejectWithValue }) => {
         try {
             const res = await ordersApi.updateOrderStatusByOrderId(order);
-            await dispatch(getAllOrderByUserId(order.user));
-            await dispatch(getOrderByOrderId(order.order));
+            await dispatch(getAllOrders);
+            // await dispatch(getAllOrderByUserId(order.user));
+            // await dispatch(getOrderByOrderId(order.order));
             return res;
         } catch (err: any) {
             return rejectWithValue(err.res.data);
@@ -78,6 +79,7 @@ export const cancelOrderByOrderId = createAsyncThunk(
     async (order: updateOrder, { dispatch, rejectWithValue }) => {
         try {
             const res = await ordersApi.cancelOrderByOrderId(order);
+            await dispatch(getAllOrders);
             await dispatch(getAllOrderByUserId(order.user));
             await dispatch(getOrderByOrderId(order.order));
             return res;
@@ -101,6 +103,31 @@ export const comfirmPaymentOrderByOrderId = createAsyncThunk(
         }
     },
 );
+export const deleteAllOrderByUserId = createAsyncThunk(
+    'orders/deleteAllOrderByUserId',
+    async (item: deleteOrder, { dispatch, rejectWithValue }) => {
+        try {
+            const res = await ordersApi.deleteAllOrderByUserId(item);
+            await dispatch(getAllOrders);
+            return res;
+        } catch (err: any) {
+            return rejectWithValue(err.res.data);
+        }
+    },
+);
+
+export const deleteAllOrderByOrderId = createAsyncThunk(
+    'orders/deleteAllOrderByUserId',
+    async (order: string, { dispatch, rejectWithValue }) => {
+        try {
+            const res = await ordersApi.deleteAllOrderByOrderId(order);
+            await dispatch(getOrderByOrderId(order));
+            return res;
+        } catch (err: any) {
+            return rejectWithValue(err.res.data);
+        }
+    },
+);
 
 export const orderSlice = createSlice({
     name: 'orders',
@@ -112,6 +139,17 @@ export const orderSlice = createSlice({
     },
     reducers: {},
     extraReducers: (builder) => {
+        builder.addCase(getAllOrders.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(getAllOrders.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.error.message || null;
+        });
+        builder.addCase(getAllOrders.fulfilled, (state, action) => {
+            state.loading = false;
+            state.orders = action.payload.data.data;
+        });
         builder.addCase(getAllOrderByUserId.pending, (state) => {
             state.loading = true;
         });
@@ -144,7 +182,7 @@ export const orderSlice = createSlice({
         });
         builder.addCase(getOrderByOrderId.fulfilled, (state, action) => {
             state.loading = false;
-            state.order = action.payload.data;
+            state.order = action.payload.data.data;
         });
         builder.addCase(createOrder.pending, (state) => {
             state.loading = true;
@@ -184,6 +222,16 @@ export const orderSlice = createSlice({
             state.error = action.error.message || null;
         });
         builder.addCase(comfirmPaymentOrderByOrderId.fulfilled, (state, action) => {
+            state.loading = false;
+        });
+        builder.addCase(deleteAllOrderByOrderId.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(deleteAllOrderByOrderId.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.error.message || null;
+        });
+        builder.addCase(deleteAllOrderByOrderId.fulfilled, (state, action) => {
             state.loading = false;
         });
     },
