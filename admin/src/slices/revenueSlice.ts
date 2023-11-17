@@ -1,4 +1,5 @@
 import revenueApi from '@/apis/revenue';
+import { day } from '@/types/type';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 export const getRevenueToday = createAsyncThunk('revenue/getRevenueToday', async (_, { rejectWithValue }) => {
@@ -20,9 +21,9 @@ export const getRevenueThisMonth = createAsyncThunk('revenue/getRevenueThisMonth
 
 export const getDetailRevenueOfMonth = createAsyncThunk(
     'revenue/getDetailRevenueOfMonth',
-    async (_, { rejectWithValue }) => {
+    async (item: day, { rejectWithValue }) => {
         try {
-            const res = await revenueApi.getDetailRevenueOfMonth();
+            const res = await revenueApi.getDetailRevenueOfMonth(item);
             return res;
         } catch (err: any) {
             return rejectWithValue(err.res.data);
@@ -68,22 +69,19 @@ export const getToTalUserThisMonth = createAsyncThunk(
     },
 );
 
-export const getUserRevenueThisWeek = createAsyncThunk(
-    'revenue/getUserRevenueThisWeek',
-    async (_, { rejectWithValue }) => {
-        try {
-            const res = await revenueApi.getUserRevenueThisWeek();
-            return res;
-        } catch (err: any) {
-            return rejectWithValue(err.res.data);
-        }
-    },
-);
+export const getTotalUserThisWeek = createAsyncThunk('revenue/getTotalUserThisWeek', async (_, { rejectWithValue }) => {
+    try {
+        const res = await revenueApi.getTotalUserThisWeek();
+        return res;
+    } catch (err: any) {
+        return rejectWithValue(err.res.data);
+    }
+});
 export const getDetailTotalNewUserOfMonth = createAsyncThunk(
     'revenue/getDetailTotalNewUserOfMonth',
-    async (_, { rejectWithValue }) => {
+    async (item: day, { rejectWithValue }) => {
         try {
-            const res = await revenueApi.getDetailTotalNewUserOfMonth();
+            const res = await revenueApi.getDetailTotalNewUserOfMonth(item);
             return res;
         } catch (err: any) {
             return rejectWithValue(err.res.data);
@@ -142,9 +140,9 @@ export const getDetailTotalOrderThisWeek = createAsyncThunk(
 );
 export const getDetailTotalOrderOfMonth = createAsyncThunk(
     'revenue/getDetailTotalOrderOfMonth',
-    async (_, { rejectWithValue }) => {
+    async (item: day, { rejectWithValue }) => {
         try {
-            const res = await revenueApi.getDetailTotalOrderOfMonth();
+            const res = await revenueApi.getDetailTotalOrderOfMonth(item);
             return res;
         } catch (err: any) {
             return rejectWithValue(err.res.data);
@@ -198,9 +196,9 @@ export const getTop5TotalProductSoldThisMonth = createAsyncThunk(
 );
 export const getDetailTotalProductSoldOfMonth = createAsyncThunk(
     'revenue/getDetailTotalProductSoldOfMonth',
-    async (_, { rejectWithValue }) => {
+    async (item: day, { rejectWithValue }) => {
         try {
-            const res = await revenueApi.getDetailTotalProductSoldOfMonth();
+            const res = await revenueApi.getDetailTotalProductSoldOfMonth(item);
             return res;
         } catch (err: any) {
             return rejectWithValue(err.res.data);
@@ -291,6 +289,17 @@ export const revenueSlice = createSlice({
             state.loading = false;
             state.today = action.payload.data.data;
         });
+        builder.addCase(getTotalUserThisWeek.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(getTotalUserThisWeek.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.error.message || null;
+        });
+        builder.addCase(getTotalUserThisWeek.fulfilled, (state, action) => {
+            state.loading = false;
+            state.thisMonth = action.payload.data.data;
+        });
         builder.addCase(getToTalUserThisMonth.pending, (state) => {
             state.loading = true;
         });
@@ -299,17 +308,6 @@ export const revenueSlice = createSlice({
             state.error = action.error.message || null;
         });
         builder.addCase(getToTalUserThisMonth.fulfilled, (state, action) => {
-            state.loading = false;
-            state.thisMonth = action.payload.data.data;
-        });
-        builder.addCase(getUserRevenueThisWeek.pending, (state) => {
-            state.loading = true;
-        });
-        builder.addCase(getUserRevenueThisWeek.rejected, (state, action) => {
-            state.loading = false;
-            state.error = action.error.message || null;
-        });
-        builder.addCase(getUserRevenueThisWeek.fulfilled, (state, action) => {
             state.loading = false;
             state.thisWeek = action.payload.data.data;
         });

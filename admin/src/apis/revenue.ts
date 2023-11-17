@@ -1,3 +1,4 @@
+import { day } from '@/types/type';
 import axios from '@/utils/axios';
 
 const revenueApi = {
@@ -9,9 +10,16 @@ const revenueApi = {
         const url = '/revenue/thisMonth';
         return axios.get(url);
     },
-    getDetailRevenueOfMonth: () => {
+    getDetailRevenueOfMonth: (item: day) => {
         const url = '/revenue/detailOfMonth';
-        return axios.get(url);
+        const month = item.month;
+        const year = item.year;
+        return axios.get(url, {
+            params: {
+                month: month,
+                year: year,
+            },
+        });
     },
     getRevenueThisWeek: () => {
         const url = '/revenue/thisWeek';
@@ -29,13 +37,20 @@ const revenueApi = {
         const url = '/revenue/users/thisMonth';
         return axios.get(url);
     },
-    getUserRevenueThisWeek: () => {
+    getTotalUserThisWeek: () => {
         const url = '/revenue/users/thisWeek';
         return axios.get(url);
     },
-    getDetailTotalNewUserOfMonth: () => {
+    getDetailTotalNewUserOfMonth: (item: day) => {
         const url = '/revenue/users/detailOfMonth';
-        return axios.get(url);
+        const month = item.month;
+        const year = item.year;
+        return axios.get(url, {
+            params: {
+                month: month,
+                year: year,
+            },
+        });
     },
     getTop5UserThisMonth: () => {
         const url = '/revenue/users/topThisMonth';
@@ -57,9 +72,16 @@ const revenueApi = {
         const url = '/revenue/orders/detailThisWeek';
         return axios.get(url);
     },
-    getDetailTotalOrderOfMonth: () => {
+    getDetailTotalOrderOfMonth: (item: day) => {
         const url = '/revenue/orders/detailOfMonth';
-        return axios.get(url);
+        const month = item.month;
+        const year = item.year;
+        return axios.get(url, {
+            params: {
+                month: month,
+                year: year,
+            },
+        });
     },
     getTotalProductSoldToday: () => {
         const url = '/revenue/products/today';
@@ -77,9 +99,16 @@ const revenueApi = {
         const url = '/revenue/products/topThisMonth';
         return axios.get(url);
     },
-    getDetailTotalProductSoldOfMonth: () => {
+    getDetailTotalProductSoldOfMonth: (item: day) => {
         const url = '/revenue/products/detailOfMonth';
-        return axios.get(url);
+        const month = item.month;
+        const year = item.year;
+        return axios.get(url, {
+            params: {
+                month: month,
+                year: year,
+            },
+        });
     },
 };
 

@@ -167,7 +167,21 @@ export type findUser = {
     pageNumber: number;
 };
 
-export type revenue = {
-    revenue: number;
+export type total = {
+    total: number;
     percent: number;
+};
+
+export type day = {
+    month: number;
+    year: number;
+};
+
+export type detailTotal = [day: string, total: number];
+
+export type top = {
+    id: string;
+    name: string;
+    image: string;
+    count: number;
 };

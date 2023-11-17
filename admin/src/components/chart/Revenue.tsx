@@ -1,5 +1,18 @@
 'use client';
-import { getRevenueThisMonth, getRevenueThisWeek, getRevenueToday } from '@/slices/revenueSlice';
+import {
+    getRevenueThisMonth,
+    getRevenueThisWeek,
+    getRevenueToday,
+    getToTalUser,
+    getToTalUserThisMonth,
+    getTotalOrderThisMonth,
+    getTotalOrderThisWeek,
+    getTotalOrderToday,
+    getTotalProductSoldThisMonth,
+    getTotalProductSoldThisWeek,
+    getTotalProductSoldToday,
+    getTotalUserThisWeek,
+} from '@/slices/revenueSlice';
 import { total } from '@/types/type';
 import { AppDispatch } from '@/utils/store';
 import Image from 'next/image';
@@ -16,9 +29,23 @@ const Revenue = ({ path }: Props) => {
         (state: any) => state.revenue,
     );
     useEffect(() => {
-        dispath(getRevenueToday());
-        dispath(getRevenueThisWeek());
-        dispath(getRevenueThisMonth());
+        if (path == 'Revenue') {
+            dispath(getRevenueToday());
+            dispath(getRevenueThisWeek());
+            dispath(getRevenueThisMonth());
+        } else if (path == 'New Users') {
+            dispath(getToTalUser());
+            dispath(getTotalUserThisWeek());
+            dispath(getToTalUserThisMonth());
+        } else if (path === 'Total Orders') {
+            dispath(getTotalOrderToday());
+            dispath(getTotalOrderThisWeek());
+            dispath(getTotalOrderThisMonth());
+        } else {
+            dispath(getTotalProductSoldToday());
+            dispath(getTotalProductSoldThisWeek());
+            dispath(getTotalProductSoldThisMonth());
+        }
     }, [dispath]);
     return (
         <div className="flex gap-5 ">
