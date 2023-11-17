@@ -107,7 +107,7 @@ export const {
             let lastDay = lastDayOfMonth.getDate();
             while (today <= lastDay) {
                 let totalToday = await totalProductSoldOfDay(today, month - 1, year);
-                detailTotalSold.push({ date: today, totalSold: totalToday.data });
+                detailTotalSold.push({ date: today, total: totalToday.data });
 
                 today += 1;
             }
@@ -138,7 +138,7 @@ export const {
             let lastDay = lastDayOfMonth.getDate();
             while (today <= lastDay) {
                 let totalToday = await totalOrderOfDay(today, month - 1, year);
-                detailTotalOrder.push({ date: today, totalOrder: totalToday.data });
+                detailTotalOrder.push({ date: today, total: totalToday.data });
 
                 today += 1;
             }
@@ -172,7 +172,7 @@ export const {
             let firstDay = fristOfWeek.getDate();
             while (firstDay < endDay) {
                 let totalToday = await totalOrderOfDay(firstDay - 1, today.getMonth(), today.getFullYear());
-                detailTotalOrder.push({ day: dayOfWeek[i], totalOrder: totalToday.data });
+                detailTotalOrder.push({ day: dayOfWeek[i], total: totalToday.data });
                 i += 1;
                 firstDay += 1;
             }
@@ -203,7 +203,7 @@ export const {
             let lastDay = lastDayOfMonth.getDate();
             while (today <= lastDay) {
                 let newUserToday = await newUserOfDay(today, month - 1, year);
-                detailRevenue.push({ date: today, totalNewUser: newUserToday.data });
+                detailRevenue.push({ date: today, total: newUserToday.data });
 
                 today += 1;
             }
@@ -234,7 +234,7 @@ export const {
             let lastDay = lastDayOfMonth.getDate();
             while (today <= lastDay) {
                 let revToday = await revenueOfDay(today, month - 1, year);
-                detailRevenue.push({ date: today, revenue: revToday.data });
+                detailRevenue.push({ date: today, total: revToday.data });
 
                 today += 1;
             }
@@ -268,7 +268,7 @@ export const {
             let firstDay = fristOfWeek.getDate();
             while (firstDay < endDay) {
                 let revToday = await revenueOfDay(firstDay - 1, today.getMonth(), today.getFullYear());
-                detailRevenue.push({ day: dayOfWeek[i], revenue: revToday.data });
+                detailRevenue.push({ day: dayOfWeek[i], total: revToday.data });
                 i += 1;
                 firstDay += 1;
             }
@@ -318,7 +318,7 @@ export const {
                 status: 200,
                 message: "Get Total Product Sold This Month Successful!!!",
                 data: {
-                    totalSold: totalThisMonth.data,
+                    total: totalThisMonth.data,
                     percent: Math.abs(percent),
                     type,
                 },
@@ -362,7 +362,7 @@ export const {
                 status: 200,
                 message: "Get Total Product Sold This Week Successful!!!",
                 data: {
-                    totalSold: totalThisWeek.data,
+                    total: totalThisWeek.data,
                     percent: Math.abs(percent),
                     type,
                 },
@@ -409,7 +409,7 @@ export const {
                 status: 200,
                 message: "Get Total Product Sold Today Successful!!!",
                 data: {
-                    totalSold: totalToday.data,
+                    total: totalToday.data,
                     percent: Math.abs(percent),
                     type,
                 },
@@ -453,7 +453,7 @@ export const {
                 status: 200,
                 message: "Get Total Order This Month Successful!!!",
                 data: {
-                    totalNewUser: totalThisMonth.data,
+                    total: totalThisMonth.data,
                     percent: Math.abs(percent),
                     type,
                 },
@@ -497,7 +497,7 @@ export const {
                 status: 200,
                 message: "Get Total Ordere This Week Successful!!!",
                 data: {
-                    totalNewUser: totalThisWeek.data,
+                    total: totalThisWeek.data,
                     percent: Math.abs(percent),
                     type,
                 },
@@ -544,7 +544,7 @@ export const {
                 status: 200,
                 message: "Get Total Order Today Successful!!!",
                 data: {
-                    totalNewUser: totalToday.data,
+                    total: totalToday.data,
                     percent: Math.abs(percent),
                     type,
                 },
@@ -588,7 +588,7 @@ export const {
                 status: 200,
                 message: "Get Revenue This Month Successful!!!",
                 data: {
-                    totalNewUser: totalUserThisMonth.data,
+                    total: totalUserThisMonth.data,
                     percent: Math.abs(percent),
                     type,
                 },
@@ -632,7 +632,7 @@ export const {
                 status: 200,
                 message: "Get Total New User This Week Successful!!!",
                 data: {
-                    totalNewUser: totalUserThisWeek.data,
+                    total: totalUserThisWeek.data,
                     percent: Math.abs(percent),
                     type,
                 },
@@ -679,7 +679,7 @@ export const {
                 status: 200,
                 message: "Get Total New User Today Successful!!!",
                 data: {
-                    totalNewUser: totalUserToday.data,
+                    total: totalUserToday.data,
                     percent: Math.abs(percent),
                     type,
                 },
@@ -710,7 +710,7 @@ export const {
 
             if (revLastMonth.data === 0) {
                 percent = 100;
-                if (revLastMonth.data === 0) {
+                if (revThisMonth.data === 0) {
                     percent = 0;
                     type = "No Change";
                 }
@@ -723,7 +723,7 @@ export const {
                 status: 200,
                 message: "Get Revenue This Month Successful!!!",
                 data: {
-                    revenue: revThisMonth.data,
+                    total: revThisMonth.data,
                     percent: Math.abs(percent),
                     type,
                 },
@@ -754,7 +754,7 @@ export const {
 
             if (revLastWeek.data === 0) {
                 percent = 100;
-                if (revLastWeek.data === 0) {
+                if (revThisWeek.data === 0) {
                     percent = 0;
                     type = "No Change";
                 }
@@ -767,7 +767,7 @@ export const {
                 status: 200,
                 message: "Get Revenue This Week Successful!!!",
                 data: {
-                    revenue: revThisWeek.data,
+                    total: revThisWeek.data,
                     percent: Math.abs(percent),
                     type,
                 },
@@ -814,7 +814,7 @@ export const {
                 status: 200,
                 message: "Get Revenue Today Successful!!!",
                 data: {
-                    revenue: revToday.data,
+                    total: revToday.data,
                     percent: Math.abs(percent),
                     type,
                 },
