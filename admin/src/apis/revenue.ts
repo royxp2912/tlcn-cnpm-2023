@@ -52,7 +52,7 @@ const revenueApi = {
             },
         });
     },
-    getTop5UserThisMonth: () => {
+    getTopUserThisMonth: () => {
         const url = '/revenue/users/topThisMonth';
         return axios.get(url);
     },
@@ -95,7 +95,7 @@ const revenueApi = {
         const url = '/revenue/products/thisMonth';
         return axios.get(url);
     },
-    getTop5TotalProductSoldThisMonth: () => {
+    getTopTotalProductSoldThisMonth: () => {
         const url = '/revenue/products/topThisMonth';
         return axios.get(url);
     },

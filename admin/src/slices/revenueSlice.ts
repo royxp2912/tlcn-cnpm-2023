@@ -88,9 +88,9 @@ export const getDetailTotalNewUserOfMonth = createAsyncThunk(
         }
     },
 );
-export const getTop5UserThisMonth = createAsyncThunk('revenue/getTop5UserThisMonth', async (_, { rejectWithValue }) => {
+export const getTopUserThisMonth = createAsyncThunk('revenue/getTopUserThisMonth', async (_, { rejectWithValue }) => {
     try {
-        const res = await revenueApi.getTop5UserThisMonth();
+        const res = await revenueApi.getTopUserThisMonth();
         return res;
     } catch (err: any) {
         return rejectWithValue(err.res.data);
@@ -183,11 +183,11 @@ export const getTotalProductSoldThisMonth = createAsyncThunk(
         }
     },
 );
-export const getTop5TotalProductSoldThisMonth = createAsyncThunk(
-    'revenue/getTop5TotalProductSoldThisMonth',
+export const getTopTotalProductSoldThisMonth = createAsyncThunk(
+    'revenue/getTopTotalProductSoldThisMonth',
     async (_, { rejectWithValue }) => {
         try {
-            const res = await revenueApi.getTop5TotalProductSoldThisMonth();
+            const res = await revenueApi.getTopTotalProductSoldThisMonth();
             return res;
         } catch (err: any) {
             return rejectWithValue(err.res.data);
@@ -214,7 +214,7 @@ export const revenueSlice = createSlice({
         thisMonth: {},
         detailMonth: {},
         detailWeek: {},
-        top5: {},
+        top: [],
         loading: false,
         error: null as string | null,
     },
@@ -322,16 +322,16 @@ export const revenueSlice = createSlice({
             state.loading = false;
             state.detailMonth = action.payload.data.data;
         });
-        builder.addCase(getTop5UserThisMonth.pending, (state) => {
+        builder.addCase(getTopUserThisMonth.pending, (state) => {
             state.loading = true;
         });
-        builder.addCase(getTop5UserThisMonth.rejected, (state, action) => {
+        builder.addCase(getTopUserThisMonth.rejected, (state, action) => {
             state.loading = false;
             state.error = action.error.message || null;
         });
-        builder.addCase(getTop5UserThisMonth.fulfilled, (state, action) => {
+        builder.addCase(getTopUserThisMonth.fulfilled, (state, action) => {
             state.loading = false;
-            state.top5 = action.payload.data.data;
+            state.top = action.payload.data.data;
         });
 
         //Orders
@@ -436,16 +436,16 @@ export const revenueSlice = createSlice({
             state.loading = false;
             state.detailMonth = action.payload.data.data;
         });
-        builder.addCase(getTop5TotalProductSoldThisMonth.pending, (state) => {
+        builder.addCase(getTopTotalProductSoldThisMonth.pending, (state) => {
             state.loading = true;
         });
-        builder.addCase(getTop5TotalProductSoldThisMonth.rejected, (state, action) => {
+        builder.addCase(getTopTotalProductSoldThisMonth.rejected, (state, action) => {
             state.loading = false;
             state.error = action.error.message || null;
         });
-        builder.addCase(getTop5TotalProductSoldThisMonth.fulfilled, (state, action) => {
+        builder.addCase(getTopTotalProductSoldThisMonth.fulfilled, (state, action) => {
             state.loading = false;
-            state.top5 = action.payload.data.data;
+            state.top = action.payload.data.data;
         });
     },
 });
