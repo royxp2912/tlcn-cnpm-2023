@@ -52,10 +52,10 @@ export const {
             const info = await Product.findById(proID).select("images name");
 
             return {
-                product: proID,
+                id: proID,
                 name: info.name,
                 image: info.images[0],
-                sold: result,
+                count: result,
             };
         } catch (err) {
             return {
@@ -124,10 +124,10 @@ export const {
             const info = await User.findById(userID).select("avatar fullName");
 
             return {
-                user: userID,
-                fullName: info.fullName,
-                avatar: info.avatar,
-                total: result,
+                id: userID,
+                name: info.fullName,
+                image: info.avatar,
+                count: result,
             };
         } catch (err) {
             return {
