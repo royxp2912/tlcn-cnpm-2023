@@ -63,7 +63,7 @@ const Revenue = ({ path }: Props) => {
                         className={`border-4 ${today.percent >= 0 ? 'border-[#00BE98]' : 'border-red'}`}
                     />
                     <div className="flex flex-col gap-[6px] items-center">
-                        <span className={`text-3xl ${today.percent >= 0 ? 'text-[#00BE98]' : 'text-red'}`}>
+                        <span className={`text-3xl ${today.percent >= 0 ? 'text-[#00BE98]' : 'text-red'} font-bak`}>
                             ${today.total}
                         </span>
                         <div className="text-sm flex items-center gap-1">
@@ -90,7 +90,7 @@ const Revenue = ({ path }: Props) => {
                         className={`border-4 ${thisWeek.percent >= 0 ? 'border-[#00BE98]' : 'border-red'}`}
                     />
                     <div className="flex flex-col gap-[6px] items-center">
-                        <span className={`text-3xl ${thisWeek.percent >= 0 ? 'text-[#00BE98]' : 'text-red'}`}>
+                        <span className={`text-3xl ${thisWeek.percent >= 0 ? 'text-[#00BE98]' : 'text-red'} font-bak`}>
                             ${thisWeek.total}
                         </span>
                         <div className="text-sm flex items-center gap-1">
@@ -117,7 +117,7 @@ const Revenue = ({ path }: Props) => {
                         className={`border-4 ${thisMonth.percent >= 0 ? 'border-[#00BE98]' : 'border-red'}`}
                     />
                     <div className="flex flex-col gap-[6px] items-center">
-                        <span className={`text-3xl ${thisMonth.percent >= 0 ? 'text-[#00BE98]' : 'text-red'}`}>
+                        <span className={`text-3xl ${thisMonth.percent >= 0 ? 'text-[#00BE98]' : 'text-red'} font-bak`}>
                             ${thisMonth.total}
                         </span>
                         <div className="text-sm flex items-center gap-1">

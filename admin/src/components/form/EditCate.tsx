@@ -1,7 +1,7 @@
 'use client';
 import { TextField } from '@mui/material';
 import Image from 'next/image';
-import React, { Dispatch, useRef, useState } from 'react';
+import React, { Dispatch, useEffect, useRef, useState } from 'react';
 import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
 import { Category } from '@/types/type';
 import axios from '@/utils/axios';
@@ -13,7 +13,7 @@ type Props = {
 
 const EditCate = ({ item, setLoad }: Props) => {
     const [image, setImage] = useState<File[]>();
-    const [name, setName] = useState<string>('');
+    const [name, setName] = useState<string>(item.name);
 
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -23,7 +23,6 @@ const EditCate = ({ item, setLoad }: Props) => {
             fileInputRef.current.click();
         }
     };
-
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files;
         const arr = [];
@@ -37,13 +36,14 @@ const EditCate = ({ item, setLoad }: Props) => {
     const handleSubmit = async () => {
         const formData = new FormData();
 
-        formData.append('name', name);
         image &&
             image.forEach((i) => {
                 formData.append('images', i);
             });
-
-        const { data } = await axios.post('/categories', formData, {
+        formData.append('category', item._id);
+        formData.append('name', name);
+        console.log(formData.get('category'));
+        const { data } = await axios.put('/categories/update', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
@@ -52,7 +52,9 @@ const EditCate = ({ item, setLoad }: Props) => {
             setLoad(true);
         }
     };
-
+    useEffect(() => {
+        setName(item.name);
+    }, [item]);
     return (
         <div className="flex flex-col w-[400px] gap-5">
             <span className="ml-5 mb-5 font-bold text-lg">Edit Category Details</span>
@@ -63,6 +65,7 @@ const EditCate = ({ item, setLoad }: Props) => {
                 inputProps={{
                     className: 'text-lg',
                 }}
+                value={name}
                 onChange={(e) => setName(e.target.value)}
             />
             <div className="h-[170px] shadow-cate2 relative border flex justify-center">

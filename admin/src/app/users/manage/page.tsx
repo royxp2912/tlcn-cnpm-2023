@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -18,34 +18,41 @@ import { getAllUser } from '@/slices/userSlice';
 import { useSelector } from 'react-redux';
 import { User } from '@/types/type';
 
-function createData(
-    stt: number,
-    fullName: string,
-    email: string,
-    gender: string,
-    spent: number,
-    role: string,
-    status: boolean,
-) {
-    return { stt, fullName, email, gender, spent, role, status };
-}
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { useRouter } from 'next/navigation';
 
 const UserManage = () => {
     const dispatch = useDispatch<AppDispatch>();
     const { users }: { users: User[] } = useSelector((state: any) => state.users);
-    const rows = [
-        createData(1, 'Hi', 'Hello', 'male', 100, 'User', true),
-        createData(2, 'Hi', 'Hello', 'male', 100, 'User', false),
-        createData(3, 'Hi', 'Hello', 'male', 100, 'User', false),
-        createData(4, 'Hi', 'Hello', 'male', 100, 'User', false),
-        createData(5, 'Hi', 'Hello', 'male', 100, 'User', false),
-    ];
+    const [page, setPage] = useState<string>('Management');
+
+    const router = useRouter();
+
+    const handleChange = (event: SelectChangeEvent) => {
+        setPage(event.target.value as string);
+        router.push('/users');
+    };
     useEffect(() => {
         dispatch(getAllUser());
     }, [dispatch]);
-    console.log(users);
     return (
         <div className="flex flex-col gap-[10px]">
+            <FormControl className="w-[150px]">
+                <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={page}
+                    label="Page"
+                    onChange={handleChange}
+                    variant="standard"
+                    className="font-bold text-lg"
+                >
+                    <MenuItem value="Statistical">Statistical</MenuItem>
+                    <MenuItem value="Management">Management</MenuItem>
+                </Select>
+            </FormControl>
             <div className="flex gap-5 items-center ml-[15px]">
                 <input type="checkbox" className="w-[26px] h-[26px] border-[#D9D9D9]" />
                 <button className="h-[40px] w-[100px] font-medium text-sm bg-blue bg-opacity-60 text-white rounded-lg">

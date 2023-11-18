@@ -35,7 +35,7 @@ export type updateEmail = {
 };
 
 export type Category = {
-    _id?: string;
+    _id: string;
     name: string;
     image: string;
 };

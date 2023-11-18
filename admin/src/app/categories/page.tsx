@@ -16,6 +16,7 @@ const Categories = () => {
     const { categories }: { categories: Category[] } = useSelector((state: any) => state.categories);
     const [load, setLoad] = useState(false);
     const [item, setItem] = useState<Category>({
+        _id: '',
         name: '',
         image: '',
     });

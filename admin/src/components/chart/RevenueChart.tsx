@@ -45,7 +45,6 @@ const RevenueChart = ({ path }: Props) => {
                         <XAxis dataKey="day" scale="point" padding={{ left: 10, right: 10 }} />
                         <YAxis />
                         <Tooltip />
-                        <Legend />
                         <CartesianGrid strokeDasharray="3 3" />
                         <Bar dataKey="total" fill="#8884d8" background={{ fill: '#eee' }} />
                     </BarChart>

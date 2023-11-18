@@ -10,6 +10,7 @@ type Props = {
 const CategoriesList = ({ categories, setItem }: Props) => {
     const handleSet = (item: Category) => {
         setItem({
+            _id: item._id,
             name: item.name,
             image: item.image,
         });

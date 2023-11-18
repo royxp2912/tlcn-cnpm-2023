@@ -6,9 +6,9 @@ import TextField from '@mui/material/TextField';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/utils/store';
-import { createProduct } from '@/slices/productSlice';
-import { Product } from '@/types/type';
 import axios from '@/utils/axios';
+import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
+import { useRouter } from 'next/navigation';
 
 const AddNewProduct = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -28,7 +28,7 @@ const AddNewProduct = () => {
         price: 0,
         desc: '',
     });
-
+    const router = useRouter();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleToggleInput = () => {
@@ -102,31 +102,41 @@ const AddNewProduct = () => {
 
     return (
         <div className="flex flex-col gap-[10px]">
-            <div>
-                <span>Back</span>
-                <span>Add New Product</span>
+            <div className="font-bold">
+                <div className="flex items-center" onClick={() => router.push('/warehouse/manage')}>
+                    <ChevronLeftRoundedIcon />
+                    <span>Back</span>
+                </div>
+                <span className="block mt-2 text-center text-lg">Add New Product</span>
             </div>
             <div className="px-[60px] py-5 bg-white shadow-product mt-5">
                 <span className="font-bold text-lg">Images Of Product</span>
-                <div>
+                <div className="flex gap-[10px] mt-5 justify-center">
                     <div className="flex gap-5">
                         {image &&
                             image.map((item, i) => (
-                                <Image
-                                    key={i}
-                                    src={`/${item.name}`}
-                                    alt="Shoes"
-                                    width={100}
-                                    height={100}
-                                    className="bg-product"
-                                />
+                                <div className="w-[100px] h-[100px]">
+                                    <Image
+                                        key={i}
+                                        src={`/${item.name}`}
+                                        alt="Shoes"
+                                        width={100}
+                                        height={100}
+                                        className="shadow-cate"
+                                    />
+                                </div>
                             ))}
                     </div>
-                    <div onClick={handleToggleInput}>
-                        <AddPhotoAlternateOutlinedIcon />
-                        <span>Add Image</span>
+                    <div>
+                        <div
+                            onClick={handleToggleInput}
+                            className="opacity-50 w-[100px] h-[100px] border-4 border-dashed flex flex-col items-center justify-center gap-[5px] p-[10px]"
+                        >
+                            <AddPhotoAlternateOutlinedIcon />
+                            <span className="text-center">Add Image</span>
+                        </div>
+                        <input type="file" hidden ref={fileInputRef} onChange={handleFileChange} multiple />
                     </div>
-                    <input type="file" hidden ref={fileInputRef} onChange={handleFileChange} multiple />
                 </div>
             </div>
             <div className="px-10 py-5 bg-white shadow-product flex flex-col gap-5">

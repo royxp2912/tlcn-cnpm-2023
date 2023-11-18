@@ -30,6 +30,12 @@ const config: Config = {
                 cate: '2px 2px 2px 0 rgba(38,38,38,0.25)',
                 cate2: '1px 1px 2px 0 rgba(38,38,38,0.2)',
             },
+            fontFamily: {
+                poppin: ['Poppins', 'sans-serif'],
+                birsmark: ['Bismarck', 'sans-serif'],
+                fb: ['Agency FB', 'sans-serif'],
+                bak: ['Bakbak One', 'sans-serif'],
+            },
         },
     },
     plugins: [],

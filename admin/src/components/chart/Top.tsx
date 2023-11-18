@@ -60,8 +60,12 @@ const Top = ({ path, top }: Props) => {
                                             <TableCell align="center" component="th" scope="row">
                                                 {i + 1}
                                             </TableCell>
-                                            <TableCell align="center">{item.name}</TableCell>
-                                            <TableCell align="center">${item.count}</TableCell>
+                                            <TableCell align="center">
+                                                {item.name === '' ? 'Not Found' : item.name}
+                                            </TableCell>
+                                            <TableCell align="center">
+                                                {item.count.toString() === '' ? 'Not Found' : '$' + item.count}
+                                            </TableCell>
                                         </TableRow>
                                     ))}
                             </TableBody>

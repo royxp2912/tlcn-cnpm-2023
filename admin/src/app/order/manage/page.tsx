@@ -6,6 +6,9 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 const statuses = ['All', 'Confirming', 'Waiting', 'Delivering', 'Successful', 'Cancel', 'Return'];
 const buttons = [
@@ -23,17 +26,37 @@ const OrderManage = () => {
     const dispatch = useDispatch<AppDispatch>();
     const { orders }: { orders: Order[] } = useSelector((state: any) => state.orders);
 
+    const [page, setPage] = useState<string>('Management');
+
+    const router = useRouter();
+
+    const handleChange = (event: SelectChangeEvent) => {
+        setPage(event.target.value as string);
+        router.push('/order');
+    };
+
     useEffect(() => {
         if (status === 'All') {
             dispatch(getAllOrders());
         } else dispatch(getAllOrderByOrderStatus(status));
     }, [dispatch, status]);
 
-    const router = useRouter();
-
     return (
         <div className="flex flex-col gap-[10px]">
-            <div></div>
+            <FormControl className="w-[150px]">
+                <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={page}
+                    label="Page"
+                    onChange={handleChange}
+                    variant="standard"
+                    className="font-bold text-lg"
+                >
+                    <MenuItem value="Statistical">Statistical</MenuItem>
+                    <MenuItem value="Management">Management</MenuItem>
+                </Select>
+            </FormControl>
 
             <div className="flex gap-[18px] shadow-order bg-white">
                 {statuses &&

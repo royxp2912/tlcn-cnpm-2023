@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="en">
-            <body className={`${inter.className} bg-[#F6F7F8]`}>
+            <body className="bg-[#F6F7F8] font-poppin">
                 <Providers>
                     <div className="flex">
                         <div className="bg-white">
