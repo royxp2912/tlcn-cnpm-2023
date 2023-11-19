@@ -11,6 +11,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useRouter } from 'next/navigation';
+import RevenueChartTime from '@/components/chart/RevenueChartTime';
 
 const UserStatis = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -46,6 +47,7 @@ const UserStatis = () => {
                 <Revenue path="New Users" />
             </div>
             <div>{top.length != 0 && <Top path="user" top={top} />}</div>
+            <RevenueChartTime path="New Users" />
         </div>
     );
 };

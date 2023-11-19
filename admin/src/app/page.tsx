@@ -1,5 +1,6 @@
 import Revenue from '@/components/chart/Revenue';
 import RevenueChart from '@/components/chart/RevenueChart';
+import RevenueChartTime from '@/components/chart/RevenueChartTime';
 import Image from 'next/image';
 
 export default function Home() {
@@ -8,10 +9,12 @@ export default function Home() {
             <div>
                 <Revenue path="Revenue" />
             </div>
+
             <div>
-                <div>
-                    <RevenueChart path="Revenue" />
-                </div>
+                <RevenueChart path="Revenue" />
+            </div>
+            <div>
+                <RevenueChartTime path="Revenue" />
             </div>
         </div>
     );

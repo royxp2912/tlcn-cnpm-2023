@@ -64,7 +64,9 @@ const Top = ({ path, top }: Props) => {
                                                 {item.name === '' ? 'Not Found' : item.name}
                                             </TableCell>
                                             <TableCell align="center">
-                                                {item.count.toString() === '' ? 'Not Found' : '$' + item.count}
+                                                {item.count.toString() === ''
+                                                    ? 'Not Found'
+                                                    : `${path === 'user' ? '$' : ''}` + item.count}
                                             </TableCell>
                                         </TableRow>
                                     ))}

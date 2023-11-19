@@ -12,7 +12,7 @@ import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import { signIn } from '@/slices/authSlice';
 import { AppDispatch } from '@/utils/store';
-import { toast } from 'react-toastify';
+// import { toast } from 'react-toastify';
 
 const Login = () => {
     const router = useRouter();
@@ -35,13 +35,13 @@ const Login = () => {
             };
             const res = await dispatch(signIn(user));
             if ((res.payload as { status: number }).status === 200) {
-                toast.success('Login Success');
+                // toast.success('Login Success');
                 router.push('/');
             } else {
-                toast.error((res.payload as { response: any }).response.data.message);
+                // toast.error((res.payload as { response: any }).response.data.message);
             }
         } catch (error: any) {
-            toast.error(error);
+            // toast.error(error);
         }
     };
 

@@ -5,3 +5,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.css-15bnxaz-MuiButtonBase-root-MuiPaginationItem-root.Mui-selected {
+    @apply text-white !important;
+}

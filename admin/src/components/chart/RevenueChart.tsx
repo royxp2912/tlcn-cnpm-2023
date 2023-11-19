@@ -22,6 +22,7 @@ const RevenueChart = ({ path }: Props) => {
             dispath(getDetailTotalOrderThisWeek());
         }
     }, [dispath]);
+
     return (
         <div className="flex gap-10">
             <div className="px-10 py-5 shadow-revenue bg-white w-[600px]">
