@@ -6,6 +6,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useRouter } from 'next/navigation';
+import RevenueChartTime from '@/components/chart/RevenueChartTime';
 
 const OrderStatis = () => {
     const [page, setPage] = useState<string>('Statistical');
@@ -37,6 +38,9 @@ const OrderStatis = () => {
             </div>
             <div>
                 <RevenueChart path="Total Orders" />
+            </div>
+            <div>
+                <RevenueChartTime path="Total Orders" />
             </div>
         </div>
     );

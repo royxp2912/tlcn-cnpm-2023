@@ -178,6 +178,7 @@ export type day = {
 };
 
 export type detailTotal = [day: string, total: number];
+export type detailMonth = [date: number, total: number];
 
 export type top = {
     id: string;

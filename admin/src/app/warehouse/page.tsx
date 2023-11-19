@@ -10,6 +10,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useRouter } from 'next/navigation';
+import RevenueChartTime from '@/components/chart/RevenueChartTime';
 
 const WareHouseStatis = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -47,6 +48,7 @@ const WareHouseStatis = () => {
                 <Revenue path="Total Product Sold" />
             </div>
             <div>{top.length != 0 && <Top path="product" top={top} />}</div>
+            <RevenueChartTime path="Total Product Sold" />
         </div>
     );
 };

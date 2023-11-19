@@ -4,13 +4,27 @@ import React from 'react';
 import { adminNav } from '../../constants/index';
 import { usePathname, useRouter } from 'next/navigation';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
+import axios from '@/utils/axios';
+import { User } from '@/types/type';
 
 const AdminNav = () => {
     const router = useRouter();
     const path = usePathname();
+    const userString = localStorage.getItem('user');
+    let user: User;
+    if (!userString) {
+        router.push('/sign-in');
+    } else {
+        user = JSON.parse(userString) as User;
+    }
+
+    const handleLogout = async () => {
+        await axios.delete(`/logout/${user._id}`);
+        localStorage.removeItem('user');
+    };
 
     return (
-        <div className="flex flex-col gap-[355px] items-center shadow-nav w-[260px]">
+        <div className="flex flex-col gap-[355px] items-center justify-between shadow-nav w-[260px] h-screen">
             <div className="p-5">
                 <div className="flex items-center gap-[10px] mb-5">
                     <Image src="/avt.png" alt="AVT" width={90} height={90} />
@@ -40,7 +54,7 @@ const AdminNav = () => {
                     })}
                 </div>
             </div>
-            <div className="font-bold flex items-center gap-[14px] px-[60px] pb-[214px]">
+            <div className="font-bold flex items-center gap-[14px] px-[60px] mb-[30px]" onClick={handleLogout}>
                 <LogoutRoundedIcon />
                 <span>Logout</span>
             </div>

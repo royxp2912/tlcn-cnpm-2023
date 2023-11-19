@@ -1,6 +1,6 @@
 'use client';
 import Image from 'next/image';
-import React, { ChangeEvent, useRef, useState } from 'react';
+import React, { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
 import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
 import TextField from '@mui/material/TextField';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
@@ -9,12 +9,24 @@ import { AppDispatch } from '@/utils/store';
 import axios from '@/utils/axios';
 import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import { useRouter } from 'next/navigation';
+import { useSelector } from 'react-redux';
+import { Category } from '@/types/type';
+import { getAllCategory } from '@/slices/categorySlice';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+
+const brands = ['Adidas', 'Nike', 'Vans', 'Balenciaga', 'Converse', 'Puma'];
 
 const AddNewProduct = () => {
     const dispatch = useDispatch<AppDispatch>();
     const [image, setImage] = useState<File[]>();
     const [addVariants, setAddVariants] = useState<{}[]>([]);
     const [variants, setVariants] = useState<{ color: string; size: string; quantity: string }[]>([]);
+    const { categories }: { categories: Category[] } = useSelector((state: any) => state.categories);
+    const [brand, setBrand] = useState<string>('Adidas');
+    const [category, setCategory] = useState<string>('');
     const [product, setProduct] = useState<{
         name: string;
         category: string;
@@ -99,6 +111,38 @@ const AddNewProduct = () => {
             },
         });
     };
+    const handleDeleteImg = (i: number) => {
+        if (image) {
+            const newImage = [...image];
+            newImage.splice(i, 1);
+            setImage(newImage);
+        }
+    };
+
+    const handleChangeCate = (event: SelectChangeEvent) => {
+        setCategory(event.target.value as string);
+    };
+    const handleChangeBrand = (event: SelectChangeEvent) => {
+        setBrand(event.target.value as string);
+    };
+
+    const dispatchGetAllCategory = useCallback(() => {
+        dispatch(getAllCategory());
+    }, [dispatch]);
+
+    const setInitialCategory = useCallback(() => {
+        if (categories && categories.length > 0) {
+            setCategory(categories[0]._id);
+        }
+    }, [categories]);
+
+    useEffect(() => {
+        dispatchGetAllCategory();
+    }, []);
+
+    useEffect(() => {
+        setInitialCategory();
+    }, [categories]);
 
     return (
         <div className="flex flex-col gap-[10px]">
@@ -115,13 +159,12 @@ const AddNewProduct = () => {
                     <div className="flex gap-5">
                         {image &&
                             image.map((item, i) => (
-                                <div className="w-[100px] h-[100px]">
+                                <div className="w-[100px] h-[100px] relative" onClick={() => handleDeleteImg(i)}>
                                     <Image
                                         key={i}
-                                        src={`/${item.name}`}
+                                        src={URL.createObjectURL(item)}
                                         alt="Shoes"
-                                        width={100}
-                                        height={100}
+                                        fill
                                         className="shadow-cate"
                                     />
                                 </div>
@@ -142,31 +185,50 @@ const AddNewProduct = () => {
             <div className="px-10 py-5 bg-white shadow-product flex flex-col gap-5">
                 <span className="ml-5 font-bold text-lg">Product Details</span>
                 <TextField id="name" label="Name Of Product" variant="outlined" onChange={handleChange} />
-                <div className="flex justify-between">
-                    <TextField
-                        id="category"
-                        label="Category"
-                        variant="outlined"
-                        inputProps={{
-                            className: 'w-[320px]',
-                        }}
-                        onChange={handleChange}
-                    />
-                    <TextField
-                        id="brand"
-                        label="Brand"
-                        variant="outlined"
-                        inputProps={{
-                            className: ' w-[320px]',
-                        }}
-                        onChange={handleChange}
-                    />
+                <div className="flex justify-between items-center">
+                    <FormControl className="w-[320px]">
+                        <InputLabel id="categoryId">Category</InputLabel>
+                        <Select
+                            labelId="categoryId"
+                            id="category"
+                            value={category}
+                            label="Category"
+                            onChange={handleChangeCate}
+                            className="font-bold"
+                        >
+                            {categories &&
+                                categories.map((item) => (
+                                    <MenuItem key={item._id} value={item._id}>
+                                        {item.name}
+                                    </MenuItem>
+                                ))}
+                        </Select>
+                    </FormControl>
+                    <FormControl className="w-[320px]">
+                        <InputLabel id="brandName">Brand</InputLabel>
+                        <Select
+                            labelId="brandName"
+                            id="brand"
+                            value={brand}
+                            label="Brand"
+                            onChange={handleChangeBrand}
+                            className="font-bold"
+                        >
+                            {brands.map((item) => (
+                                <MenuItem key={item} value={item}>
+                                    {item}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                     <TextField
                         id="price"
                         label="Price"
                         variant="outlined"
+                        className="w-[320px]"
+                        type="tel"
                         inputProps={{
-                            className: 'text-orange w-[320px]',
+                            className: 'text-orange font-bak',
                         }}
                         onChange={handleChange}
                     />
@@ -224,10 +286,17 @@ const AddNewProduct = () => {
                     ))}
                 </div>
             </div>
-            <div>
-                <button>CANCEL</button>
-                <button onClick={handleSubmit}>SAVE & ON SALE</button>
-                <button>SAVE & HIDDEN</button>
+            <div className="flex gap-[26px] justify-end">
+                <button className="w-[200px] h-[50px] bg-red opacity-50 text-white font-bold text-sm">CANCEL</button>
+                <button
+                    className="w-[200px] h-[50px] bg-blue opacity-50 text-white font-bold text-sm"
+                    onClick={handleSubmit}
+                >
+                    SAVE & ON SALE
+                </button>
+                <button className="w-[200px] h-[50px] bg-blue opacity-50 text-white font-bold text-sm">
+                    SAVE & HIDDEN
+                </button>
             </div>
         </div>
     );

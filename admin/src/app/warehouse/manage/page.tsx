@@ -9,15 +9,26 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useRouter } from 'next/navigation';
+import Pagination from '@mui/material/Pagination';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 const nav = ['All', 'on sale', 'hidden', 'out of stock'];
 
 const buttons = ['Select All', 'Hide All', 'Hide Selected', 'On Sale All', 'On Sale Selected'];
 
+const theme = createTheme({
+    palette: {
+        primary: {
+            main: '#40BFFF',
+        },
+    },
+});
+
 const WareHouseManage = () => {
     const [active, setActive] = useState(0);
     const dispatch = useDispatch<AppDispatch>();
     const { products }: { products: Product[] } = useSelector((state: any) => state.products);
+    const [pageNumber, setPageNumber] = useState<number>(1);
 
     const [page, setPage] = useState<string>('Management');
 
@@ -27,10 +38,12 @@ const WareHouseManage = () => {
         setPage(event.target.value as string);
         router.push('/warehouse');
     };
-
+    const handleChangePage = (i: number) => {
+        setPageNumber(i);
+    };
     useEffect(() => {
-        dispatch(getAllProduct());
-    }, [dispatch]);
+        dispatch(getAllProduct(pageNumber));
+    }, [dispatch, pageNumber]);
 
     return (
         <div className="flex flex-col gap-[10px]">
@@ -81,6 +94,16 @@ const WareHouseManage = () => {
                 </button>
             </div>
             <TableProduct products={products} />
+            <div className="flex justify-center shadow-product2 bg-white">
+                <ThemeProvider theme={theme}>
+                    <Pagination
+                        count={5}
+                        shape="rounded"
+                        onChange={(_, page: number) => handleChangePage(page)}
+                        color="primary"
+                    />
+                </ThemeProvider>
+            </div>
         </div>
     );
 };

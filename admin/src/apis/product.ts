@@ -2,9 +2,14 @@ import { Product, findProduct } from '@/types/type';
 import axios from '@/utils/axios';
 
 const productApi = {
-    getAllProduct: () => {
+    getAllProduct: (pageNumber: number) => {
         const url = '/products';
-        return axios.get(url);
+        return axios.get(url, {
+            params: {
+                pageNumber: pageNumber,
+                pageSize: 5,
+            },
+        });
     },
     getProductById: (product: string) => {
         const url = '/products/detail';
