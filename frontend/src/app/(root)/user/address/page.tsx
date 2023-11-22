@@ -4,14 +4,15 @@ import UserNav from '@/components/shared/UserNav';
 import AddLocationAltOutlinedIcon from '@mui/icons-material/AddLocationAltOutlined';
 import LoopOutlinedIcon from '@mui/icons-material/LoopOutlined';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
-import { Address, User } from '@/types/type';
+import type { Address, User } from '@/types/type';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '@/utils/store';
 import { getAllAddressByUserId } from '@/slices/addressSlice';
 import AddAddress from '@/components/form/AddAddress';
 
 const Address = () => {
-    const userString = localStorage.getItem('user');
+    const userString = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
+
     let user: User | null = null;
     if (userString !== null) {
         try {

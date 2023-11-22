@@ -6,13 +6,13 @@ import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlin
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import { Product } from '@/types/type';
 type Props = {
-    products: Product[];
+    listProduct: Product[];
 };
-const ShoesWithTag = ({ products }: Props) => {
+const ShoesWithTag = ({ listProduct }: Props) => {
     return (
         <div>
-            {products &&
-                products.map((product) => (
+            {listProduct &&
+                listProduct.map((product) => (
                     <div key={product._id} className="flex gap-5 mb-5">
                         <div className="bg-deal flex items-center justify-center rounded-xl">
                             <Image src="/nike.png" alt="Giày" width={300} height={280} layout="fixed" />

@@ -13,14 +13,30 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '@/utils/store';
 import { getAllProductByCateId, getProductHotDeal, getQtyHotDealOfBrand, getQtyOfBrand } from '@/slices/productSlice';
 import { getAllCategory } from '@/slices/categorySlice';
-import { Category } from '@/types/type';
+import { Category, Product } from '@/types/type';
 import { usePathname } from 'next/navigation';
+
+const unProp = {
+    productHots: [],
+    active: false,
+    isBack: false,
+    isNext: false,
+    next: 0,
+    back: 0,
+    setBack: () => {},
+    setNext: () => {},
+    setIsBack: () => {},
+    setIsNext: () => {},
+};
 
 const ManShoes = () => {
     const { categories }: { categories: Category[] } = useSelector((state: any) => state.categories);
-    const { products, productHots, brands, hotdeals } = useSelector((state: any) => state.products);
+    const { products, brands, hotdeals }: { products: Product[]; brands: Brand[]; hotdeals: Brand[] } = useSelector(
+        (state: any) => state.products,
+    );
     const dispatch = useDispatch<AppDispatch>();
     const [active, setActive] = useState(false);
+    const [listProduct, setListProduct] = useState<Product[]>([]);
     const pathname = usePathname();
     // console.log(pathname);
     useEffect(() => {
@@ -40,8 +56,15 @@ const ManShoes = () => {
         };
 
         fetchData();
-    }, [dispatch, categories, pathname]);
-
+        // if (active === false) {
+        //     const sorded = products.sort((a, b) => a.price - b.price);
+        //     setListProduct(sorded);
+        // } else if (active === true) {
+        //     const sorded = products.sort((a, b) => b.price - a.price);
+        //     setListProduct(sorded);
+        // }
+    }, [dispatch, pathname, products, active, categories]);
+    // console.log(products);
     return (
         <div className="flex px-[100px] gap-10 mt-5">
             <div className="flex flex-col gap-5">
@@ -56,9 +79,9 @@ const ManShoes = () => {
                 </div>
                 <Sort setActive={setActive} active={active} />
                 {!active ? (
-                    <ShoesWithTag products={products} />
+                    <ShoesWithTag listProduct={listProduct} />
                 ) : (
-                    <SingleSellShoe products={products} productHots={productHots} active />
+                    <SingleSellShoe products={products} {...unProp} />
                 )}
                 <Pagetination />
             </div>

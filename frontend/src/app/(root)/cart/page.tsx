@@ -2,7 +2,7 @@
 import CartShoe from '@/components/cards/CartShoe';
 import Border from '@/components/shared/Border';
 import { getCartByUserId } from '@/slices/cartSlice';
-import { Cart, User } from '@/types/type';
+import type { Cart, User } from '@/types/type';
 import axios from '@/utils/axios';
 import { AppDispatch } from '@/utils/store';
 import { useRouter } from 'next/navigation';
@@ -26,7 +26,8 @@ const Cart = () => {
 
     const [checkedItems, setCheckedItems] = React.useState<{ [key: string]: boolean }>(initialCheckedItems);
 
-    const userString = localStorage.getItem('user');
+    const userString = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
+
     let user: User | null = null;
     if (userString !== null) {
         try {

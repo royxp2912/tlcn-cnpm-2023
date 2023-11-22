@@ -1,4 +1,4 @@
-import { Brand } from '@/types/type';
+import type { Brand } from '@/types/type';
 import React from 'react';
 
 type Props = {

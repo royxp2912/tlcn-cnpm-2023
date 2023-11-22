@@ -9,6 +9,14 @@ const HomeShoeCard = () => {
         variants: Variant;
     };
     // console.log(productDetail);
+    const color: { [key: string]: string } = {
+        Blue: 'bg-[#006CFF]',
+        Red: 'bg-[#FC3E39]',
+        Black: 'bg-[#171717]',
+        Pink: 'bg-[#FF00B4]',
+        Yellow: 'bg-[#FFF600]',
+        Wheat: 'bg-[#EFDFDF]',
+    };
 
     return (
         <div className="flex items-center pt-[60px] px-[212px] gap-14">
@@ -21,9 +29,7 @@ const HomeShoeCard = () => {
                     <div className="flex gap-1">
                         {variants.listColor &&
                             variants.listColor.map((item) => (
-                                <div key={item} className="w-5 h-5 rounded-full bg-blue-500">
-                                    {item}
-                                </div>
+                                <div key={item} className={`w-5 h-5 rounded-full ${color[item]}`}></div>
                             ))}
                     </div>
                 </div>
@@ -59,12 +65,11 @@ const HomeShoeCard = () => {
                 </button>
             </div>
             <div className="w-7/12 flex items-center justify-center gap-10 ">
-                <div>
+                <div className="w-[380px] h-[380px] relative">
                     <Image
                         src={productDetail.images && productDetail.images[0]}
                         alt="Nike"
-                        width={380}
-                        height={380}
+                        fill
                         className="rotate-[-16deg] rounded-full"
                     />
                 </div>
