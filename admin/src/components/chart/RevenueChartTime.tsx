@@ -99,7 +99,7 @@ const RevenueChartTime = ({ path }: Props) => {
                         <MenuItem value="Area Chart">Area Chart</MenuItem>
                     </Select>
                 </div>
-                <div>
+                <div className='flex gap-4'>
                     <div>
                         <Select
                             className="font-medium text-sm text-black"

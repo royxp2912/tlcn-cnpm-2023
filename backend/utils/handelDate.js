@@ -12,10 +12,17 @@ export const getStartAndEndOfMonth = (month, year) => {
 
 export const getStartAndEndOfWeek = (day, month, year) => {
     const today = new Date(year, month, day);
-    const startOfWeek = new Date(today);
-    startOfWeek.setDate(today.getDate() - today.getDay() + 2);
-    const endOfWeek = new Date(startOfWeek);
-    endOfWeek.setDate(startOfWeek.getDate() + 7);
+    let startOfWeek = new Date(today);
+    let endOfWeek = new Date(today);;
+
+    if (today.getDay() === 0) {
+        startOfWeek.setDate(today.getDate() - 5);
+        endOfWeek.setDate(today.getDate() + 1);
+    } else {
+        startOfWeek.setDate(today.getDate() - today.getDay() + 2);
+        endOfWeek.setDate(startOfWeek.getDate() + 7);
+    }
+
     startOfWeek.setHours(0, 0, 0, 0);
     endOfWeek.setHours(0, 0, 0, 0);
 
