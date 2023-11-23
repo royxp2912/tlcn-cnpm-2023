@@ -680,31 +680,66 @@ export const {
         }
     },
 
-    getAllByCateID: async (cateID, cateName, pageSize, pageNumber) => {
+    getAllByCateID: async (cateID, sort, pageSize, pageNumber) => {
         try {
 
             let listProduct;
-            if (cateID) {
+            if (sort === "new") {
                 listProduct = await Product.find({ category: cateID })
                     .limit(pageSize)
                     .skip(pageSize * (pageNumber - 1))
-                    .select({ _id: 1, name: 1, desc: 1, images: 1, brand: 1, price: 1, rating: 1, sold: 1 });
+                    .select({ _id: 1, name: 1, desc: 1, images: 1, brand: 1, price: 1, rating: 1, sold: 1 })
+                    .sort({ createdAt: -1 });
+                return {
+                    success: true,
+                    status: 200,
+                    message: 'Get All Product Of Category Successful!!!',
+                    data: listProduct,
+                };
             }
 
-            if (cateName) {
-                const result = await Category.findOne({ name: cateName });
-                listProduct = await Product.find({ category: result._id })
+            if (sort === "hot") {
+                listProduct = await Product.find({ category: cateID })
                     .limit(pageSize)
                     .skip(pageSize * (pageNumber - 1))
-                    .select({ _id: 1, name: 1, desc: 1, images: 1, brand: 1, price: 1, rating: 1, sold: 1 });
+                    .select({ _id: 1, name: 1, desc: 1, images: 1, brand: 1, price: 1, rating: 1, sold: 1 })
+                    .sort({ sold: -1 });
+                return {
+                    success: true,
+                    status: 200,
+                    message: 'Get All Product Of Category Successful!!!',
+                    data: listProduct,
+                };
             }
 
-            return {
-                success: true,
-                status: 200,
-                message: 'Get All Product Of Category Successful!!!',
-                data: checkedNull(listProduct, "Resource doesn't exist !!!"),
-            };
+            if (sort === "pASC") {
+                listProduct = await Product.find({ category: cateID })
+                    .limit(pageSize)
+                    .skip(pageSize * (pageNumber - 1))
+                    .select({ _id: 1, name: 1, desc: 1, images: 1, brand: 1, price: 1, rating: 1, sold: 1 })
+                    .sort({ price: 1 });
+                return {
+                    success: true,
+                    status: 200,
+                    message: 'Get All Product Of Category Successful!!!',
+                    data: listProduct,
+                };
+            }
+
+            if (sort === "pDESC") {
+                listProduct = await Product.find({ category: cateID })
+                    .limit(pageSize)
+                    .skip(pageSize * (pageNumber - 1))
+                    .select({ _id: 1, name: 1, desc: 1, images: 1, brand: 1, price: 1, rating: 1, sold: 1 })
+                    .sort({ price: -1 });
+
+                return {
+                    success: true,
+                    status: 200,
+                    message: 'Get All Product Of Category Successful!!!',
+                    data: listProduct,
+                };
+            }
         } catch (err) {
             return {
                 success: false,
