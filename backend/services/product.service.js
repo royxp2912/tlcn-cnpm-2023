@@ -2,7 +2,7 @@ import Product from '../models/Product.js';
 import Category from '../models/Category.js';
 import { checkedNull } from '../utils/handel_null.js';
 import { deleteAllByProID } from './comment.service.js';
-import { createList, getListVarByProID, deleteListVarByProID, findProIDByColor } from './variant.service.js';
+import { createList, getListVarByProID, deleteListVarByProID, findProIDByColor, isColorInProduct } from './variant.service.js';
 
 export const {
     create,
@@ -680,66 +680,57 @@ export const {
         }
     },
 
-    getAllByCateID: async (cateID, sort, pageSize, pageNumber) => {
+    getAllByCateID: async (cateID, color, brand, sort, pageSize, pageNumber) => {
         try {
-
-            let listProduct;
-            if (sort === "new") {
-                listProduct = await Product.find({ category: cateID })
-                    .limit(pageSize)
-                    .skip(pageSize * (pageNumber - 1))
-                    .select({ _id: 1, name: 1, desc: 1, images: 1, brand: 1, price: 1, rating: 1, sold: 1 })
-                    .sort({ createdAt: -1 });
-                return {
-                    success: true,
-                    status: 200,
-                    message: 'Get All Product Of Category Successful!!!',
-                    data: listProduct,
-                };
-            }
-
             if (sort === "hot") {
-                listProduct = await Product.find({ category: cateID })
-                    .limit(pageSize)
-                    .skip(pageSize * (pageNumber - 1))
-                    .select({ _id: 1, name: 1, desc: 1, images: 1, brand: 1, price: 1, rating: 1, sold: 1 })
+                const listProduct = await Product.find({ category: cateID })
+                    .populate({ path: 'category', select: 'name' })
+                    .select("-createdAt -updatedAt -__v -status")
                     .sort({ sold: -1 });
-                return {
-                    success: true,
-                    status: 200,
-                    message: 'Get All Product Of Category Successful!!!',
-                    data: listProduct,
-                };
-            }
 
-            if (sort === "pASC") {
-                listProduct = await Product.find({ category: cateID })
-                    .limit(pageSize)
-                    .skip(pageSize * (pageNumber - 1))
-                    .select({ _id: 1, name: 1, desc: 1, images: 1, brand: 1, price: 1, rating: 1, sold: 1 })
-                    .sort({ price: 1 });
-                return {
-                    success: true,
-                    status: 200,
-                    message: 'Get All Product Of Category Successful!!!',
-                    data: listProduct,
-                };
-            }
+                let result = listProduct;
+                if (brand) {
+                    result = listProduct.filter((product) => product.brand === brand);
+                }
+                let semiFinal = result;
+                if (color) {
+                    const maped = await Promise.all(result.map((product) => isColorInProduct(product._id, color)));
+                    semiFinal = maped.filter((item) => item._id);
+                }
 
-            if (sort === "pDESC") {
-                listProduct = await Product.find({ category: cateID })
-                    .limit(pageSize)
-                    .skip(pageSize * (pageNumber - 1))
-                    .select({ _id: 1, name: 1, desc: 1, images: 1, brand: 1, price: 1, rating: 1, sold: 1 })
-                    .sort({ price: -1 });
+                const final = semiFinal.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
 
                 return {
                     success: true,
                     status: 200,
                     message: 'Get All Product Of Category Successful!!!',
-                    data: listProduct,
+                    data: final,
                 };
             }
+
+            const listProduct = await Product.find({ category: cateID })
+                .populate({ path: 'category', select: 'name' })
+                .select("-createdAt -updatedAt -__v -status")
+                .sort({ createdAt: -1 });
+
+            let result = listProduct;
+            if (brand) {
+                result = listProduct.filter((product) => product.brand === brand);
+            }
+            let semiFinal = result;
+            if (color) {
+                const maped = await Promise.all(result.map((product) => isColorInProduct(product._id, color)));
+                semiFinal = maped.filter((item) => item._id);
+            }
+
+            const final = semiFinal.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+
+            return {
+                success: true,
+                status: 200,
+                message: 'Get All Product Of Category Successful!!!',
+                data: final,
+            };
         } catch (err) {
             return {
                 success: false,

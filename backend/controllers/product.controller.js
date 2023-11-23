@@ -195,12 +195,14 @@ export const getByIdProduct = async (req, res, next) => {
 
 export const getAllProductByCategory = async (req, res, next) => {
     try {
+        const color = req.query.color;
+        const brand = req.query.brand;
         const category = req.query.category;
         const sort = req.query.sort || "new";
         const pageSize = req.query.pageSize || 8;
         const pageNumber = req.query.pageNumber || 1;
 
-        const { success, message, data, status } = await getAllByCateID(category, sort, pageSize, pageNumber);
+        const { success, message, data, status } = await getAllByCateID(category, color, brand, sort, pageSize, pageNumber);
         if (!success) return next(createError(status, message));
 
         res.status(status).json({
