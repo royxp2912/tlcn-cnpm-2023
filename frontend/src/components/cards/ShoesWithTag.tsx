@@ -11,11 +11,13 @@ type Props = {
 const ShoesWithTag = ({ listProduct }: Props) => {
     return (
         <div>
-            {listProduct &&
+            {listProduct && listProduct.length === 0 ? (
+                <span>Sản phẩm đã hiển thị hết</span>
+            ) : (
                 listProduct.map((product) => (
                     <div key={product._id} className="flex gap-5 mb-5">
-                        <div className="bg-deal flex items-center justify-center rounded-xl">
-                            <Image src="/nike.png" alt="Giày" width={300} height={280} layout="fixed" />
+                        <div className="bg-deal flex items-center justify-center rounded-xl w-[300px] h-[280px] relative overflow-hidden">
+                            <Image src={product.images[0]} alt="Giày" fill />
                         </div>
                         <div className="w-[700px]">
                             <span className="text-2xl font-bold truncate w-full block ">{product.name}</span>
@@ -57,7 +59,8 @@ const ShoesWithTag = ({ listProduct }: Props) => {
                             </div>
                         </div>
                     </div>
-                ))}
+                ))
+            )}
         </div>
     );
 };

@@ -1,5 +1,5 @@
 'use client';
-import { getAllCategory } from '@/slices/categorySlice';
+import { getAllCategory, getCategoryById } from '@/slices/categorySlice';
 import { Category } from '@/types/type';
 import { AppDispatch } from '@/utils/store';
 import Link from 'next/link';

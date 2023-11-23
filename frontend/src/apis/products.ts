@@ -1,4 +1,4 @@
-import { Product, findProduct } from '@/types/type';
+import { Product, findProduct, productByCate } from '@/types/type';
 import axios from '../utils/axios';
 
 const productsApi = {
@@ -10,9 +10,11 @@ const productsApi = {
         const url = '/products/detail';
         return axios.get(url, { params: { product: product } });
     },
-    getAllProductByCateId: (category: string) => {
+    getAllProductByCateId: (category: productByCate) => {
         const url = '/products/category';
-        return axios.get(url, { params: { category: category } });
+        return axios.get(url, {
+            params: { category: category.category, pageSize: 6, pageNumber: category.pageNumber },
+        });
     },
     createProduct: (product: Product) => {
         const url = `/products`;

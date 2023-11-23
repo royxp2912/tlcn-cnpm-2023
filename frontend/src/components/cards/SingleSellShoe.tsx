@@ -106,13 +106,13 @@ const SingleSellShoe = ({
     };
     if (pathname !== '/') {
         return (
-            <div className="flex gap-[50px]">
+            <div className="grid grid-cols-3 gap-[50px]">
                 {products &&
                     products.map((product: Product, index: number) => (
                         <div key={product._id} className="flex gap-2" onClick={() => handleDetail(product._id)}>
                             <div className="border-2 border-gray2 rounded-md p-1 w-[304px]">
                                 {/* Single Product */}
-                                <div className="bg-bg_sell rounded-md w-[292px] h-[236px] relative">
+                                <div className="bg-bg_sell rounded-md w-[292px] h-[236px] relative overflow-hidden">
                                     <Image src={product.images[0]} alt="Nike" fill />
                                 </div>
                                 <div className="px-5 py-1 flex flex-col items-center gap-2">
@@ -160,7 +160,7 @@ const SingleSellShoe = ({
                       >
                           <div className="border-2 border-gray2 w-[304px] rounded-md p-1">
                               {/* Single Product */}
-                              <div className="bg-bg_sell rounded-md w-[292px] h-[236px] relative">
+                              <div className="bg-bg_sell rounded-md w-[292px] h-[236px] relative overflow-hidden">
                                   <Image src={product.images[0]} alt="Nike" fill />
                               </div>
                               <div className="px-5 py-1 flex flex-col items-center gap-2">
@@ -200,7 +200,7 @@ const SingleSellShoe = ({
                       >
                           <div className="border-2 border-gray2 w-[304px] rounded-md p-1">
                               {/* Single Product */}
-                              <div className="bg-bg_sell rounded-md w-[292px] h-[236px] relative">
+                              <div className="bg-bg_sell rounded-md w-[292px] h-[236px] relative overflow-hidden">
                                   <Image src={product.images[0]} alt="Nike" fill />
                               </div>
                               <div className="px-5 py-1 flex flex-col items-center gap-2">

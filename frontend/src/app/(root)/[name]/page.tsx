@@ -3,7 +3,7 @@ import Brand from '@/components/shared/Brand';
 import HotDeals from '@/components/shared/HotDeals';
 import Price from '@/components/shared/Price';
 import Color from '@/components/shared/Color';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import Sort from '@/components/shared/Sort';
 import ShoesWithTag from '@/components/cards/ShoesWithTag';
@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '@/utils/store';
 import { getAllProductByCateId, getProductHotDeal, getQtyHotDealOfBrand, getQtyOfBrand } from '@/slices/productSlice';
 import { getAllCategory } from '@/slices/categorySlice';
-import { Category, Product } from '@/types/type';
+import { Category, Product, productByCate } from '@/types/type';
 import { usePathname } from 'next/navigation';
 
 const unProp = {
@@ -36,35 +36,56 @@ const ManShoes = () => {
     );
     const dispatch = useDispatch<AppDispatch>();
     const [active, setActive] = useState(false);
+    const [sort, setSort] = useState<boolean>(false);
+    const [view, setView] = useState<boolean>(false);
     const [listProduct, setListProduct] = useState<Product[]>([]);
+    const [pageNum, setPageNum] = useState<number>(1);
     const pathname = usePathname();
-    // console.log(pathname);
+
+    const found = useMemo(
+        () =>
+            categories.find(
+                (category) => category.name.toLowerCase().replace(/\s/g, '') === String(pathname.split('/')[1]),
+            ),
+        [categories, pathname],
+    );
+
+    const idCate = found?._id as string;
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const item: productByCate = {
+                category: idCate,
+                pageNumber: pageNum,
+            };
+            await dispatch(getAllProductByCateId(item)).unwrap();
+        };
+        fetchData();
+    }, [dispatch, idCate, pageNum]);
+
+    useEffect(() => {
+        if (sort === false) {
+            const sorted = [...products].sort((a, b) => a.price - b.price);
+            setListProduct(sorted);
+        } else {
+            const sorted = [...products].sort((a, b) => b.price - a.price);
+            setListProduct(sorted);
+        }
+    }, [products, sort]);
+
     useEffect(() => {
         const fetchData = async () => {
             await dispatch(getProductHotDeal());
-            await dispatch(getAllCategory());
             await dispatch(getQtyOfBrand());
             await dispatch(getQtyHotDealOfBrand());
-
-            const found =
-                categories &&
-                categories.find((category) => category.name.toLowerCase() === String(pathname.split('/')[1]));
-
-            if (found) {
-                dispatch(getAllProductByCateId(found._id as string)).unwrap();
-            }
         };
-
         fetchData();
-        // if (active === false) {
-        //     const sorded = products.sort((a, b) => a.price - b.price);
-        //     setListProduct(sorded);
-        // } else if (active === true) {
-        //     const sorded = products.sort((a, b) => b.price - a.price);
-        //     setListProduct(sorded);
-        // }
-    }, [dispatch, pathname, products, active, categories]);
+    }, [dispatch]);
+    console.log(products);
+    // console.log(pageNum);
     // console.log(products);
+    // console.log(sort);
+    // console.log(listProduct);
     return (
         <div className="flex px-[100px] gap-10 mt-5">
             <div className="flex flex-col gap-5">
@@ -77,13 +98,13 @@ const ManShoes = () => {
                 <div className="w-full h-[280px] relative ">
                     <Image src="/layout.png" alt="Ảnh" fill />
                 </div>
-                <Sort setActive={setActive} active={active} />
+                <Sort setActive={setActive} active={active} sort={sort} setSort={setSort} />
                 {!active ? (
-                    <ShoesWithTag listProduct={listProduct} />
+                    <ShoesWithTag listProduct={products.length !== 0 ? listProduct : products} />
                 ) : (
-                    <SingleSellShoe products={products} {...unProp} />
+                    <SingleSellShoe products={listProduct} {...unProp} />
                 )}
-                <Pagetination />
+                <Pagetination setPageNum={setPageNum} />
             </div>
         </div>
     );
