@@ -147,5 +147,6 @@ export type itemCartRandomVari = {
 
 export type productByCate = {
     category: string;
+    sort: string;
     pageNumber: number;
 };

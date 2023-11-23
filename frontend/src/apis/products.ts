@@ -13,7 +13,7 @@ const productsApi = {
     getAllProductByCateId: (category: productByCate) => {
         const url = '/products/category';
         return axios.get(url, {
-            params: { category: category.category, pageSize: 6, pageNumber: category.pageNumber },
+            params: { category: category.category, sort: category.sort, pageSize: 6, pageNumber: category.pageNumber },
         });
     },
     createProduct: (product: Product) => {
@@ -64,6 +64,12 @@ const productsApi = {
     getQtyHotDealOfBrand: () => {
         const url = 'products/brand/hotDeal';
         return axios.get(url);
+    },
+    getAllProductBy: (category: productByCate) => {
+        const url = '/products/category';
+        return axios.get(url, {
+            params: { category: category.category, pageSize: 6, pageNumber: category.pageNumber },
+        });
     },
 };
 

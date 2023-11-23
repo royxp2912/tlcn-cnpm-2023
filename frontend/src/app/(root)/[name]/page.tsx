@@ -37,9 +37,12 @@ const ManShoes = () => {
     const dispatch = useDispatch<AppDispatch>();
     const [active, setActive] = useState(false);
     const [sort, setSort] = useState<boolean>(false);
-    const [view, setView] = useState<boolean>(false);
+    const [view, setView] = useState<string>('new');
     const [listProduct, setListProduct] = useState<Product[]>([]);
+    const [color, setColor] = useState<string>('Blue');
     const [pageNum, setPageNum] = useState<number>(1);
+    const [minPrice, setMinPrice] = useState(0);
+    const [maxPrice, setMaxPrice] = useState(2000);
     const pathname = usePathname();
 
     const found = useMemo(
@@ -56,22 +59,19 @@ const ManShoes = () => {
         const fetchData = async () => {
             const item: productByCate = {
                 category: idCate,
+                sort: view,
                 pageNumber: pageNum,
             };
             await dispatch(getAllProductByCateId(item)).unwrap();
         };
         fetchData();
-    }, [dispatch, idCate, pageNum]);
+    }, [dispatch, idCate, pageNum, view]);
 
     useEffect(() => {
-        if (sort === false) {
-            const sorted = [...products].sort((a, b) => a.price - b.price);
-            setListProduct(sorted);
-        } else {
-            const sorted = [...products].sort((a, b) => b.price - a.price);
-            setListProduct(sorted);
-        }
-    }, [products, sort]);
+        const filtered = products.filter((product) => product.price >= minPrice && product.price <= maxPrice);
+        const sorted = filtered.sort((a, b) => (sort ? b.price - a.price : a.price - b.price));
+        setListProduct(sorted);
+    }, [products, sort, minPrice, maxPrice]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -81,28 +81,30 @@ const ManShoes = () => {
         };
         fetchData();
     }, [dispatch]);
-    console.log(products);
-    // console.log(pageNum);
-    // console.log(products);
-    // console.log(sort);
-    // console.log(listProduct);
     return (
         <div className="flex px-[100px] gap-10 mt-5">
-            <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-5 w-[260px]">
                 <HotDeals hotdeals={hotdeals} />
-                <Price />
-                <Color />
+                <Price minPrice={minPrice} setMinPrice={setMinPrice} maxPrice={maxPrice} setMaxPrice={setMaxPrice} />
+                <Color color={color} setColor={setColor} />
                 <Brand brands={brands} />
             </div>
             <div className="w-[1010px]">
                 <div className="w-full h-[280px] relative ">
                     <Image src="/layout.png" alt="Ảnh" fill />
                 </div>
-                <Sort setActive={setActive} active={active} sort={sort} setSort={setSort} />
+                <Sort
+                    setActive={setActive}
+                    active={active}
+                    sort={sort}
+                    setSort={setSort}
+                    view={view}
+                    setView={setView}
+                />
                 {!active ? (
                     <ShoesWithTag listProduct={products.length !== 0 ? listProduct : products} />
                 ) : (
-                    <SingleSellShoe products={listProduct} {...unProp} />
+                    <SingleSellShoe products={products.length !== 0 ? listProduct : products} {...unProp} />
                 )}
                 <Pagetination setPageNum={setPageNum} />
             </div>

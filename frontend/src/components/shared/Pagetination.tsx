@@ -20,7 +20,7 @@ const Pagetination = ({ setPageNum }: Props) => {
         setPageNum(i);
     };
     return (
-        <div className="flex justify-center shadow-product2 bg-white">
+        <div className="flex justify-center shadow-product2 bg-white mt-5">
             <ThemeProvider theme={theme}>
                 <Pagination
                     count={5}

@@ -20,10 +20,11 @@ type Props = {
     active: boolean;
     sort: boolean;
     setSort: Dispatch<SetStateAction<boolean>>;
-    setView: Dispatch<SetStateAction<boolean>>;
+    view: string;
+    setView: Dispatch<SetStateAction<string>>;
 };
 
-const Sort = ({ setActive, active, sort, setSort, setView }: Props) => {
+const Sort = ({ setActive, active, sort, setSort, view, setView }: Props) => {
     const [sorts, setSorts] = useState<string[]>(['Low to High']);
     const name = ['Low to High', 'High to Low'];
     const handleChange = (event: SelectChangeEvent<typeof sorts>) => {
@@ -41,10 +42,16 @@ const Sort = ({ setActive, active, sort, setSort, setView }: Props) => {
     return (
         <div className="flex items-center justify-between mt-3 mb-5 bg-deal rounded-lg p-5">
             <div className="flex gap-5 items-center">
-                <button className="bg-blue w-[120px] h-9 font-bold rounded-md" onClick={() => setView(false)}>
+                <button
+                    className={`${view === 'new' ? 'bg-blue' : 'bg-[#ADD6FA]'} w-[120px] h-9 font-bold rounded-md`}
+                    onClick={() => setView('new')}
+                >
                     New
                 </button>
-                <button className="bg-[#ADD6FA] w-[120px] h-9 font-bold rounded-md" onClick={() => setView(false)}>
+                <button
+                    className={`${view === 'hot' ? 'bg-blue' : 'bg-[#ADD6FA]'} w-[120px] h-9 font-bold rounded-md`}
+                    onClick={() => setView('hot')}
+                >
                     Hot
                 </button>
                 <div>
