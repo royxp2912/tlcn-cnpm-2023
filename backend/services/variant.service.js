@@ -27,7 +27,7 @@ export const {
         try {
             const result = await Variant.findOne({
                 product: proID,
-                color: color,
+                color: { $regex: new RegExp(`^${color}$`, 'i') },
             });
             if (!result) return {
                 failed: true,

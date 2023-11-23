@@ -12,7 +12,7 @@ export const {
     removeFromCart,
     deleteCartByUserID,
     addToCartWithoutVar,
-    updateQuantityInCart,
+    updateVariantInCart,
 } = {
 
     deleteCartByUserID: async (userID) => {
@@ -84,7 +84,7 @@ export const {
         }
     },
 
-    updateQuantityInCart: async (userID, proID, color, size, quantity) => {
+    updateVariantInCart: async (userID, proID, color, size, quantity) => {
         try {
             checkedObjectId(userID, "User ID");
             checkedObjectId(proID, "Product ID");
@@ -101,7 +101,12 @@ export const {
             const result = await Cart.findOneAndUpdate(
                 { user: userID, "items.product": proID },
                 {
-                    $set: { "items.$.quantity": quantity }
+                    $set:
+                    {
+                        "items.$.size": size,
+                        "items.$.color": color,
+                        "items.$.quantity": quantity,
+                    }
                 },
                 { new: true }
             );
