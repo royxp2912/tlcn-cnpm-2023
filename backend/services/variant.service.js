@@ -20,7 +20,32 @@ export const {
     getVarByColorAndSize,
     getSizeByColorAndProID,
     getColorBySizeAndProID,
+    isColorInProduct,
 } = {
+
+    isColorInProduct: async (proID, color) => {
+        try {
+            const result = await Variant.findOne({
+                product: proID,
+                color: color,
+            });
+            if (!result) return {
+                failed: true,
+            };
+
+            const geted = await Product.findById(proID)
+                .populate({ path: 'category', select: 'name' })
+                .select("-createdAt -updatedAt -__v -status");
+
+            return geted;
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong on Variant !!!",
+            }
+        }
+    },
 
     checkedQuantity: async (proID, color, size, quantity) => {
         try {
