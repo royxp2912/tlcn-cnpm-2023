@@ -17,7 +17,7 @@ router.get("/", getCartByUserID);
 router.post("/", createCart);
 router.post("/addToCart", addItemToCart);
 router.post("/addToCart/randomVar", addItemToCartWithoutVariant);
-router.patch("/update/quantity", updateVariantProInCart);
+router.patch("/update/variants", updateVariantProInCart);
 
 // remove
 router.delete("/remove", removeItemFromCart);
