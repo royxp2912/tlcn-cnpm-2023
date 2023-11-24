@@ -79,11 +79,19 @@ export const {
 
     setDefault: async (addID) => {
         try {
-            const updatedAddress = await Address.findByIdAndUpdate(
-                addID,
-                { $set: { default: true } }
-            );
-            checkedNull(updatedAddress, "Address don't exist !!!");
+            const result = await Address.findById(addID);
+            checkedNull(result, "Address don't exist !!!");
+
+            await Address.findOneAndUpdate(
+                {
+                    user: result.user,
+                    default: true,
+                },
+                { $set: { default: false } }
+            )
+
+            result.default = true;
+            await result.save();
 
             return {
                 success: true,

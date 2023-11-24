@@ -219,7 +219,8 @@ export const findUserByID = async (req, res, next) => {
 
 export const isExistUser = async (req, res, next) => {
     try {
-        const { success, status, message, data } = await getUserByID(req.query.user);
+        let userID = req.query.user;
+        const { success, status, message, data } = await getUserByID(userID);
         if (!success) return next(createError(status, message));
 
         next();

@@ -29,7 +29,8 @@ router.patch("/lock", lockUserByID);
 router.patch("/email", updateUserEmail);
 router.patch("/unlock", unlockUserByID);
 router.patch("/password", updateUserPassword);
-router.patch("/upload-avatar", isExistUser, uploadCloud.single("avatar"), uploadAvatarByID);
+router.patch("/upload-avatar", uploadCloud.single("avatar"), uploadAvatarByID);
+// router.patch("/upload-avatar", isExistUser, uploadCloud.single("avatar"), uploadAvatarByID);
 
 // test
 router.patch("/upload-avatar/test/:userID", isExistUser, testUploadAvatarByID);
