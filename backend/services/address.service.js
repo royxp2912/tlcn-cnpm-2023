@@ -38,7 +38,7 @@ export const {
 
     deleteByID: async (addID) => {
         try {
-            const deletedAddress = await Address.findOneAndDelete(addID)
+            const deletedAddress = await Address.findByIdAndDelete(addID)
             checkedNull(deletedAddress, "Address don't exist !!!");
 
             return {
