@@ -50,14 +50,14 @@ const Address = () => {
     };
 
     const handleDelete = async (id: string) => {
-        const { data } = await axios.delete('/address', {
+        const { data } = await axios.delete('/address/one', {
             params: { address: id },
         });
         if (data.success) {
-            toast.success('Set default success');
+            toast.success('Delete address success');
             setLoad((prev) => !prev);
         } else {
-            toast.error('Set default fail');
+            toast.error('Delete address fail');
         }
     };
 

@@ -75,14 +75,27 @@ const Profile = () => {
         image && formData.append('avatar', image);
         formData.append('user', id);
 
+        // const itemlocal = {
+        //     user: id,
+        //     email: email,
+        //     fullName: items.fullName,
+        //     phone: items.phone,
+        //     gender: selectedGender || '',
+        //     birthDay: formatDate(selectedDate),
+        //     avatar: image?.toString() || '',
+        // };
         const { data } = await axios.patch('/users/upload-avatar', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
         });
+        console.log(data);
         if (data.success) {
             toast.success('Update avatar Success');
-            setLoad(!load);
+            // user = { ...user, ...itemlocal };
+            // console.log(user);
+            // localStorage.setItem('user', JSON.stringify(user));
+            setLoad((prev) => !prev);
         } else {
             toast.error('Update avatar fail');
         }
