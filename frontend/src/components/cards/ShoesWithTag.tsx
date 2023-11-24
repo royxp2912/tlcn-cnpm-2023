@@ -1,21 +1,70 @@
+'use client';
 import { Rating } from '@mui/material';
 import Image from 'next/image';
 import React from 'react';
 import Border from '../shared/Border';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
-import { Product } from '@/types/type';
+import { Product, User, itemCartRandomVari } from '@/types/type';
+import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@/utils/store';
+import { addItemToCartRandomVariant } from '@/slices/cartSlice';
 type Props = {
     listProduct: Product[];
 };
 const ShoesWithTag = ({ listProduct }: Props) => {
+    const userString = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
+
+    let user: User | null = null;
+
+    if (userString !== null) {
+        try {
+            user = JSON.parse(userString) as User;
+        } catch (error) {
+            console.error('Error parsing user data:', error);
+        }
+    }
+    const idUser = user?._id as string;
+
+    const router = useRouter();
+    const dispatch = useDispatch<AppDispatch>();
+
+    const handleDetail = (id: string) => {
+        router.push(`/shoes/${id}`);
+    };
+
+    const handleAddtoCart = async ({ product, image, name, price }: itemCartRandomVari) => {
+        if (!user) {
+            toast.error('Please login before add to cart', {
+                onClose: () => {
+                    router.push('/sign-in');
+                },
+            });
+            return;
+        }
+        const cart = {
+            user: idUser,
+            product,
+            image,
+            name,
+            price,
+        };
+
+        await dispatch(addItemToCartRandomVariant(cart));
+        toast.success('Add to cart success');
+        // if((res.payload as { status: number }).status === 201){
+        //     toast.success((res.payload as { status: string }).data.message)
+        // }
+    };
     return (
         <div>
             {listProduct && listProduct.length === 0 ? (
                 <span>Sản phẩm đã hiển thị hết</span>
             ) : (
                 listProduct.map((product) => (
-                    <div key={product._id} className="flex gap-5 mb-5">
+                    <div key={product._id} className="flex gap-5 mb-5" onClick={() => handleDetail(product._id)}>
                         <div className="bg-deal flex items-center justify-center rounded-xl w-[300px] h-[280px] relative overflow-hidden">
                             <Image src={product.images[0]} alt="Giày" fill />
                         </div>
@@ -36,23 +85,18 @@ const ShoesWithTag = ({ listProduct }: Props) => {
                             <p className="text-sm text-justify mb-[11px] truncate w-full">{product.desc}</p>
                             <Border />
                             <div className="flex mt-[10px]">
-                                <div className="font-medium flex items-center gap-5">
-                                    <span>Availability:</span>
-                                    <span>300</span>
-                                </div>
                                 <div className="flex-grow"></div>
-                                <div className="flex h-[40px] text-lg font-bold mr-2">
-                                    <span className="w-11 flex items-center justify-center bg-[#F6F7F8] rounded-tl-md rounded-bl-md text-blue">
-                                        -
-                                    </span>
-                                    <span className="w-[62px] flex items-center justify-center bg-[#FAFBFB] rounded-md ">
-                                        2
-                                    </span>
-                                    <span className="w-11 flex items-center justify-center bg-[#F6F7F8] rounded-tr-md rounded-br-md text-blue">
-                                        +
-                                    </span>
-                                </div>
-                                <div className="w-40 h-[40px] flex items-center justify-center gap-4 bg-buy text-blue rounded-md">
+                                <div
+                                    className="w-40 h-[40px] flex items-center justify-center gap-4 bg-buy text-blue rounded-md"
+                                    onClick={() =>
+                                        handleAddtoCart({
+                                            product: product._id,
+                                            image: product.images[0],
+                                            name: product.name,
+                                            price: product.price,
+                                        })
+                                    }
+                                >
                                     <ShoppingCartOutlinedIcon />
                                     <span className="font-bold">Add To Cart</span>
                                 </div>

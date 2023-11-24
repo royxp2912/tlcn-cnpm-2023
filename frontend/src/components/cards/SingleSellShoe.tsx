@@ -104,10 +104,12 @@ const SingleSellShoe = ({
     const handleDetail = (id: string) => {
         router.push(`/shoes/${id}`);
     };
-    if (pathname !== '/') {
+    if (products[0] && pathname.startsWith(products[0].category.name.toLowerCase().replace(/\s/g, ''))) {
         return (
-            <div className="grid grid-cols-3 gap-[50px]">
-                {products &&
+            <div className="grid  grid-cols-3 gap-[50px]">
+                {products && products.length === 0 ? (
+                    <span>Sản phẩm đã hiển thị hết</span>
+                ) : (
                     products.map((product: Product, index: number) => (
                         <div key={product._id} className="flex gap-2" onClick={() => handleDetail(product._id)}>
                             <div className="border-2 border-gray2 rounded-md p-1 w-[304px]">
@@ -119,16 +121,16 @@ const SingleSellShoe = ({
                                     <div className="flex items-center justify-between mt-3 mb-3 w-full">
                                         <span className="text-gray text-lg font-bold">{product.brand}</span>
                                         {/* {hoveredItems[index] ? (
-                                          <FavoriteRoundedIcon
-                                              className="w-5 h-5 text-orange"
-                                              onMouseLeave={() => handleMouseLeave(index)}
-                                          />
-                                      ) : (
-                                          <FavoriteBorderRoundedIcon
-                                              className="w-5 h-5 text-orange"
-                                              onMouseEnter={() => handleMouseEnter(index)}
-                                          />
-                                      )} */}
+                          <FavoriteRoundedIcon
+                            className="w-5 h-5 text-orange"
+                            onMouseLeave={() => handleMouseLeave(index)}
+                          />
+                        ) : (
+                          <FavoriteBorderRoundedIcon
+                            className="w-5 h-5 text-orange"
+                            onMouseEnter={() => handleMouseEnter(index)}
+                          />
+                        )} */}
                                     </div>
                                     <h1 className="font-bold text-lg truncate w-full">{product.name}</h1>
                                     <Rating name="read-only" value={product.rating} readOnly />
@@ -140,14 +142,66 @@ const SingleSellShoe = ({
                                 </div>
                             </div>
                         </div>
-                    ))}
+                    ))
+                )}
+            </div>
+        );
+    }
+    if (pathname.startsWith('/shoes')) {
+        return (
+            <div className="flex items-center gap-[10px]">
+                <ArrowBackIosRoundedIcon
+                    className={`text-3xl ${isBack ? 'cursor-pointer' : 'text-gray'}`}
+                    onClick={isBack ? handleBack : undefined}
+                />
+                {products && products.length === 0 ? (
+                    <span>Sản phẩm đã hiển thị hết</span>
+                ) : (
+                    products.slice(back, next).map((product: Product, index: number) => (
+                        <div key={product._id} className="flex gap-2" onClick={() => handleDetail(product._id)}>
+                            <div className="border-2 border-gray2 rounded-md p-1 w-[304px]">
+                                {/* Single Product */}
+                                <div className="bg-bg_sell rounded-md w-[292px] h-[236px] relative overflow-hidden">
+                                    <Image src={product.images[0]} alt="Nike" fill />
+                                </div>
+                                <div className="px-5 py-1 flex flex-col items-center gap-2">
+                                    <div className="flex items-center justify-between mt-3 mb-3 w-full">
+                                        <span className="text-gray text-lg font-bold">{product.brand}</span>
+                                        {/* {hoveredItems[index] ? (
+                          <FavoriteRoundedIcon
+                            className="w-5 h-5 text-orange"
+                            onMouseLeave={() => handleMouseLeave(index)}
+                          />
+                        ) : (
+                          <FavoriteBorderRoundedIcon
+                            className="w-5 h-5 text-orange"
+                            onMouseEnter={() => handleMouseEnter(index)}
+                          />
+                        )} */}
+                                    </div>
+                                    <h1 className="font-bold text-lg truncate w-full">{product.name}</h1>
+                                    <Rating name="read-only" value={product.rating} readOnly />
+                                    <span className="font-bold text-money">${product.price}</span>
+                                    <div className="w-full flex items-center justify-between text-gray font-bold">
+                                        <span>Sold</span>
+                                        <span>{product.sold}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ))
+                )}
+                <ArrowForwardIosRoundedIcon
+                    className={`text-3xl ${isNext ? 'cursor-pointer' : 'text-gray'}`}
+                    onClick={isNext ? handleNext : undefined}
+                />
             </div>
         );
     }
     return (
         <div className="flex justify-center gap-[10px] items-center">
             <ArrowBackIosRoundedIcon
-                className={`text-3xl ${isBack ? 'cursor-pointer' : ''}`}
+                className={`text-3xl ${isBack ? 'cursor-pointer' : 'text-gray'}`}
                 onClick={isBack ? handleBack : undefined}
             />
             {active
@@ -230,7 +284,7 @@ const SingleSellShoe = ({
                       </div>
                   ))}
             <ArrowForwardIosRoundedIcon
-                className={`text-3xl ${isNext ? 'cursor-pointer' : ''}`}
+                className={`text-3xl ${isNext ? 'cursor-pointer' : 'text-gray'}`}
                 onClick={isNext ? handleNext : undefined}
             />
         </div>

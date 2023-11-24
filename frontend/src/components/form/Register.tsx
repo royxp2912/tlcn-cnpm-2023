@@ -27,6 +27,14 @@ type data = {
     };
 };
 
+const unProp = {
+    setOpen2: () => {},
+    setLoad: () => {},
+    setChange: () => {},
+    change: false,
+    setUpdate: () => {},
+};
+
 const Register = () => {
     const router = useRouter();
     const dispatch = useDispatch<AppDispatch>();
@@ -48,22 +56,22 @@ const Register = () => {
     const [code, setCode] = useState<string>('');
     const [email, setEmail] = useState('');
 
-    const onSubmit = async (values: z.infer<typeof RegisterValidation>) => {
-        try {
-            if (!regis) return;
+    // const onSubmit = async (values: z.infer<typeof RegisterValidation>) => {
+    //     try {
+    //         if (!regis) return;
 
-            const res = await dispatch(signUp(values));
+    //         const res = await dispatch(signUp(values));
 
-            if ((res.payload as { status: number }).status === 201) {
-                toast.success('Register Success');
-                router.push('/sign-in');
-            } else {
-                toast.error((res.payload as { response: any }).response.data.message);
-            }
-        } catch (error: any) {
-            toast.error(error);
-        }
-    };
+    //         if ((res.payload as { status: number }).status === 201) {
+    //             toast.success('Register Success');
+    //             router.push('/sign-in');
+    //         } else {
+    //             toast.error((res.payload as { response: any }).response.data.message);
+    //         }
+    //     } catch (error: any) {
+    //         toast.error(error);
+    //     }
+    // };
 
     const handleOpen = async () => {
         const values = form.getValues();
@@ -89,7 +97,7 @@ const Register = () => {
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-[380px]">
+            <form className="space-y-8 w-[380px]">
                 <FormField
                     control={form.control}
                     name="email"
@@ -223,7 +231,7 @@ const Register = () => {
                     Sign Up
                 </Button>
             </form>
-            {!regis && open && <Form1 setOpen={setOpen} email={email} setOpen1={setOpen1} />}
+            {!regis && open && <Form1 setOpen={setOpen} email={email} setOpen1={setOpen1} {...unProp} />}
             {open1 && (
                 <Form2
                     setOpen={setOpen}
@@ -232,6 +240,7 @@ const Register = () => {
                     code={code}
                     setCode={setCode}
                     setRegis={setRegis}
+                    {...unProp}
                 />
             )}
         </Form>

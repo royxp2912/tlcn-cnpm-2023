@@ -44,7 +44,6 @@ module.exports = {
                 black: '#262626',
                 bluev4: '#71BDFF',
                 red: '#FF4252',
-                arrow: '#223263',
             },
             boxShadow: {
                 form: '2px 2px 2px 0 rgba(0,0,0,0.2)',

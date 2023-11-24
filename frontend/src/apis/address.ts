@@ -1,4 +1,4 @@
-import { Address } from '@/types/type';
+import { Address, AddressLess, UpdateAddress } from '@/types/type';
 import axios from '../utils/axios';
 
 const addressApi = {
@@ -14,11 +14,11 @@ const addressApi = {
         const pageNumber = 5;
         return axios.get(url, { params: { address } });
     },
-    createAddress: (address: Address) => {
+    createAddress: (address: AddressLess) => {
         const url = '/address';
         return axios.post(url, address);
     },
-    updateAddressByAddressId: (address: Address) => {
+    updateAddressByAddressId: (address: UpdateAddress) => {
         const url = '/address';
         return axios.put(url, address);
     },

@@ -11,10 +11,11 @@ import Image from 'next/image';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { useDispatch, useSelector } from 'react-redux';
-import { Cart, ItemCart, RemoveItemCart, User } from '@/types/type';
+import { Cart, ItemCart, RemoveItemCart, User, Variant, variantColor } from '@/types/type';
 import { AppDispatch } from '@/utils/store';
 import { removeItemFromCartByUserId } from '@/slices/cartSlice';
 import { toast } from 'react-toastify';
+import { getProductById } from '@/slices/productSlice';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -35,6 +36,15 @@ type PriceMap = {
     [product: string]: number;
 };
 
+const colors: { [key: string]: string } = {
+    Blue: 'bg-[#006CFF]',
+    Red: 'bg-[#FC3E39]',
+    Black: 'bg-[#171717]',
+    Pink: 'bg-[#FF00B4]',
+    Yellow: 'bg-[#FFF600]',
+    Wheat: 'bg-[#EFDFDF]',
+};
+
 type Props = {
     cartItem: Cart;
     checkedItems: { [key: string]: boolean };
@@ -47,6 +57,11 @@ type Props = {
     setPrice: React.Dispatch<React.SetStateAction<{ [product: string]: number }>>;
     setQty: React.Dispatch<React.SetStateAction<number>>;
     setTotal: React.Dispatch<React.SetStateAction<number>>;
+    setActive: React.Dispatch<React.SetStateAction<boolean>>;
+    setProductId: React.Dispatch<React.SetStateAction<string>>;
+    setColor: React.Dispatch<React.SetStateAction<string>>;
+    setItemQty: React.Dispatch<React.SetStateAction<number>>;
+    setSizeQty: React.Dispatch<React.SetStateAction<variantColor>>;
 };
 const CartShoe = ({
     cartItem,
@@ -60,10 +75,18 @@ const CartShoe = ({
     setPrice,
     setQty,
     setTotal,
+    setActive,
+    setProductId,
+    setColor,
+    setItemQty,
+    setSizeQty,
 }: Props) => {
     const dispatch = useDispatch<AppDispatch>();
+    const { variants } = useSelector((state: any) => state.products) as {
+        variants: Variant[];
+    };
 
-    const userString = localStorage.getItem('user');
+    const userString = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
     let user: User | null = null;
     if (userString !== null) {
         try {
@@ -178,6 +201,17 @@ const CartShoe = ({
     // console.log(totalQuantity);
     // console.log(totalPrice);
 
+    const handleChange = (p: string, c: string, s: string, q: number) => {
+        setActive(true);
+        setProductId(p);
+        setColor(c);
+        setItemQty(q);
+        setSizeQty((prev) => ({
+            ...prev,
+            size: s,
+        }));
+    };
+
     return (
         <TableContainer component={Paper} className="shadow-xl h-max">
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -189,6 +223,7 @@ const CartShoe = ({
                         <TableCell align="center">QTY</TableCell>
                         <TableCell align="center">UNIT PRICE</TableCell>
                         <TableCell align="center">TOTAL</TableCell>
+                        <TableCell align="center"></TableCell>
                         <TableCell align="center"></TableCell>
                     </TableRow>
                 </TableHead>
@@ -226,13 +261,19 @@ const CartShoe = ({
                                     ))}
                                 </Select> */}
                                     <div className="flex justify-center items-center">
-                                        <div className={`w-6 h-6 rounded-full ${item.color}`}></div>
+                                        <div className={`w-6 h-6 rounded-full ${colors[item.color]}`}></div>
                                     </div>
                                 </TableCell>
                                 <TableCell align="center">{item.size}</TableCell>
                                 <TableCell align="center">{item.quantity}</TableCell>
                                 <TableCell align="center">${item.price}</TableCell>
                                 <TableCell align="center">${item.quantity * item.price}</TableCell>
+                                <TableCell
+                                    align="center"
+                                    onClick={() => handleChange(item.product, item.color, item.size, item.quantity)}
+                                >
+                                    Change
+                                </TableCell>
                                 <TableCell
                                     align="center"
                                     className="text-orange text-2xl cursor-pointer"

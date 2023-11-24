@@ -7,12 +7,14 @@ import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import type { Address, User } from '@/types/type';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '@/utils/store';
-import { getAllAddressByUserId } from '@/slices/addressSlice';
+import { getAddressByAddressId, getAllAddressByUserId } from '@/slices/addressSlice';
 import AddAddress from '@/components/form/AddAddress';
+import DoneRoundedIcon from '@mui/icons-material/DoneRounded';
+import axios from '@/utils/axios';
+import { toast } from 'react-toastify';
 
 const Address = () => {
     const userString = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
-
     let user: User | null = null;
     if (userString !== null) {
         try {
@@ -22,13 +24,57 @@ const Address = () => {
         }
     }
     const id = user?._id as string;
+
     const [open, setOpen] = useState(false);
+    const [load, setLoad] = useState(false);
+    const [update, setUpdate] = useState(false);
+    const [addressId, setAddressId] = useState('');
     const dispatch = useDispatch<AppDispatch>();
-    const { address }: { address: Address[] } = useSelector((state: any) => state.address);
+    const { address, addressDetail }: { address: Address[]; addressDetail: Address } = useSelector(
+        (state: any) => state.address,
+    );
     useEffect(() => {
         dispatch(getAllAddressByUserId(id));
-    }, [id]);
-    console.log(address);
+    }, [id, load]);
+
+    const handleDefault = async (id: string) => {
+        const { data } = await axios.patch('/address/default', {
+            address: id,
+        });
+        if (data.success) {
+            toast.success('Set default address success');
+            setLoad((prev) => !prev);
+        } else {
+            toast.error('Set default address fail');
+        }
+    };
+
+    const handleDelete = async (id: string) => {
+        const { data } = await axios.delete('/address', {
+            params: { address: id },
+        });
+        if (data.success) {
+            toast.success('Set default success');
+            setLoad((prev) => !prev);
+        } else {
+            toast.error('Set default fail');
+        }
+    };
+
+    const handleUpdate = (id: string) => {
+        setAddressId(id);
+        setUpdate(true);
+    };
+    useEffect(() => {
+        if (addressId !== '') {
+            const fetchData = async () => {
+                await dispatch(getAddressByAddressId(addressId));
+                setOpen(true);
+            };
+            fetchData();
+        }
+    }, [addressId]);
+
     return (
         <div className="flex justify-center px-20 mt-10 gap-5">
             <UserNav />
@@ -48,20 +94,38 @@ const Address = () => {
                     </div>
                 </div>
                 <div className="flex flex-col gap-10">
-                    {address.map((item: Address, index: number) => (
+                    {address.map((item, index: number) => (
                         <div
                             key={item._id}
-                            className="border border-black border-opacity-20 px-10 pt-8 pb-6 rounded-full relative"
+                            className={`border ${
+                                item.default ? 'border-[#FF00B4]' : 'border-black'
+                            } border-opacity-20 px-10 pt-8 pb-6 rounded-full relative`}
                         >
-                            <span className="opacity-60 top-[-14px] left-[100px] absolute block w-[100px] h-5 bg-white text-center">
+                            <span
+                                className={`opacity-60 top-[-14px] left-[100px] absolute block w-[100px] h-5 bg-white text-center ${
+                                    item.default ? 'text-[#FF00B4]' : ''
+                                }`}
+                            >
                                 Address {index + 1}
                             </span>
                             <div className="flex gap-[10px] absolute top-[-14px] right-20">
-                                <div className="text-blue px-1 bg-white cursor-pointer">
+                                <div
+                                    className="text-blue px-1 bg-white cursor-pointer"
+                                    onClick={() => handleUpdate(item._id)}
+                                >
                                     <LoopOutlinedIcon />
                                 </div>
-                                <div className="text-red px-1 bg-white cursor-pointer">
+                                <div
+                                    className="text-red px-1 bg-white cursor-pointer"
+                                    onClick={() => handleDelete(item._id)}
+                                >
                                     <CloseOutlinedIcon />
+                                </div>
+                                <div
+                                    className="text-[#FF00B4] px-1 bg-white cursor-pointer"
+                                    onClick={() => handleDefault(item._id)}
+                                >
+                                    <DoneRoundedIcon />
                                 </div>
                             </div>
                             <div className="ml-5 flex items-center gap-[180px] font-bold text-lg">
@@ -93,7 +157,16 @@ const Address = () => {
                     ))}
                 </div>
             </div>
-            {open && <AddAddress setOpen={setOpen} />}
+            {open && (
+                <AddAddress
+                    setOpen={setOpen}
+                    update={update}
+                    setUpdate={setUpdate}
+                    addressDetail={addressDetail}
+                    addressId={addressId}
+                    setLoad={setLoad}
+                />
+            )}
         </div>
     );
 };

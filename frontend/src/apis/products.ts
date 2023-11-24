@@ -13,7 +13,14 @@ const productsApi = {
     getAllProductByCateId: (category: productByCate) => {
         const url = '/products/category';
         return axios.get(url, {
-            params: { category: category.category, sort: category.sort, pageSize: 6, pageNumber: category.pageNumber },
+            params: {
+                category: category.category,
+                sort: category.sort,
+                brand: category.brand,
+                color: category.color,
+                pageSize: 6,
+                pageNumber: category.pageNumber,
+            },
         });
     },
     createProduct: (product: Product) => {

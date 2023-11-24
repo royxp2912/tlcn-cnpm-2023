@@ -40,6 +40,7 @@ const ManShoes = () => {
     const [view, setView] = useState<string>('new');
     const [listProduct, setListProduct] = useState<Product[]>([]);
     const [color, setColor] = useState<string>('Blue');
+    const [brand, setBrand] = useState<string>('Nike');
     const [pageNum, setPageNum] = useState<number>(1);
     const [minPrice, setMinPrice] = useState(0);
     const [maxPrice, setMaxPrice] = useState(2000);
@@ -59,13 +60,16 @@ const ManShoes = () => {
         const fetchData = async () => {
             const item: productByCate = {
                 category: idCate,
+                brand: brand,
+                color: color,
                 sort: view,
+
                 pageNumber: pageNum,
             };
             await dispatch(getAllProductByCateId(item)).unwrap();
         };
         fetchData();
-    }, [dispatch, idCate, pageNum, view]);
+    }, [dispatch, idCate, pageNum, view, brand, color]);
 
     useEffect(() => {
         const filtered = products.filter((product) => product.price >= minPrice && product.price <= maxPrice);
@@ -81,13 +85,14 @@ const ManShoes = () => {
         };
         fetchData();
     }, [dispatch]);
+
     return (
         <div className="flex px-[100px] gap-10 mt-5">
             <div className="flex flex-col gap-5 w-[260px]">
-                <HotDeals hotdeals={hotdeals} />
+                <HotDeals hotdeals={hotdeals} brand={brand} setBrand={setBrand} />
                 <Price minPrice={minPrice} setMinPrice={setMinPrice} maxPrice={maxPrice} setMaxPrice={setMaxPrice} />
                 <Color color={color} setColor={setColor} />
-                <Brand brands={brands} />
+                <Brand brands={brands} brand={brand} setBrand={setBrand} />
             </div>
             <div className="w-[1010px]">
                 <div className="w-full h-[280px] relative ">

@@ -1,8 +1,9 @@
 'use client';
 import CartShoe from '@/components/cards/CartShoe';
+import ChangeVariant from '@/components/form/ChangeVariant';
 import Border from '@/components/shared/Border';
 import { getCartByUserId } from '@/slices/cartSlice';
-import type { Cart, User } from '@/types/type';
+import type { Cart, User, variantColor } from '@/types/type';
 import axios from '@/utils/axios';
 import { AppDispatch } from '@/utils/store';
 import { useRouter } from 'next/navigation';
@@ -18,6 +19,15 @@ const Cart = () => {
     const [quantity, setQuantity] = useState({});
     const [total, setTotal] = useState<number>(0);
     const [checkedAll, setCheckedAll] = useState(false);
+    const [active, setActive] = useState<boolean>(false);
+    const [productId, setProductId] = useState<string>('');
+    const [color, setColor] = useState<string>('');
+    const [itemQty, setItemQty] = useState<number>(0);
+    const [sizeQty, setSizeQty] = useState<variantColor>({
+        size: '',
+        quantity: 0,
+    });
+    const [load, setLoad] = useState<boolean>(false);
 
     const initialCheckedItems = (cartItem.items ?? []).reduce((acc, item) => {
         acc[item.product] = false;
@@ -43,7 +53,7 @@ const Cart = () => {
         dispatch(getCartByUserId(id));
         localStorage.setItem('itemOrders', '');
         localStorage.setItem('totalPrice', '');
-    }, [length]);
+    }, [length, load]);
 
     const handleCheckout = async () => {
         router.push('/order');
@@ -103,6 +113,11 @@ const Cart = () => {
                     setPrice={setPrice}
                     setQty={setQty}
                     setTotal={setTotal}
+                    setActive={setActive}
+                    setProductId={setProductId}
+                    setColor={setColor}
+                    setItemQty={setItemQty}
+                    setSizeQty={setSizeQty}
                 />
 
                 <div className="p-5 w-[310px] shadow-xl rounded-lg h-max">
@@ -131,6 +146,19 @@ const Cart = () => {
                     </button>
                 </div>
             </div>
+            {active && (
+                <ChangeVariant
+                    color={color}
+                    itemQty={itemQty}
+                    productId={productId}
+                    setActive={setActive}
+                    setColor={setColor}
+                    setItemQty={setItemQty}
+                    setSizeQty={setSizeQty}
+                    sizeQty={sizeQty}
+                    setLoad={setLoad}
+                />
+            )}
         </div>
     );
 };

@@ -3,15 +3,20 @@ import { ChangeEvent, Dispatch, useState } from 'react';
 import TextField from '@mui/material/TextField';
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 import ClearRoundedIcon from '@mui/icons-material/ClearRounded';
-import { Address, User } from '@/types/type';
+import { Address, AddressLess, UpdateAddress, User } from '@/types/type';
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/utils/store';
-import { createAddress } from '@/slices/addressSlice';
+import { createAddress, updateAddressByAddressId } from '@/slices/addressSlice';
 type Props = {
     setOpen: Dispatch<React.SetStateAction<boolean>>;
+    update: boolean;
+    setUpdate: Dispatch<React.SetStateAction<boolean>>;
+    addressDetail: Address;
+    addressId: string;
+    setLoad: Dispatch<React.SetStateAction<boolean>>;
 };
-const AddAddress = ({ setOpen }: Props) => {
+const AddAddress = ({ setOpen, update, setUpdate, addressDetail, addressId, setLoad }: Props) => {
     const dispatch = useDispatch<AppDispatch>();
     const userString = localStorage.getItem('user');
     let user: User | null = null;
@@ -24,15 +29,17 @@ const AddAddress = ({ setOpen }: Props) => {
         }
     }
     const id = user?._id as string;
+    console.log(addressDetail);
+    console.log(update);
 
-    const [address, setAddress] = useState<Address>({
+    const [address, setAddress] = useState<AddressLess>({
         user: id,
-        receiver: '',
-        phone: '',
-        province: '',
-        districts: '',
-        wards: '',
-        specific: '',
+        receiver: update ? addressDetail.receiver : '',
+        phone: update ? addressDetail.phone : '',
+        province: update ? addressDetail.province : '',
+        districts: update ? addressDetail.districts : '',
+        wards: update ? addressDetail.wards : '',
+        specific: update ? addressDetail.specific : '',
     });
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         setAddress((prev) => ({
@@ -56,26 +63,58 @@ const AddAddress = ({ setOpen }: Props) => {
         }
         return true;
     };
-    const handleCreate = async () => {
-        try {
-            const isValid = handleCheck();
-            if (!isValid) return;
-            const res = await dispatch(createAddress(address));
-            if ((res.payload as { status: number }).status === 201) {
-                setOpen(false);
-                toast.success('Add Address success');
+    const handleSumbit = async () => {
+        if (update) {
+            try {
+                const isValid = handleCheck();
+                if (!isValid) return;
+                const item: UpdateAddress = {
+                    address: addressId,
+                    ...address,
+                };
+                const res = await dispatch(updateAddressByAddressId(item));
+
+                if ((res.payload as { status: number }).status === 200) {
+                    setOpen(false);
+                    setUpdate(false);
+                    setLoad((prev) => !prev);
+                    toast.success('Update Address success');
+                }
+            } catch (error) {
+                toast.error('Wrong info');
             }
-        } catch (error) {
-            toast.error('Wrong info');
+        } else {
+            try {
+                const isValid = handleCheck();
+                if (!isValid) return;
+                const res = await dispatch(createAddress(address));
+                if ((res.payload as { status: number }).status === 201) {
+                    setOpen(false);
+                    toast.success('Add Address success');
+                }
+            } catch (error) {
+                toast.error('Wrong info');
+            }
         }
     };
-    console.log(address);
+    const handleCancel = () => {
+        if (update) {
+            setUpdate(false);
+            setOpen(false);
+        } else {
+            setOpen(false);
+        }
+    };
     return (
         <div className="modal">
             <div className="modal-container">
                 <div className="flex items-center justify-between mb-[10px]">
-                    <span className="font-bold text-xl">New Delivery Address</span>
-                    <ClearRoundedIcon onClick={() => setOpen(false)} fontSize="large" className="text-orange cursor-pointer" />
+                    <span className="font-bold text-xl">{update ? 'Update' : 'New'} Delivery Address</span>
+                    <ClearRoundedIcon
+                        onClick={() => setOpen(false)}
+                        fontSize="large"
+                        className="text-orange cursor-pointer"
+                    />
                 </div>
                 <span className="font-medium">Where you want to receive your orders!!!</span>
                 <div className="flex gap-10 flex-col mt-10 mb-5">
@@ -86,6 +125,7 @@ const AddAddress = ({ setOpen }: Props) => {
                             label="Reveiver Name"
                             variant="outlined"
                             className="w-[360px] h-[70px]"
+                            defaultValue={address.receiver}
                         />
                         <TextField
                             onChange={handleChange}
@@ -93,6 +133,7 @@ const AddAddress = ({ setOpen }: Props) => {
                             label="Phone Number"
                             variant="outlined"
                             className="w-[360px] h-[70px]"
+                            defaultValue={address.phone}
                         />
                     </div>
                     <div className="flex gap-5">
@@ -102,6 +143,7 @@ const AddAddress = ({ setOpen }: Props) => {
                             label="Province / City"
                             variant="outlined"
                             className="w-[240px] h-[70px]"
+                            defaultValue={address.province}
                         />
                         <TextField
                             onChange={handleChange}
@@ -109,6 +151,7 @@ const AddAddress = ({ setOpen }: Props) => {
                             label="District"
                             variant="outlined"
                             className="w-[240px] h-[70px]"
+                            defaultValue={address.districts}
                         />
                         <TextField
                             onChange={handleChange}
@@ -116,6 +159,7 @@ const AddAddress = ({ setOpen }: Props) => {
                             label="Wards"
                             variant="outlined"
                             className="w-[240px] h-[70px]"
+                            defaultValue={address.wards}
                         />
                     </div>
                     <div>
@@ -125,17 +169,19 @@ const AddAddress = ({ setOpen }: Props) => {
                             label="Specific Address"
                             variant="outlined"
                             className="w-full"
+                            defaultValue={address.specific}
                         />
                     </div>
                 </div>
                 <div className="flex items-center justify-between font-medium text-xl">
                     <button
-                        onClick={() => setOpen(false)}
-                        className="w-[360px] h-[60px] text-red bg-red bg-opacity-20 rounded-full">
+                        onClick={handleCancel}
+                        className="w-[360px] h-[60px] text-red bg-red bg-opacity-20 rounded-full"
+                    >
                         Cancel
                     </button>
                     <div
-                        onClick={handleCreate}
+                        onClick={handleSumbit}
                         className="w-[360px] h-[60px] cursor-pointer flex items-center justify-center gap-[6px] text-blue bg-blue bg-opacity-20 rounded-full"
                     >
                         <CloudUploadOutlinedIcon />
