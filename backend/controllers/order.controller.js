@@ -11,7 +11,37 @@ import {
     deliveryConfirm,
     findByKeyword,
     getAllByStatusAndUser,
+    returnOrder,
+    receivedOrder,
 } from "../services/order.service.js";
+
+export const receivedOrderByID = async (req, res, next) => {
+    try {
+        const { success, status, message } = await receivedOrder(req.body.order);
+        if (!success) return next(createError(status, message));
+
+        res.status(status).send({
+            success,
+            message,
+        });
+    } catch (err) {
+        next(err);
+    }
+}
+
+export const returnOrderByID = async (req, res, next) => {
+    try {
+        const { success, status, message } = await returnOrder(req.body.order);
+        if (!success) return next(createError(status, message));
+
+        res.status(status).send({
+            success,
+            message,
+        });
+    } catch (err) {
+        next(err);
+    }
+}
 
 export const getAllOrderByStatusAndUserID = async (req, res, next) => {
     try {

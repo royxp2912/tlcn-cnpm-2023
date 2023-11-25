@@ -13,7 +13,9 @@ export const {
     getAll,
     getByID,
     cancelOrder,
+    returnOrder,
     updateStatus,
+    receivedOrder,
     findByKeyword,
     getAllByUserID,
     getAllByStatus,
@@ -226,9 +228,16 @@ export const {
     cancelOrder: async (orderID) => {
         try {
             checkedObjectId(orderID, 'Order ID');
-
-            const result = await Order.findByIdAndUpdate(orderID, { $set: { status: 'Cancel' } });
+            const result = await Order.findById(orderID);
             checkedNull(result, "Order doesn't exist !!!");
+            if (result.status !== "Confirming") return {
+                success: false,
+                status: 400,
+                message: 'The order is in a non-cancellable status!!!',
+            }
+
+            result.status = 'Cancel';
+            await result.save();
 
             return {
                 success: true,
@@ -244,16 +253,71 @@ export const {
         }
     },
 
+    returnOrder: async (orderID) => {
+        try {
+            checkedObjectId(orderID, 'Order ID');
+            const result = await Order.findById(orderID);
+            checkedNull(result, "Order doesn't exist !!!");
+            if (result.status !== "Successful") return {
+                success: false,
+                status: 400,
+                message: 'The order is not in returnable status!!!',
+            }
+
+            result.status = 'Return';
+            await result.save();
+
+            return {
+                success: true,
+                status: 200,
+                message: 'Return Order Successful!!!',
+            };
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || 'Something went wrong in Order !!!',
+            };
+        }
+    },
+
+    receivedOrder: async (orderID) => {
+        try {
+            checkedObjectId(orderID, 'Order ID');
+            const result = await Order.findById(orderID);
+            checkedNull(result, "Order doesn't exist !!!");
+            if (result.status !== "Delivering") return {
+                success: false,
+                status: 400,
+                message: 'The order is not in a state for pickup!!!',
+            }
+
+            result.status = 'Successful';
+            await result.save();
+
+            return {
+                success: true,
+                status: 200,
+                message: 'Return Order Successful!!!',
+            };
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || 'Something went wrong in Order !!!',
+            };
+        }
+    },
+
     updateStatus: async (orderID, status) => {
         try {
             checkedObjectId(orderID, 'Order ID');
 
             if (
-                status !== 'Confirmming' &&
+                status !== 'Accepted' &&
                 status !== 'Delivering' &&
                 status !== 'Successful' &&
-                status !== 'Cancel' &&
-                status !== 'Return'
+                status !== 'Cancel'
             )
                 return {
                     success: false,
@@ -264,24 +328,51 @@ export const {
             checkedNull(existOrder, "Order doesn't exist !!!");
 
             if (status === 'Successful') {
-                if (!existOrder.isPaid && existOrder.paymentMethod === 'VNPay') {
+                // if (!existOrder.isPaid && existOrder.paymentMethod === 'VNPay') {
+                //     return {
+                //         success: false,
+                //         status: 402,
+                //         message: 'Order has not been paid yet !!!',
+                //     };
+                // }
+                await Order.findByIdAndUpdate(orderID, {
+                    $set: {
+                        status: 'Successful',
+                        isDelivered: true,
+                        isPaid: true,
+                    },
+                });
+            }
+            if (status === "Accepted" || status === "Cancel") {
+                if (existOrder.status !== "Confirming") {
                     return {
                         success: false,
-                        status: 402,
-                        message: 'Order has not been paid yet !!!',
-                    };
-                } else {
-                    await Order.findByIdAndUpdate(orderID, {
-                        $set: {
-                            status: 'Successful',
-                            isDelivered: true,
-                            isPaid: true,
-                        },
-                    });
+                        status: 400,
+                        message: 'The order is in a non-cancellable status!!!',
+                    }
                 }
-            } else {
-                await Order.findByIdAndUpdate(orderID, { $set: { status: status } });
             }
+
+            if (status === "Delivering") {
+                if (existOrder.status !== "Accepted") {
+                    return {
+                        success: false,
+                        status: 400,
+                        message: 'The order is not in a shippable state!!!',
+                    }
+                }
+            }
+
+            if (status === "Successful") {
+                if (existOrder.status !== "Delivering") {
+                    return {
+                        success: false,
+                        status: 400,
+                        message: 'The order is not in a fulfillable state!!!',
+                    }
+                }
+            }
+            await Order.findByIdAndUpdate(orderID, { $set: { status: status } });
 
             return {
                 success: true,
