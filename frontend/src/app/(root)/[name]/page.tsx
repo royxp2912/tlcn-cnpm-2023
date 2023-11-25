@@ -23,10 +23,10 @@ const unProp = {
     isNext: false,
     next: 0,
     back: 0,
-    setBack: () => {},
-    setNext: () => {},
-    setIsBack: () => {},
-    setIsNext: () => {},
+    setBack: () => { },
+    setNext: () => { },
+    setIsBack: () => { },
+    setIsNext: () => { },
 };
 
 const ManShoes = () => {
@@ -34,13 +34,14 @@ const ManShoes = () => {
     const { products, brands, hotdeals }: { products: Product[]; brands: Brand[]; hotdeals: Brand[] } = useSelector(
         (state: any) => state.products,
     );
+
     const dispatch = useDispatch<AppDispatch>();
     const [active, setActive] = useState(false);
     const [sort, setSort] = useState<boolean>(false);
     const [view, setView] = useState<string>('new');
     const [listProduct, setListProduct] = useState<Product[]>([]);
-    const [color, setColor] = useState<string>('Blue');
-    const [brand, setBrand] = useState<string>('Nike');
+    const [color, setColor] = useState<string>('');
+    const [brand, setBrand] = useState<string>('');
     const [pageNum, setPageNum] = useState<number>(1);
     const [minPrice, setMinPrice] = useState(0);
     const [maxPrice, setMaxPrice] = useState(2000);
@@ -66,6 +67,8 @@ const ManShoes = () => {
 
                 pageNumber: pageNum,
             };
+
+            console.log("product of cate: ", item);
             await dispatch(getAllProductByCateId(item)).unwrap();
         };
         fetchData();

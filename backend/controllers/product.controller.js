@@ -23,12 +23,13 @@ export const getProductByStatus = async (req, res, next) => {
         const statusProduct = req.query.status || "Available";
         const pageSize = req.query.pageSize || 8;
         const pageNumber = req.query.pageNumber || 1;
-        const { success, message, data, status } = await getByStatus(statusProduct, pageSize, pageNumber);
+        const { success, message, pages, data, status } = await getByStatus(statusProduct, pageSize, pageNumber);
         if (!success) return next(createError(status, message));
 
         res.status(status).json({
             success: success,
             message: message,
+            pages,
             data: data,
         });
     } catch (err) {
@@ -74,16 +75,17 @@ export const findProductByColor = async (req, res, next) => {
         const pageNumber = req.query.pageNumber || 1;
 
         if (sort) {
-            const { success, message, data, status } = await findByColorAndSort(color, pageSize, pageNumber, sort);
+            const { success, message, pages, data, status } = await findByColorAndSort(color, pageSize, pageNumber, sort);
             if (!success) return next(createError(status, message));
             res.status(status).json({
                 success: success,
                 message: message,
+                pages,
                 data: data,
             });
         }
 
-        const { success, message, data, status } = await findByColor(color, pageSize, pageNumber);
+        const { success, message, pages, data, status } = await findByColor(color, pageSize, pageNumber);
         if (!success) return next(createError(status, message));
 
         if (data.length === 0) {
@@ -96,6 +98,7 @@ export const findProductByColor = async (req, res, next) => {
         res.status(status).json({
             success: success,
             message: message,
+            pages,
             total: data.length,
             data: data,
         });
@@ -112,16 +115,18 @@ export const findProductByKeyword = async (req, res, next) => {
         const pageNumber = req.query.pageNumber || 1;
 
         if (sort) {
-            const { success, message, data, status } = await findByKeywordAndSort(keyword, pageSize, pageNumber, sort);
+            const { success, message, pages, data, status } = await findByKeywordAndSort(keyword, pageSize, pageNumber, sort);
             if (!success) return next(createError(status, message));
             res.status(status).json({
                 success: success,
                 message: message,
+                pages,
+                total: data.length,
                 data: data,
             });
         }
 
-        const { success, message, data, status } = await findByKeyword(keyword, pageSize, pageNumber);
+        const { success, message, pages, data, status } = await findByKeyword(keyword, pageSize, pageNumber);
         if (!success) return next(createError(status, message));
 
         if (data.length === 0) {
@@ -134,6 +139,7 @@ export const findProductByKeyword = async (req, res, next) => {
         res.status(status).json({
             success: success,
             message: message,
+            pages,
             total: data.length,
             data: data,
         });
@@ -202,12 +208,13 @@ export const getAllProductByCategory = async (req, res, next) => {
         const pageSize = req.query.pageSize || 8;
         const pageNumber = req.query.pageNumber || 1;
 
-        const { success, message, data, status } = await getAllByCateID(category, color, brand, sort, pageSize, pageNumber);
+        const { success, message, pages, data, status } = await getAllByCateID(category, color, brand, sort, pageSize, pageNumber);
         if (!success) return next(createError(status, message));
 
         res.status(status).json({
             success: success,
             message: message,
+            pages,
             total: data.length,
             data: data,
         });
@@ -221,12 +228,13 @@ export const getAllProduct = async (req, res, next) => {
         const pageSize = req.query.pageSize || 8;
         const pageNumber = req.query.pageNumber || 1;
 
-        const { success, message, data, status } = await getAll(pageSize, pageNumber);
+        const { success, message, pages, data, status } = await getAll(pageSize, pageNumber);
         if (!success) return next(createError(status, message));
 
         res.status(status).json({
             success: success,
             message: message,
+            pages,
             total: data.length,
             data: data,
         });
@@ -240,12 +248,13 @@ export const getProductHotDeal = async (req, res, next) => {
         const pageSize = req.query.pageSize || 8;
         const pageNumber = req.query.pageNumber || 1;
 
-        const { success, message, data, status } = await getHotDeal(pageSize, pageNumber);
+        const { success, message, pages, data, status } = await getHotDeal(pageSize, pageNumber);
         if (!success) return next(createError(status, message));
 
         res.status(status).json({
             success: success,
             message: message,
+            pages,
             total: data.length,
             data: data,
         });

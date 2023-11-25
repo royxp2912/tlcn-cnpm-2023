@@ -220,6 +220,7 @@ export const {
                 success: true,
                 status: 200,
                 message: 'Find Successful !!!',
+                pages: Math.ceil(listProduct.length / pageSize),
                 data: limitResult,
             };
         } catch (err) {
@@ -250,6 +251,7 @@ export const {
                 success: true,
                 status: 200,
                 message: 'Find Product By Color Successful !!!',
+                pages: Math.ceil(listProduct.length / pageSize),
                 data: limitResult,
             };
         } catch (err) {
@@ -274,8 +276,6 @@ export const {
                             { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
                         ],
                     })
-                        .limit(pageSize)
-                        .skip(pageSize * (pageNumber - 1))
                         .populate({ path: 'category', select: 'name' })
                         .select('-status -createdAt -updatedAt -__v')
                         .sort({ price: -1 });
@@ -290,8 +290,6 @@ export const {
                             { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
                         ],
                     })
-                        .limit(pageSize)
-                        .skip(pageSize * (pageNumber - 1))
                         .populate({ path: 'category', select: 'name' })
                         .select('-status -createdAt -updatedAt -__v')
                         .sort({ price: 1 });
@@ -306,8 +304,6 @@ export const {
                             { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
                         ],
                     })
-                        .limit(pageSize)
-                        .skip(pageSize * (pageNumber - 1))
                         .populate({ path: 'category', select: 'name' })
                         .select('-status -createdAt -updatedAt -__v')
                         .sort({ rating: -1 });
@@ -322,8 +318,6 @@ export const {
                             { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
                         ],
                     })
-                        .limit(pageSize)
-                        .skip(pageSize * (pageNumber - 1))
                         .populate({ path: 'category', select: 'name' })
                         .select('-status -createdAt -updatedAt -__v')
                         .sort({ rating: 1 });
@@ -338,8 +332,6 @@ export const {
                             { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
                         ],
                     })
-                        .limit(pageSize)
-                        .skip(pageSize * (pageNumber - 1))
                         .populate({ path: 'category', select: 'name' })
                         .select('-status -createdAt -updatedAt -__v')
                         .sort({ sold: -1 });
@@ -356,8 +348,6 @@ export const {
                             { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
                         ],
                     })
-                        .limit(pageSize)
-                        .skip(pageSize * (pageNumber - 1))
                         .populate({ path: 'category', select: 'name' })
                         .select('-status -createdAt -updatedAt -__v')
                         .sort({ price: -1 });
@@ -374,8 +364,6 @@ export const {
                             { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
                         ],
                     })
-                        .limit(pageSize)
-                        .skip(pageSize * (pageNumber - 1))
                         .populate({ path: 'category', select: 'name' })
                         .select('-status -createdAt -updatedAt -__v')
                         .sort({ price: 1 });
@@ -392,8 +380,6 @@ export const {
                             { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
                         ],
                     })
-                        .limit(pageSize)
-                        .skip(pageSize * (pageNumber - 1))
                         .populate({ path: 'category', select: 'name' })
                         .select('-status -createdAt -updatedAt -__v')
                         .sort({ rating: -1 });
@@ -410,8 +396,6 @@ export const {
                             { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
                         ],
                     })
-                        .limit(pageSize)
-                        .skip(pageSize * (pageNumber - 1))
                         .populate({ path: 'category', select: 'name' })
                         .select('-status -createdAt -updatedAt -__v')
                         .sort({ rating: 1 });
@@ -428,8 +412,6 @@ export const {
                             { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
                         ],
                     })
-                        .limit(pageSize)
-                        .skip(pageSize * (pageNumber - 1))
                         .populate({ path: 'category', select: 'name' })
                         .select('-status -createdAt -updatedAt -__v')
                         .sort({ sold: -1 });
@@ -437,11 +419,13 @@ export const {
             }
 
             if (!result) return false;
+            const final = result.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
             return {
                 success: true,
                 status: 200,
                 message: 'Find Product By Keyword Successful !!!',
-                data: result,
+                pages: Math.ceil(result.length / pageSize),
+                data: final,
             };
         } catch (err) {
             return {
@@ -464,8 +448,6 @@ export const {
                         { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
                     ],
                 })
-                    .limit(pageSize)
-                    .skip(pageSize * (pageNumber - 1))
                     .populate({ path: 'category', select: 'name' })
                     .select('-status -createdAt -updatedAt -__v');
             } else {
@@ -479,18 +461,18 @@ export const {
                         { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
                     ],
                 })
-                    .limit(pageSize)
-                    .skip(pageSize * (pageNumber - 1))
                     .populate({ path: 'category', select: 'name' })
                     .select('-status -createdAt -updatedAt -__v');
             }
 
             if (!result) return false;
+            const final = result.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
             return {
                 success: true,
                 status: 200,
                 message: 'Find Product By Keyword Successful !!!',
-                data: result,
+                pages: Math.ceil(result.length / pageSize),
+                data: final,
             };
         } catch (err) {
             return {
@@ -612,6 +594,7 @@ export const {
 
     getHotDeal: async (pageSize, pageNumber) => {
         try {
+            const all = await Product.find();
             const listProduct = await Product.find()
                 .limit(pageSize)
                 .skip(pageSize * (pageNumber - 1))
@@ -623,6 +606,7 @@ export const {
                 success: true,
                 status: 200,
                 message: 'Get All Product Hot Deal Successful!!!',
+                pages: Math.ceil(all.length / pageSize),
                 data: checkedNull(listProduct, "Resource doesn't exist !!!"),
             };
         } catch (err) {
@@ -636,6 +620,7 @@ export const {
 
     getAll: async (pageSize, pageNumber) => {
         try {
+            const all = await Product.find();
             const listProduct = await Product.find()
                 .limit(pageSize)
                 .skip(pageSize * (pageNumber - 1))
@@ -646,6 +631,7 @@ export const {
                 success: true,
                 status: 200,
                 message: 'Get All Product Successful!!!',
+                pages: Math.ceil(all.length / pageSize),
                 data: checkedNull(listProduct, "Resource doesn't exist !!!"),
             };
         } catch (err) {
@@ -659,6 +645,7 @@ export const {
 
     getByStatus: async (status, pageSize, pageNumber) => {
         try {
+            const all = await Product.find({ status: status });
             const listProduct = await Product.find({ status: status })
                 .limit(pageSize)
                 .skip(pageSize * (pageNumber - 1))
@@ -669,7 +656,8 @@ export const {
                 success: true,
                 status: 200,
                 message: 'Get All Product By Status Successful!!!',
-                data: checkedNull(listProduct, "Resource doesn't exist !!!"),
+                pages: Math.ceil(all.length / pageSize),
+                data: listProduct,
             };
         } catch (err) {
             return {
@@ -704,6 +692,7 @@ export const {
                     success: true,
                     status: 200,
                     message: 'Get All Product Of Category Successful!!!',
+                    pages: Math.ceil(semiFinal.length / pageSize),
                     data: final,
                 };
             }
@@ -729,6 +718,7 @@ export const {
                 success: true,
                 status: 200,
                 message: 'Get All Product Of Category Successful!!!',
+                pages: Math.ceil(semiFinal.length / pageSize),
                 data: final,
             };
         } catch (err) {

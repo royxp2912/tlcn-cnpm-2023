@@ -106,16 +106,16 @@ export const {
                     { role: { $regex: keyword, $options: 'i' } },
                 ],
             })
-                .limit(pageSize)
-                .skip(pageSize * (pageNumber - 1))
                 .select('-password -createdAt -updatedAt -__v');
 
             if (!result) return false;
+            const final = result.slice((pageNumber - 1) * pageSize, pageNumber * pageSize)
             return {
                 success: true,
                 status: 200,
                 message: 'Find Successful !!!',
-                data: result,
+                pages: Math.ceil(result.length / pageSize),
+                data: final,
             };
         } catch (err) {
             return {
@@ -261,15 +261,16 @@ export const {
     getAllUserByStatus: async (status, pageSize, pageNumber) => {
         try {
             const listUser = await User.find({ status: status })
-                .limit(pageSize)
-                .skip(pageSize * (pageNumber - 1))
                 .select('-password -createdAt -updatedAt -__v');
+
+            const final = listUser.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
 
             return {
                 success: true,
                 status: 200,
                 message: 'Find All User By Status Successful !!!',
-                data: checkedNull(listUser, "Users doesn't exist !!!"),
+                pages: Math.ceil(listUser.length / pageSize),
+                data: final,
             };
         } catch (err) {
             return {
@@ -283,15 +284,15 @@ export const {
     getAllUser: async (pageSize, pageNumber) => {
         try {
             const listUser = await User.find()
-                .limit(pageSize)
-                .skip(pageSize * (pageNumber - 1))
                 .select('-password -createdAt -updatedAt -__v');
+            const final = listUser.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
 
             return {
                 success: true,
                 status: 200,
                 message: 'Find All User Successful !!!',
-                data: checkedNull(listUser, "Users doesn't exist !!!"),
+                pages: Math.ceil(listUser.length / pageSize),
+                data: final,
             };
         } catch (err) {
             return {

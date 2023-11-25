@@ -150,8 +150,6 @@ export const {
                         { paymentMethod: { $regex: keyword, $options: 'i' } },
                     ],
                 })
-                    .limit(pageSize)
-                    .skip(pageSize * (pageNumber - 1))
                     .select('-createdAt -updatedAt -__v -user -deliveryAddress');
             } else {
                 result = await Order.find({
@@ -162,16 +160,17 @@ export const {
                         { paymentMethod: { $regex: keyword, $options: 'i' } },
                     ],
                 })
-                    .limit(pageSize)
-                    .skip(pageSize * (pageNumber - 1))
                     .select('-createdAt -updatedAt -__v -user -deliveryAddress');
             }
+
+            const final = result.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
 
             return {
                 success: true,
                 status: 200,
                 message: 'Find Order By Keyword Successful !!!',
-                data: result,
+                pages: Math.ceil(result.length / pageSize),
+                data: final,
             };
         } catch (err) {
             return {
@@ -342,16 +341,17 @@ export const {
                 user: userID,
                 status: status
             })
-                .limit(pageSize)
-                .skip(pageSize * (pageNumber - 1))
                 .select('-updatedAt -createdAt -__v')
                 .sort({ createdAt: -1 });
+
+            const final = result.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
 
             return {
                 success: true,
                 status: 200,
                 message: 'Get All Order Of User By Status Successful!!!',
-                data: result,
+                pages: Math.ceil(result.length / pageSize),
+                data: final,
             };
         } catch (err) {
             return {
@@ -378,16 +378,17 @@ export const {
                 };
 
             const result = await Order.find({ status: status })
-                .limit(pageSize)
-                .skip(pageSize * (pageNumber - 1))
                 .select('-updatedAt -createdAt -__v')
                 .sort({ createdAt: -1 });
+
+            const final = result.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
 
             return {
                 success: true,
                 status: 200,
                 message: 'Get All Order Of Status Successful!!!',
-                data: result,
+                pages: Math.ceil(result.length / pageSize),
+                data: final,
             };
         } catch (err) {
             return {
@@ -406,16 +407,16 @@ export const {
             if (!existUser.success) return existUser;
 
             const result = await Order.find({ user: userID })
-                .limit(pageSize)
-                .skip(pageSize * (pageNumber - 1))
                 .select('-updatedAt -createdAt -__v -user')
                 .sort({ createdAt: -1 });
 
+            const final = result.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
             return {
                 success: true,
                 status: 200,
                 message: 'Get All Order Of User Successful!!!',
-                data: result,
+                pages: Math.ceil(result.length / pageSize),
+                data: final,
             };
         } catch (err) {
             return {
@@ -429,16 +430,16 @@ export const {
     getAll: async (pageSize, pageNumber) => {
         try {
             const result = await Order.find()
-                .limit(pageSize)
-                .skip(pageSize * (pageNumber - 1))
                 .select('-updatedAt -createdAt -__v')
                 .sort({ createdAt: -1 });
+            const final = result.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
 
             return {
                 success: true,
                 status: 200,
                 message: 'Get All Order Successful !!!',
-                data: result,
+                pages: Math.ceil(result.length / pageSize),
+                data: final,
             };
         } catch (err) {
             return {
