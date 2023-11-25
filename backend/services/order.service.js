@@ -20,6 +20,7 @@ export const {
     paymentConfirm,
     deliveryConfirm,
     listUserThisMonth,
+    getAllByStatusAndUser,
     listProductSoldThisMonth,
     totalSpentByUserIDThisMonth,
     soldProductByProIDThisMonth,
@@ -310,6 +311,46 @@ export const {
                 success: true,
                 status: 200,
                 message: 'Get All Order Of Status Successful!!!',
+                data: result,
+            };
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || 'Something went wrong in Order !!!',
+            };
+        }
+    },
+
+    getAllByStatusAndUser: async (userID, status, pageSize, pageNumber) => {
+        try {
+            checkedObjectId(userID, "User ID");
+            if (
+                status !== 'Confirming' &&
+                status !== 'Delivering' &&
+                status !== 'Successful' &&
+                status !== 'Cancel' &&
+                status !== 'Return'
+            )
+                return {
+                    success: false,
+                    status: 400,
+                    message: "Order Status doesn't exist !!!",
+                };
+
+            const result = await Order.find({
+                user: userID,
+                status: status
+            })
+                .limit(pageSize)
+                .skip(pageSize * (pageNumber - 1))
+                .select('-updatedAt -createdAt -__v')
+                .sort({ createdAt: -1 });
+
+            return {
+                success: true,
+                status: 200,
+                message: 'Get All Order Of User By Status Successful!!!',
                 data: result,
             };
         } catch (err) {

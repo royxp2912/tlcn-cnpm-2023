@@ -116,6 +116,7 @@ export const uploadAvatarByID = async (req, res, next) => {
         res.status(status).json({
             success,
             message,
+            data: image,
         })
     } catch (err) {
         next(err);

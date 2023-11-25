@@ -10,8 +10,28 @@ import {
     paymentConfirm,
     deliveryConfirm,
     findByKeyword,
+    getAllByStatusAndUser,
 } from "../services/order.service.js";
 
+export const getAllOrderByStatusAndUserID = async (req, res, next) => {
+    try {
+        const userID = req.query.user;
+        const statusOrder = req.query.status;
+        const pageSize = req.query.pageSize || 5;
+        const pageNumber = req.query.pageNumber || 1;
+        const { success, status, message, data } = await getAllByStatusAndUser(userID, statusOrder, pageSize, pageNumber);
+        if (!success) return next(createError(status, message));
+
+        res.status(status).send({
+            success,
+            message,
+            total: data.length,
+            data,
+        });
+    } catch (err) {
+        next(err);
+    }
+}
 
 export const searchOrderByKeyword = async (req, res, next) => {
     try {

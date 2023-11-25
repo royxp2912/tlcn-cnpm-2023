@@ -18,6 +18,7 @@ const router = express.Router();
 router.get("/", getAllOrder);
 router.get("/detail", getOrderByID);
 router.get("/user", getAllOrderByUserID);
+router.get("/user/status", getAllOrderByUserID);
 
 // search by keyword
 router.get("/search/keyword", searchOrderByKeyword);
