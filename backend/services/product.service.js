@@ -625,7 +625,8 @@ export const {
                 .limit(pageSize)
                 .skip(pageSize * (pageNumber - 1))
                 .populate({ path: 'category', select: 'name' })
-                .select('-createdAt -updatedAt -__v');
+                .select('-createdAt -updatedAt -__v')
+                .sort({ createdAt: -1 });
 
             return {
                 success: true,
