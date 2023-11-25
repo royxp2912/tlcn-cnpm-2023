@@ -1,9 +1,20 @@
 'use client';
+import { getAllCategory, getCategoryById } from '@/slices/categorySlice';
+import { Category } from '@/types/type';
+import { AppDispatch } from '@/utils/store';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 const Navbar = () => {
+    const { categories }: { categories: Category[] } = useSelector((state: any) => state.categories);
+    const dispatch = useDispatch<AppDispatch>();
+
+    useEffect(() => {
+        dispatch(getAllCategory());
+    }, [dispatch]);
+
     const pathname = usePathname();
     return (
         <div className={` flex justify-center ${pathname === '/' ? 'text-white bg-bg' : 'text-bg bg-white'} font-bold`}>
@@ -15,38 +26,20 @@ const Navbar = () => {
             >
                 <span>Home</span>
             </Link>
-            <Link
-                href="/man"
-                className={`w-[120px] h-10 text-center ${
-                    pathname === '/man' ? 'text-blue border-blue border-b-2' : ' '
-                }  `}
-            >
-                <span>Man</span>
-            </Link>
-            <Link
-                href="/woman"
-                className={`w-[120px] h-10 text-center ${
-                    pathname === '/woman' ? 'text-blue border-blue border-b-2' : ' '
-                }  `}
-            >
-                <span>Man</span>
-            </Link>
-            <Link
-                href="/kids"
-                className={`w-[120px] h-10 text-center ${
-                    pathname === '/kids' ? 'text-blue border-blue border-b-2' : ' '
-                } `}
-            >
-                <span>Kids</span>
-            </Link>
-            <Link
-                href="/news"
-                className={`w-[120px] h-10 text-center ${
-                    pathname === '/news' ? 'text-blue border-blue border-b-2' : ''
-                } `}
-            >
-                <span>News</span>
-            </Link>
+            {categories &&
+                categories.map((category) => (
+                    <Link
+                        key={category._id}
+                        href={`/${category.name.toLowerCase().replace(/\s/g, '')}`}
+                        className={`w-[120px] h-10 text-center ${
+                            pathname === `/${category.name.toLowerCase().replace(/\s/g, '')}`
+                                ? 'text-blue border-blue border-b-2'
+                                : ' '
+                        }  `}
+                    >
+                        <span>{category.name}</span>
+                    </Link>
+                ))}
         </div>
     );
 };

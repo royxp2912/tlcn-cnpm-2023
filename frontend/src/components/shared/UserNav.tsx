@@ -12,7 +12,7 @@ const UserNav = () => {
     const router = useRouter();
     const dispatch = useDispatch<AppDispatch>;
 
-    const userString = localStorage.getItem('user');
+    const userString = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
     let user: User | null = null;
 
     if (userString !== null) {

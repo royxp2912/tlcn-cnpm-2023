@@ -1,5 +1,5 @@
 import productsApi from '@/apis/products';
-import { findProduct } from '@/types/type';
+import { findProduct, productByCate } from '@/types/type';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 export const getAllProduct = createAsyncThunk('products/getAllProduct', async (_, { rejectWithValue }) => {
@@ -23,7 +23,7 @@ export const getProductById = createAsyncThunk(
 );
 export const getAllProductByCateId = createAsyncThunk(
     'products/getAllProductByCateId',
-    async (category: string, { rejectWithValue }) => {
+    async (category: productByCate, { rejectWithValue }) => {
         try {
             const res = await productsApi.getAllProductByCateId(category);
             return res;

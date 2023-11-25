@@ -27,7 +27,8 @@ const ChangePassword = () => {
         setPasswords((prev) => ({ ...prev, [e.target.id]: e.target.value }));
     };
 
-    const userString = localStorage.getItem('user');
+    const userString = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
+
     let user: User | null = null;
 
     if (userString !== null) {

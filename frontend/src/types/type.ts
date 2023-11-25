@@ -13,7 +13,7 @@ export type SignUp = {
 };
 
 export type User = {
-    _id: string;
+    _id?: string | undefined;
     fullName: string;
     email?: string;
     gender: string;
@@ -59,7 +59,29 @@ export type Variant = {
 };
 
 export type Address = {
-    _id?: string;
+    _id: string;
+    user: string;
+    receiver: string;
+    phone: string;
+    province: string;
+    districts: string;
+    wards: string;
+    specific: string;
+    default: boolean;
+};
+
+export type AddressLess = {
+    user: string;
+    receiver: string;
+    phone: string;
+    province: string;
+    districts: string;
+    wards: string;
+    specific: string;
+};
+
+export type UpdateAddress = {
+    address: string;
     user: string;
     receiver: string;
     phone: string;
@@ -138,9 +160,16 @@ export type Brand = {
 };
 
 export type itemCartRandomVari = {
-    user: string;
     product: string;
     image: string;
     name: string;
     price: number;
+};
+
+export type productByCate = {
+    category: string;
+    sort: string;
+    brand: string;
+    color: string;
+    pageNumber: number;
 };

@@ -12,6 +12,7 @@ import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import { signIn } from '@/slices/authSlice';
 import { AppDispatch } from '@/utils/store';
+import { toast } from 'react-toastify';
 // import { toast } from 'react-toastify';
 
 const Login = () => {
@@ -38,7 +39,7 @@ const Login = () => {
                 // toast.success('Login Success');
                 router.push('/');
             } else {
-                // toast.error((res.payload as { response: any }).response.data.message);
+                toast.error('Wrong infomation');
             }
         } catch (error: any) {
             // toast.error(error);

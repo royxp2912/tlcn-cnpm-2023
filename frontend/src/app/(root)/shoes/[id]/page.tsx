@@ -19,6 +19,28 @@ import { toast } from 'react-toastify';
 import { addItemToCartByUserId } from '@/slices/cartSlice';
 import { useRouter } from 'next/navigation';
 
+const unProp = {
+    productHots: [],
+    active: false,
+};
+
+const colors: { [key: string]: string } = {
+    Blue: 'bg-[#006CFF]',
+    Red: 'bg-[#FC3E39]',
+    Black: 'bg-[#171717]',
+    Pink: 'bg-[#FF00B4]',
+    Yellow: 'bg-[#FFF600]',
+    Wheat: 'bg-[#EFDFDF]',
+};
+const borders: { [key: string]: string } = {
+    Blue: 'border-[#006CFF]',
+    Red: 'border-[#FC3E39]',
+    Black: 'border-[#171717]',
+    Pink: 'border-[#FF00B4]',
+    Yellow: 'border-[#FFF600]',
+    Wheat: 'border-[#EFDFDF]',
+};
+
 const ShoesSinglePage = () => {
     const {
         products,
@@ -52,6 +74,11 @@ const ShoesSinglePage = () => {
     });
     const [quantity, setQuantity] = useState<number>(1);
 
+    const [isNext, setIsNext] = useState<boolean>(false);
+    const [isBack, setIsBack] = useState<boolean>(false);
+    const [back, setBack] = useState<number>(0);
+    const [next, setNext] = useState<number>(4);
+
     const handleImage = (i: number) => {
         setNumber(i);
     };
@@ -83,7 +110,9 @@ const ShoesSinglePage = () => {
         if (!user) {
             toast.error('Please login before add to cart', {
                 onClose: () => {
-                    router.push('/sign-in');
+                    setTimeout(() => {
+                        router.push('/sign-in');
+                    }, 3000);
                 },
             });
             return;
@@ -143,7 +172,13 @@ const ShoesSinglePage = () => {
                                     key={i}
                                     className="w-[90px] h-[90px] relative bg-bg_sell rounded-lg border-gray border-4 overflow-hidden"
                                 >
-                                    <Image src={item} alt="giày" fill onClick={() => handleImage(i)} className="cursor-pointer" />
+                                    <Image
+                                        src={item}
+                                        alt="giày"
+                                        fill
+                                        onClick={() => handleImage(i)}
+                                        className="cursor-pointer"
+                                    />
                                 </div>
                             ))}
                     </div>
@@ -164,15 +199,19 @@ const ShoesSinglePage = () => {
                     <BorderBlack />
                     <div className="flex items-center mt-[25px] mb-5">
                         <span className="font-medium flex-1">Color:</span>
-                        <div className="font-bold text-white flex gap-1">
+                        <div className="font-bold text-white flex gap-2">
                             {variants.listColor &&
-                                variants.listColor.map((color) => (
+                                variants.listColor.map((c) => (
                                     <div
-                                        key={color}
-                                        className="text-sm w-9 h-7 bg-size2 rounded-md flex items-center justify-center cursor-pointer"
-                                        onClick={() => setColor(color)}
+                                        key={c}
+                                        className={`${colors[c]} relative  h-5 w-5 rounded-full cursor-pointer`}
+                                        onClick={() => setColor(c)}
                                     >
-                                        {color}
+                                        {color === c && (
+                                            <div
+                                                className={`absolute inset-[-4px] p-3 rounded-full border-2 ${borders[c]}`}
+                                            ></div>
+                                        )}
                                     </div>
                                 ))}
                         </div>
@@ -247,9 +286,20 @@ const ShoesSinglePage = () => {
             </div>
             <div className="mt-24 flex flex-col items-center">
                 <span className="font-bold text-3xl text-blue">Hot Shoes</span>
-                <div className="mt-5">
+                <div className="mt-5 w-full">
                     {/* Vỉew hot shoes (component singlesellshoe) */}
-                    <SingleSellShoe products={products} productHots={productHots} active />
+                    <SingleSellShoe
+                        products={productHots}
+                        isNext={isNext}
+                        setIsNext={setIsNext}
+                        isBack={isBack}
+                        setIsBack={setIsBack}
+                        next={next}
+                        setNext={setNext}
+                        back={back}
+                        setBack={setBack}
+                        {...unProp}
+                    />
                 </div>
             </div>
         </div>

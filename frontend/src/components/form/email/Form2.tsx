@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '@/utils/store';
 import { sendCode } from '@/slices/authSlice';
 import axios from '@/utils/axios';
+import { usePathname } from 'next/navigation';
 
 type Props = {
     setOpen: Dispatch<SetStateAction<boolean>>;
@@ -13,13 +14,29 @@ type Props = {
     code: string;
     setCode: Dispatch<SetStateAction<string>>;
     setRegis: Dispatch<SetStateAction<boolean>>;
+    setOpen2: Dispatch<SetStateAction<boolean>>;
+    change: boolean;
+    setChange: Dispatch<SetStateAction<boolean>>;
+    setUpdate: Dispatch<SetStateAction<boolean>>;
 };
 
-const Form2 = ({ setOpen, email, setOpen1, code, setCode, setRegis }: Props) => {
+const Form2 = ({
+    setOpen,
+    email,
+    setOpen1,
+    code,
+    setCode,
+    setRegis,
+    setOpen2,
+    change,
+    setChange,
+    setUpdate,
+}: Props) => {
     const [otp, setOtp] = useState<string>('');
     const [check, setCheck] = useState(false);
     const { codes } = useSelector((state: any) => state.auth);
     console.log(code);
+    const pathname = usePathname();
     const dispatch = useDispatch<AppDispatch>();
 
     const handleChange = (otp: string) => {
@@ -28,11 +45,30 @@ const Form2 = ({ setOpen, email, setOpen1, code, setCode, setRegis }: Props) => 
     };
 
     const handleCheckCode = () => {
-        if (code.toString() === otp) {
-            setRegis(true);
-            setOpen1(false);
+        if (pathname === '/user') {
+            if (change) {
+                if (code.toString() === otp) {
+                    setOpen1(false);
+                    setChange(false);
+                    setUpdate(true);
+                } else {
+                    setCheck(true);
+                }
+            } else {
+                if (code.toString() === otp) {
+                    setOpen1(false);
+                    setOpen2(true);
+                } else {
+                    setCheck(true);
+                }
+            }
         } else {
-            setCheck(true);
+            if (code.toString() === otp) {
+                setRegis(true);
+                setOpen1(false);
+            } else {
+                setCheck(true);
+            }
         }
     };
 
@@ -45,7 +81,12 @@ const Form2 = ({ setOpen, email, setOpen1, code, setCode, setRegis }: Props) => 
         }
     };
     const handleCancel = () => {
-        setOpen1(false);
+        if (pathname === 'user') {
+            setOpen1(false);
+            setChange(false);
+        } else {
+            setOpen1(false);
+        }
     };
 
     return (
@@ -75,10 +116,14 @@ const Form2 = ({ setOpen, email, setOpen1, code, setCode, setRegis }: Props) => 
                         Complete
                     </button>
                 </div>
-                <span className="font-bold text-blue mt-[20px]" onClick={handleResend}>
-                    After successful confirmation, please press the Sign Up button again to complete the registration
-                    process.
-                </span>
+                {pathname === '/user' ? (
+                    ''
+                ) : (
+                    <span className="font-bold text-blue mt-[20px]" onClick={handleResend}>
+                        After successful confirmation, please press the Sign Up button again to complete the
+                        registration process.
+                    </span>
+                )}
             </div>
         </div>
     );
