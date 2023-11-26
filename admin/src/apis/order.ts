@@ -1,10 +1,14 @@
-import { Order, deleteOrder, updateOrder } from '@/types/type';
+import { Order, deleteOrder, pageOrder, updateOrder } from '@/types/type';
 import axios from '@/utils/axios';
 
 const ordersApi = {
-    getAllOrder: () => {
+    getAllOrder: (pageNumber: number) => {
         const url = '/orders';
-        return axios.get(url);
+        return axios.get(url, {
+            params: {
+                pageNumber: pageNumber,
+            },
+        });
     },
     getAllOrderByUserId: (userId: string) => {
         const url = '/orders/user';
@@ -15,9 +19,14 @@ const ordersApi = {
             },
         });
     },
-    getAllOrderByOrderStatus: (status: string) => {
-        const url = `/orders?status=${status}`;
-        return axios.get(url);
+    getAllOrderByOrderStatus: (item: pageOrder) => {
+        const url = '/orders';
+        return axios.get(url, {
+            params: {
+                status: item.status,
+                pageNumber: item.pageNumber,
+            },
+        });
     },
     getOrderByOrderId: (order: string) => {
         const url = '/orders/detail';

@@ -185,3 +185,8 @@ export type top = {
     image: string;
     count: number;
 };
+
+export type pageOrder = {
+    status: string;
+    pageNumber: number;
+};
