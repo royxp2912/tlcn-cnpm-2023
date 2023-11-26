@@ -1,12 +1,18 @@
 'use client';
 import Border from '@/components/shared/Border';
 import UserNav from '@/components/shared/UserNav';
-import { getAllOrderByOrderStatus, getAllOrderByUserId } from '@/slices/orderSlice';
-import { Order, User } from '@/types/type';
+import {
+    cancelOrderByOrderId,
+    getAllOrderByUserAndStatus,
+    getAllOrderByUserId,
+    receivedOrder,
+} from '@/slices/orderSlice';
+import { Order, User, orderStatus } from '@/types/type';
 import { AppDispatch } from '@/utils/store';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 
 const statuses = ['All', 'Confirming', 'Waiting', 'Delivering', 'Successful', 'Cancel', 'Return'];
 
@@ -26,11 +32,35 @@ const Orders = () => {
 
     const { orders }: { orders: Order[] } = useSelector((state: any) => state.orders);
     const dispatch = useDispatch<AppDispatch>();
+    const [load, setLoad] = useState<boolean>(false);
 
     useEffect(() => {
+        const item: orderStatus = {
+            status: status,
+            user: id,
+        };
         if (status === 'All') dispatch(getAllOrderByUserId(id));
-        else dispatch(getAllOrderByOrderStatus(status));
-    }, [status]);
+        else dispatch(getAllOrderByUserAndStatus(item));
+    }, [status, load]);
+
+    const handleReceived = async (id: string) => {
+        const res = await dispatch(receivedOrder(id));
+        if ((res.payload as { status: number }).status === 200) {
+            toast.success('Received order success');
+            setLoad((prev) => !prev);
+        } else {
+            toast.error('Received order fail');
+        }
+    };
+    const handleCancel = async (id: string) => {
+        const res = await dispatch(cancelOrderByOrderId(id));
+        if ((res.payload as { status: number }).status === 200) {
+            toast.success('Cancel order success');
+            setLoad((prev) => !prev);
+        } else {
+            toast.error('Cancel order fail');
+        }
+    };
     return (
         <div className="flex px-20 mt-10 gap-5">
             <UserNav />
@@ -100,10 +130,16 @@ const Orders = () => {
                                     ))}
                                 </div>
                                 <div className="flex gap-5 mt-[10px] items-center">
-                                    <button className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm">
+                                    <button
+                                        className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm"
+                                        onClick={() => handleReceived(order._id)}
+                                    >
                                         RECEIVED
                                     </button>
-                                    <button className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm">
+                                    <button
+                                        className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm"
+                                        onClick={() => handleCancel(order._id)}
+                                    >
                                         RETURN
                                     </button>
                                     <div className="flex-grow"></div>

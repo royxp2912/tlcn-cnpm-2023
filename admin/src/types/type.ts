@@ -108,7 +108,6 @@ export type RemoveItemCart = {
 
 export type updateOrder = {
     order: string;
-    user: string;
     status: string;
 };
 

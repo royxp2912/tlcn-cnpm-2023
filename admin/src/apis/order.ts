@@ -36,13 +36,12 @@ const ordersApi = {
         return axios.post(url, data);
     },
     updateOrderStatusByOrderId: (order: updateOrder) => {
-        const url = `/orders/${order.order}`;
+        const url = '/orders';
         return axios.patch(url, order);
     },
-    cancelOrderByOrderId: (order: updateOrder) => {
+    cancelOrderByOrderId: (order: string) => {
         const url = `/orders/cancel`;
-        const id = order.order;
-        return axios.patch(url, id);
+        return axios.patch(url, order);
     },
     comfirmPaymentOrderByOrderId: (order: string) => {
         const url = `/orders/paid`;

@@ -1,4 +1,4 @@
-import { Order, updateOrder } from '@/types/type';
+import { Order, orderStatus, updateOrder } from '@/types/type';
 import axios from '../utils/axios';
 
 const ordersApi = {
@@ -15,9 +15,14 @@ const ordersApi = {
             },
         });
     },
-    getAllOrderByOrderStatus: (status: string) => {
-        const url = `/orders?status=${status}`;
-        return axios.get(url);
+    getAllOrderByUserAndStatus: (item: orderStatus) => {
+        const url = `/orders`;
+        return axios.get(url, {
+            params: {
+                status: item.status,
+                user: item.user,
+            },
+        });
     },
     getOrderByOrderId: (order: string) => {
         const url = '/orders/detail';
@@ -35,17 +40,20 @@ const ordersApi = {
         console.log(data);
         return axios.post(url, data);
     },
-    updateOrderStatusByOrderId: (order: updateOrder) => {
-        const url = `/orders/${order.order}`;
+    cancelOrderByOrderId: (order: string) => {
+        const url = '/orders/cancel';
         return axios.patch(url, order);
     },
-    cancelOrderByOrderId: (order: updateOrder) => {
-        const url = `/orders/cancel`;
-        const id = order.order;
-        return axios.patch(url, id);
-    },
     comfirmPaymentOrderByOrderId: (order: string) => {
-        const url = `/orders/paid`;
+        const url = '/orders/paid';
+        return axios.patch(url, order);
+    },
+    returnOrder: (order: string) => {
+        const url = '/orders/return';
+        return axios.patch(url, order);
+    },
+    receivedOrder: (order: string) => {
+        const url = '/orders/received';
         return axios.patch(url, order);
     },
 };

@@ -1,4 +1,4 @@
-import { User, updateEmail, updatePassword, upAvatar } from '@/types/type';
+import { User, updateEmail, updatePassword, upAvatar, upUser } from '@/types/type';
 import axios from '../utils/axios';
 
 const usersApi = {
@@ -10,8 +10,8 @@ const usersApi = {
         const url = '/users';
         return axios.get(url);
     },
-    updateUser: (user: User) => {
-        const url = '/users/update/';
+    updateUser: (user: upUser) => {
+        const url = '/users';
         return axios.put(url, user);
     },
     lockUser: (userId: string) => {

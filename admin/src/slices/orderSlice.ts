@@ -64,7 +64,6 @@ export const updateOrderStatusByOrderId = createAsyncThunk(
     async (order: updateOrder, { dispatch, rejectWithValue }) => {
         try {
             const res = await ordersApi.updateOrderStatusByOrderId(order);
-            await dispatch(getAllOrders);
             // await dispatch(getAllOrderByUserId(order.user));
             // await dispatch(getOrderByOrderId(order.order));
             return res;
@@ -76,12 +75,9 @@ export const updateOrderStatusByOrderId = createAsyncThunk(
 
 export const cancelOrderByOrderId = createAsyncThunk(
     'orders/cancelOrderByOrderId',
-    async (order: updateOrder, { dispatch, rejectWithValue }) => {
+    async (order: string, { dispatch, rejectWithValue }) => {
         try {
             const res = await ordersApi.cancelOrderByOrderId(order);
-            await dispatch(getAllOrders);
-            await dispatch(getAllOrderByUserId(order.user));
-            await dispatch(getOrderByOrderId(order.order));
             return res;
         } catch (err: any) {
             return rejectWithValue(err.res.data);

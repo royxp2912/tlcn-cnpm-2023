@@ -35,8 +35,9 @@ const Login = () => {
                 password: values.password,
             };
             const res = await dispatch(signIn(user));
+            console.log(res);
             if ((res.payload as { status: number }).status === 200) {
-                // toast.success('Login Success');
+                toast.success('Login Success');
                 router.push('/');
             } else {
                 toast.error('Wrong infomation');
