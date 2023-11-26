@@ -104,6 +104,12 @@ export const {
             const newList = listUser.map((item) => item.user);
             const result = [...new Set(newList.map(String))];
 
+            let i;
+            for (i = 0; i < result.length; i++) {
+                const a = await User.findById(result[i]);
+                if (!a) result.splice(i, 1);
+            }
+
             return result;
         } catch (err) {
             return {
@@ -287,7 +293,7 @@ export const {
             checkedObjectId(orderID, 'Order ID');
             const result = await Order.findById(orderID);
             checkedNull(result, "Order doesn't exist !!!");
-            if (result.status !== 'Delivering' || result.status !== 'Successful')
+            if (result.status !== 'Delivering')
                 return {
                     success: false,
                     status: 400,
@@ -415,6 +421,7 @@ export const {
             if (
                 status !== 'Confirming' &&
                 status !== 'Delivering' &&
+                status !== 'Accepted' &&
                 status !== 'Successful' &&
                 status !== 'Cancel' &&
                 status !== 'Return'
@@ -455,6 +462,7 @@ export const {
             if (
                 status !== 'Confirming' &&
                 status !== 'Delivering' &&
+                status !== 'Accepted' &&
                 status !== 'Successful' &&
                 status !== 'Cancel' &&
                 status !== 'Return'

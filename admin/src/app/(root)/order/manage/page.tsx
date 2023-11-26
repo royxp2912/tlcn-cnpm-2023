@@ -58,7 +58,7 @@ const OrderManage = () => {
             status: 'Delivering',
         });
         if (data.success) {
-            toast.success('Accepted Success');
+            toast.success('Delivery Success');
             setLoad((prev) => !prev);
         }
     };
@@ -79,7 +79,7 @@ const OrderManage = () => {
 
         const { data } = await axios.patch('/orders', {
             order: id,
-            status: 'Success',
+            status: 'Successful',
         });
         if (data.success) {
             toast.success('Success Success');

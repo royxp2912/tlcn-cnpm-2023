@@ -4,24 +4,24 @@ import {
     getAllOrder,
     getOrderByID,
     cancelOrderByID,
+    returnOrderByID,
     updateOrderStatus,
+    receivedOrderByID,
     getAllOrderByUserID,
     paymentConfirmOrder,
     deliveryConfirmOrder,
     searchOrderByKeyword,
-    returnOrderByID,
-    receivedOrderByID,
     getAllOrderByStatusAndUserID,
-} from '../controllers/order.controller.js';
-import createPaymentUrl from '../utils/createPaymentUrl.js';
+} from "../controllers/order.controller.js";
+import createPaymentUrl from "../utils/createPaymentUrl.js";
 
 const router = express.Router();
 
-// get
-router.get('/', getAllOrder);
-router.get('/detail', getOrderByID);
-router.get('/user', getAllOrderByUserID);
-router.get('/user/status', getAllOrderByStatusAndUserID);
+// get 
+router.get("/", getAllOrder);
+router.get("/detail", getOrderByID);
+router.get("/user", getAllOrderByUserID);
+router.get("/user/status", getAllOrderByStatusAndUserID);
 
 // search by keyword
 router.get('/search/keyword', searchOrderByKeyword);
