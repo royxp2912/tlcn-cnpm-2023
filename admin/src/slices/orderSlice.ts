@@ -1,10 +1,10 @@
 import ordersApi from '@/apis/order';
-import { Order, deleteOrder, updateOrder } from '@/types/type';
+import { Order, deleteOrder, pageOrder, updateOrder } from '@/types/type';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-export const getAllOrders = createAsyncThunk('orders/getAllOrders', async (_, { rejectWithValue }) => {
+export const getAllOrders = createAsyncThunk('orders/getAllOrders', async (pageNumber: number, { rejectWithValue }) => {
     try {
-        const res = await ordersApi.getAllOrder();
+        const res = await ordersApi.getAllOrder(pageNumber);
         return res;
     } catch (err: any) {
         return rejectWithValue(err.res.data);
@@ -25,9 +25,9 @@ export const getAllOrderByUserId = createAsyncThunk(
 
 export const getAllOrderByOrderStatus = createAsyncThunk(
     'orders/getAllOrderByOrderStatus',
-    async (status: string, { rejectWithValue }) => {
+    async (item: pageOrder, { rejectWithValue }) => {
         try {
-            const res = await ordersApi.getAllOrderByOrderStatus(status);
+            const res = await ordersApi.getAllOrderByOrderStatus(item);
             return res;
         } catch (err: any) {
             return rejectWithValue(err.res.data);
@@ -104,7 +104,6 @@ export const deleteAllOrderByUserId = createAsyncThunk(
     async (item: deleteOrder, { dispatch, rejectWithValue }) => {
         try {
             const res = await ordersApi.deleteAllOrderByUserId(item);
-            await dispatch(getAllOrders);
             return res;
         } catch (err: any) {
             return rejectWithValue(err.res.data);

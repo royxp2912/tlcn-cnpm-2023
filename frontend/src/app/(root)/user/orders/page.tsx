@@ -15,7 +15,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
-const statuses = ['All', 'Confirming', 'Waiting', 'Delivering', 'Successful', 'Cancel', 'Return'];
+const statuses = ['All', 'Confirming', 'Accepted', 'Delivering', 'Successful', 'Cancel', 'Return'];
 
 const Orders = () => {
     const [status, setStatus] = useState('All');
@@ -171,6 +171,8 @@ const Orders = () => {
                                                 >
                                                     RETURN
                                                 </button>
+                                            ) : order.status === 'Accepted' || order.status === 'Delivering' ? (
+                                                ''
                                             ) : (
                                                 <button
                                                     className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm"

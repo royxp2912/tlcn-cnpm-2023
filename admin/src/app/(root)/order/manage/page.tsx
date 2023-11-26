@@ -11,6 +11,8 @@ import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import axios from '@/utils/axios';
 import { toast } from 'react-toastify';
+import Pagination from '@mui/material/Pagination';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 const statuses = ['All', 'Confirming', 'Accepted', 'Delivering', 'Successful', 'Cancel', 'Return'];
 const buttons = [
@@ -23,11 +25,20 @@ const buttons = [
     'Cancel Selected',
 ];
 
+const theme = createTheme({
+    palette: {
+        primary: {
+            main: '#40BFFF',
+        },
+    },
+});
+
 const OrderManage = () => {
     const [status, setStatus] = useState('All');
     const dispatch = useDispatch<AppDispatch>();
     const { orders }: { orders: Order[] } = useSelector((state: any) => state.orders);
     const [load, setLoad] = useState<boolean>(false);
+    const [pageNumber, setPageNumber] = useState<number>(1);
 
     const [page, setPage] = useState<string>('Management');
 
@@ -36,6 +47,15 @@ const OrderManage = () => {
     const handleChange = (event: SelectChangeEvent) => {
         setPage(event.target.value as string);
         router.push('/order');
+    };
+
+    const handleChangePage = (i: number) => {
+        setPageNumber(i);
+    };
+
+    const handleStatus = (item: string) => {
+        setStatus(item);
+        setPageNumber(1);
     };
 
     const handleComfirm = async (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>, id: string) => {
@@ -88,10 +108,16 @@ const OrderManage = () => {
     };
 
     useEffect(() => {
+        const item = {
+            status: status,
+            pageNumber: pageNumber,
+        };
         if (status === 'All') {
-            dispatch(getAllOrders());
-        } else dispatch(getAllOrderByOrderStatus(status));
-    }, [dispatch, status, load]);
+            dispatch(getAllOrders(pageNumber));
+        } else dispatch(getAllOrderByOrderStatus(item));
+    }, [dispatch, status, load, pageNumber]);
+
+    console.log(pageNumber);
 
     return (
         <div className="flex flex-col gap-[10px]">
@@ -119,7 +145,7 @@ const OrderManage = () => {
                                 className={`w-[140px] h-max block pt-[10px] pb-[12px] text-center uppercase ${
                                     isActive && 'text-blue border-b-2 border-b-blue'
                                 }`}
-                                onClick={() => setStatus(item)}
+                                onClick={() => handleStatus(item)}
                                 key={i}
                             >
                                 {item}
@@ -240,6 +266,17 @@ const OrderManage = () => {
                         </div>
                     ))
                 )}
+            </div>
+            <div className="flex justify-center shadow-product2 bg-white">
+                <ThemeProvider theme={theme}>
+                    <Pagination
+                        count={5}
+                        shape="rounded"
+                        onChange={(_, page: number) => handleChangePage(page)}
+                        page={pageNumber}
+                        color="primary"
+                    />
+                </ThemeProvider>
             </div>
         </div>
     );
