@@ -13,13 +13,16 @@ export const {
     getAll,
     getByID,
     cancelOrder,
+    returnOrder,
     updateStatus,
+    receivedOrder,
     findByKeyword,
     getAllByUserID,
     getAllByStatus,
     paymentConfirm,
     deliveryConfirm,
     listUserThisMonth,
+    getAllByStatusAndUser,
     listProductSoldThisMonth,
     totalSpentByUserIDThisMonth,
     soldProductByProIDThisMonth,
@@ -149,8 +152,6 @@ export const {
                         { paymentMethod: { $regex: keyword, $options: 'i' } },
                     ],
                 })
-                    .limit(pageSize)
-                    .skip(pageSize * (pageNumber - 1))
                     .select('-createdAt -updatedAt -__v -user -deliveryAddress');
             } else {
                 result = await Order.find({
@@ -161,16 +162,17 @@ export const {
                         { paymentMethod: { $regex: keyword, $options: 'i' } },
                     ],
                 })
-                    .limit(pageSize)
-                    .skip(pageSize * (pageNumber - 1))
                     .select('-createdAt -updatedAt -__v -user -deliveryAddress');
             }
+
+            const final = result.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
 
             return {
                 success: true,
                 status: 200,
                 message: 'Find Order By Keyword Successful !!!',
-                data: result,
+                pages: Math.ceil(result.length / pageSize),
+                data: final,
             };
         } catch (err) {
             return {
@@ -226,9 +228,16 @@ export const {
     cancelOrder: async (orderID) => {
         try {
             checkedObjectId(orderID, 'Order ID');
-
-            const result = await Order.findByIdAndUpdate(orderID, { $set: { status: 'Cancel' } });
+            const result = await Order.findById(orderID);
             checkedNull(result, "Order doesn't exist !!!");
+            if (result.status !== "Confirming") return {
+                success: false,
+                status: 400,
+                message: 'The order is in a non-cancellable status!!!',
+            }
+
+            result.status = 'Cancel';
+            await result.save();
 
             return {
                 success: true,
@@ -244,16 +253,71 @@ export const {
         }
     },
 
+    returnOrder: async (orderID) => {
+        try {
+            checkedObjectId(orderID, 'Order ID');
+            const result = await Order.findById(orderID);
+            checkedNull(result, "Order doesn't exist !!!");
+            if (result.status !== "Successful") return {
+                success: false,
+                status: 400,
+                message: 'The order is not in returnable status!!!',
+            }
+
+            result.status = 'Return';
+            await result.save();
+
+            return {
+                success: true,
+                status: 200,
+                message: 'Return Order Successful!!!',
+            };
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || 'Something went wrong in Order !!!',
+            };
+        }
+    },
+
+    receivedOrder: async (orderID) => {
+        try {
+            checkedObjectId(orderID, 'Order ID');
+            const result = await Order.findById(orderID);
+            checkedNull(result, "Order doesn't exist !!!");
+            if (result.status !== "Delivering") return {
+                success: false,
+                status: 400,
+                message: 'The order is not in a state for pickup!!!',
+            }
+
+            result.status = 'Successful';
+            await result.save();
+
+            return {
+                success: true,
+                status: 200,
+                message: 'Return Order Successful!!!',
+            };
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || 'Something went wrong in Order !!!',
+            };
+        }
+    },
+
     updateStatus: async (orderID, status) => {
         try {
             checkedObjectId(orderID, 'Order ID');
 
             if (
-                status !== 'Confirmming' &&
+                status !== 'Accepted' &&
                 status !== 'Delivering' &&
                 status !== 'Successful' &&
-                status !== 'Cancel' &&
-                status !== 'Return'
+                status !== 'Cancel'
             )
                 return {
                     success: false,
@@ -264,24 +328,51 @@ export const {
             checkedNull(existOrder, "Order doesn't exist !!!");
 
             if (status === 'Successful') {
-                if (!existOrder.isPaid && existOrder.paymentMethod === 'VNPay') {
+                // if (!existOrder.isPaid && existOrder.paymentMethod === 'VNPay') {
+                //     return {
+                //         success: false,
+                //         status: 402,
+                //         message: 'Order has not been paid yet !!!',
+                //     };
+                // }
+                await Order.findByIdAndUpdate(orderID, {
+                    $set: {
+                        status: 'Successful',
+                        isDelivered: true,
+                        isPaid: true,
+                    },
+                });
+            }
+            if (status === "Accepted" || status === "Cancel") {
+                if (existOrder.status !== "Confirming") {
                     return {
                         success: false,
-                        status: 402,
-                        message: 'Order has not been paid yet !!!',
-                    };
-                } else {
-                    await Order.findByIdAndUpdate(orderID, {
-                        $set: {
-                            status: 'Successful',
-                            isDelivered: true,
-                            isPaid: true,
-                        },
-                    });
+                        status: 400,
+                        message: 'The order is in a non-cancellable status!!!',
+                    }
                 }
-            } else {
-                await Order.findByIdAndUpdate(orderID, { $set: { status: status } });
             }
+
+            if (status === "Delivering") {
+                if (existOrder.status !== "Accepted") {
+                    return {
+                        success: false,
+                        status: 400,
+                        message: 'The order is not in a shippable state!!!',
+                    }
+                }
+            }
+
+            if (status === "Successful") {
+                if (existOrder.status !== "Delivering") {
+                    return {
+                        success: false,
+                        status: 400,
+                        message: 'The order is not in a fulfillable state!!!',
+                    }
+                }
+            }
+            await Order.findByIdAndUpdate(orderID, { $set: { status: status } });
 
             return {
                 success: true,
@@ -321,6 +412,47 @@ export const {
         }
     },
 
+    getAllByStatusAndUser: async (userID, status, pageSize, pageNumber) => {
+        try {
+            checkedObjectId(userID, "User ID");
+            if (
+                status !== 'Confirming' &&
+                status !== 'Delivering' &&
+                status !== 'Successful' &&
+                status !== 'Cancel' &&
+                status !== 'Return'
+            )
+                return {
+                    success: false,
+                    status: 400,
+                    message: "Order Status doesn't exist !!!",
+                };
+
+            const result = await Order.find({
+                user: userID,
+                status: status
+            })
+                .select('-updatedAt -createdAt -__v')
+                .sort({ createdAt: -1 });
+
+            const final = result.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+
+            return {
+                success: true,
+                status: 200,
+                message: 'Get All Order Of User By Status Successful!!!',
+                pages: Math.ceil(result.length / pageSize),
+                data: final,
+            };
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || 'Something went wrong in Order !!!',
+            };
+        }
+    },
+
     getAllByStatus: async (status, pageSize, pageNumber) => {
         try {
             if (
@@ -337,16 +469,17 @@ export const {
                 };
 
             const result = await Order.find({ status: status })
-                .limit(pageSize)
-                .skip(pageSize * (pageNumber - 1))
                 .select('-updatedAt -createdAt -__v')
                 .sort({ createdAt: -1 });
+
+            const final = result.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
 
             return {
                 success: true,
                 status: 200,
                 message: 'Get All Order Of Status Successful!!!',
-                data: result,
+                pages: Math.ceil(result.length / pageSize),
+                data: final,
             };
         } catch (err) {
             return {
@@ -365,16 +498,16 @@ export const {
             if (!existUser.success) return existUser;
 
             const result = await Order.find({ user: userID })
-                .limit(pageSize)
-                .skip(pageSize * (pageNumber - 1))
                 .select('-updatedAt -createdAt -__v -user')
                 .sort({ createdAt: -1 });
 
+            const final = result.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
             return {
                 success: true,
                 status: 200,
                 message: 'Get All Order Of User Successful!!!',
-                data: result,
+                pages: Math.ceil(result.length / pageSize),
+                data: final,
             };
         } catch (err) {
             return {
@@ -388,16 +521,16 @@ export const {
     getAll: async (pageSize, pageNumber) => {
         try {
             const result = await Order.find()
-                .limit(pageSize)
-                .skip(pageSize * (pageNumber - 1))
                 .select('-updatedAt -createdAt -__v')
                 .sort({ createdAt: -1 });
+            const final = result.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
 
             return {
                 success: true,
                 status: 200,
                 message: 'Get All Order Successful !!!',
-                data: result,
+                pages: Math.ceil(result.length / pageSize),
+                data: final,
             };
         } catch (err) {
             return {

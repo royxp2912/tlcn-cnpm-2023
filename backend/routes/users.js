@@ -2,17 +2,16 @@ import express from "express";
 import uploadCloud from "../middlewares/multerCloudinary.js";
 import {
     findAllUser,
+    isExistUser,
     findUserByID,
     editUserByID,
     lockUserByID,
     unlockUserByID,
+    updateUserEmail,
     uploadAvatarByID,
-    deleteUserByUserID,
-    isExistUser,
-    testUploadAvatarByID,
     findUserByKeyword,
     updateUserPassword,
-    updateUserEmail,
+    deleteUserByUserID,
 } from "../controllers/user.controller.js";
 import sharp from "sharp";
 
@@ -33,7 +32,7 @@ router.patch("/upload-avatar", uploadCloud.single("avatar"), uploadAvatarByID);
 // router.patch("/upload-avatar", isExistUser, uploadCloud.single("avatar"), uploadAvatarByID);
 
 // test
-router.patch("/upload-avatar/test/:userID", isExistUser, testUploadAvatarByID);
+// router.patch("/upload-avatar/test/:userID", isExistUser, testUploadAvatarByID);
 
 // Delete User By User ID
 router.delete("/", deleteUserByUserID);

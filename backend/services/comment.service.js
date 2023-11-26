@@ -76,16 +76,17 @@ export const {
             checkedNull(existUser, "User don't exist !!!");
 
             const result = await Comment.find({ commentator: userID })
-                .limit(pageSize)
-                .skip(pageSize * (pageNumber - 1))
                 .select("-createdAt -updatedAt -__v");
             checkedNull(result, "The User has no comments yet !!!");
+
+            const final = result.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
 
             return {
                 success: true,
                 status: 200,
                 message: "Get All Comment Of User Successful!!!",
-                data: result,
+                pages: Math.ceil(result.length / pageSize),
+                data: final,
             }
         } catch (err) {
             return {
@@ -104,16 +105,16 @@ export const {
             checkedNull(existProduct, "Product don't exist !!!");
 
             const result = await Comment.find({ product: proID })
-                .limit(pageSize)
-                .skip(pageSize * (pageNumber - 1))
                 .select("-createdAt -updatedAt -__v");
             checkedNull(result, "This Product has no comments yet !!!");
+            const final = result.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
 
             return {
                 success: true,
                 status: 200,
                 message: "Get All Comment Of Product Successful!!!",
-                data: result,
+                pages: Math.ceil(result.length / pageSize),
+                data: final,
             }
         } catch (err) {
             return {

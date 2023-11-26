@@ -9,6 +9,8 @@ import {
     paymentConfirmOrder,
     deliveryConfirmOrder,
     searchOrderByKeyword,
+    returnOrderByID,
+    receivedOrderByID,
 } from "../controllers/order.controller.js";
 import createPaymentUrl from "../utils/createPaymentUrl.js";
 
@@ -18,6 +20,7 @@ const router = express.Router();
 router.get("/", getAllOrder);
 router.get("/detail", getOrderByID);
 router.get("/user", getAllOrderByUserID);
+router.get("/user/status", getAllOrderByUserID);
 
 // search by keyword
 router.get("/search/keyword", searchOrderByKeyword);
@@ -28,7 +31,9 @@ router.post("/", createOrder);
 // patch
 router.patch("/", updateOrderStatus);
 router.patch("/cancel", cancelOrderByID);
+router.patch("/return", returnOrderByID);
 router.patch("/paid", paymentConfirmOrder);
+router.patch("/received", receivedOrderByID);
 router.patch("/delivered", deliveryConfirmOrder);
 
 // create vnpay url

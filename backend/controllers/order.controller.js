@@ -10,8 +10,59 @@ import {
     paymentConfirm,
     deliveryConfirm,
     findByKeyword,
+    getAllByStatusAndUser,
+    returnOrder,
+    receivedOrder,
 } from "../services/order.service.js";
 
+export const receivedOrderByID = async (req, res, next) => {
+    try {
+        const { success, status, message } = await receivedOrder(req.body.order);
+        if (!success) return next(createError(status, message));
+
+        res.status(status).send({
+            success,
+            message,
+        });
+    } catch (err) {
+        next(err);
+    }
+}
+
+export const returnOrderByID = async (req, res, next) => {
+    try {
+        const { success, status, message } = await returnOrder(req.body.order);
+        if (!success) return next(createError(status, message));
+
+        res.status(status).send({
+            success,
+            message,
+        });
+    } catch (err) {
+        next(err);
+    }
+}
+
+export const getAllOrderByStatusAndUserID = async (req, res, next) => {
+    try {
+        const userID = req.query.user;
+        const statusOrder = req.query.status;
+        const pageSize = req.query.pageSize || 5;
+        const pageNumber = req.query.pageNumber || 1;
+        const { success, status, pages, message, data } = await getAllByStatusAndUser(userID, statusOrder, pageSize, pageNumber);
+        if (!success) return next(createError(status, message));
+
+        res.status(status).send({
+            success,
+            message,
+            pages,
+            total: data.length,
+            data,
+        });
+    } catch (err) {
+        next(err);
+    }
+}
 
 export const searchOrderByKeyword = async (req, res, next) => {
     try {
@@ -19,7 +70,7 @@ export const searchOrderByKeyword = async (req, res, next) => {
         const pageSize = req.query.pageSize || 5;
         const pageNumber = req.query.pageNumber || 1;
 
-        const { success, status, message, data } = await findByKeyword(keyword, pageSize, pageNumber);
+        const { success, status, pages, message, data } = await findByKeyword(keyword, pageSize, pageNumber);
         if (!success) return next(createError(status, message));
 
         if (data.length === 0) {
@@ -32,6 +83,7 @@ export const searchOrderByKeyword = async (req, res, next) => {
         res.status(status).json({
             success,
             message,
+            pages,
             total: data.length,
             data,
         });
@@ -115,12 +167,13 @@ export const getAllOrderByUserID = async (req, res, next) => {
     try {
         const pageSize = req.query.pageSize || 5;
         const pageNumber = req.query.pageNumber || 1;
-        const { success, status, message, data } = await getAllByUserID(req.query.user, pageSize, pageNumber);
+        const { success, status, pages, message, data } = await getAllByUserID(req.query.user, pageSize, pageNumber);
         if (!success) return next(createError(status, message));
 
         res.status(status).send({
             success,
             message,
+            pages,
             total: data.length,
             data,
         });
@@ -135,22 +188,24 @@ export const getAllOrder = async (req, res, next) => {
         const pageSize = req.query.pageSize || 5;
         const pageNumber = req.query.pageNumber || 1;
         if (orderStatus) {
-            const { success, status, message, data } = await getAllByStatus(orderStatus, pageSize, pageNumber);
+            const { success, status, pages, message, data } = await getAllByStatus(orderStatus, pageSize, pageNumber);
             if (!success) return next(createError(status, message));
             res.status(status).send({
                 success,
                 message,
+                pages,
                 total: data.length,
                 data,
             });
         }
 
-        const { success, status, message, data } = await getAll(pageSize, pageNumber);
+        const { success, status, pages, message, data } = await getAll(pageSize, pageNumber);
         if (!success) return next(createError(status, message));
 
         res.status(status).send({
             success,
             message,
+            pages,
             total: data.length,
             data,
         });

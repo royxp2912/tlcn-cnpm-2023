@@ -44,12 +44,13 @@ export const getAllCommentByUserID = async (req, res, next) => {
     try {
         const pageSize = req.query.pageSize || 5;
         const pageNumber = req.query.pageNumber || 1;
-        const { success, status, message, data } = await getAllByUserID(req.query.user, pageSize, pageNumber);
+        const { success, status, message, pages, data } = await getAllByUserID(req.query.user, pageSize, pageNumber);
         if (!success) return next(createError(status, message));
 
         res.status(status).json({
             success,
             message,
+            pages,
             total: data.length,
             data,
         });
@@ -62,12 +63,13 @@ export const getAllCommentByProID = async (req, res, next) => {
     try {
         const pageSize = req.query.pageSize || 5;
         const pageNumber = req.query.pageNumber || 1;
-        const { success, status, message, data } = await getAllByProID(req.query.product, pageSize, pageNumber);
+        const { success, status, message, pages, data } = await getAllByProID(req.query.product, pageSize, pageNumber);
         if (!success) return next(createError(status, message));
 
         res.status(status).json({
             success,
             message,
+            pages,
             total: data.length,
             data,
         });

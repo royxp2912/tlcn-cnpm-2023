@@ -48,7 +48,7 @@ export const findUserByKeyword = async (req, res, next) => {
         const pageSize = req.query.pageSize || 10;
         const pageNumber = req.query.pageNumber || 1;
 
-        const { success, status, message, data } = await findByKeyword(req.query.keyword, pageSize, pageNumber);
+        const { success, status, pages, message, data } = await findByKeyword(req.query.keyword, pageSize, pageNumber);
         if (!success) return next(createError(status, message));
 
         if (data.length === 0) {
@@ -61,6 +61,7 @@ export const findUserByKeyword = async (req, res, next) => {
         res.status(status).json({
             success,
             message,
+            pages,
             total: data.length,
             data,
         })
@@ -116,6 +117,7 @@ export const uploadAvatarByID = async (req, res, next) => {
         res.status(status).json({
             success,
             message,
+            data: image,
         })
     } catch (err) {
         next(err);
@@ -172,11 +174,12 @@ export const findAllUser = async (req, res, next) => {
 
         if (userStatus) {
             if (userStatus === "Locked" || userStatus === "Available") {
-                const { success, status, message, data } = await getAllUserByStatus(userStatus, pageSize, pageNumber);
+                const { success, status, message, pages, data } = await getAllUserByStatus(userStatus, pageSize, pageNumber);
                 if (!success) return next(createError(status, message));
                 res.status(status).json({
                     success,
                     message,
+                    pages,
                     total: data.length,
                     data,
                 })
@@ -188,12 +191,13 @@ export const findAllUser = async (req, res, next) => {
             }
         }
 
-        const { success, status, message, data } = await getAllUser(pageSize, pageNumber);
+        const { success, status, pages, message, data } = await getAllUser(pageSize, pageNumber);
         if (!success) return next(createError(status, message));
 
         res.status(status).json({
             success,
             message,
+            pages,
             total: data.length,
             data,
         })
@@ -224,66 +228,6 @@ export const isExistUser = async (req, res, next) => {
         if (!success) return next(createError(status, message));
 
         next();
-    } catch (err) {
-        next(err);
-    }
-}
-
-export const testUploadAvatarByID = async (req, res, next) => {
-    try {
-        const imageUrl = cloudinary.url('shoeshop/cjras6g83ifxhobhyfda.jpg', {
-            width: 200,
-            height: 200,
-            crop: 'fill'
-        });
-
-        console.log(imageUrl);
-        // if (!req.file) {
-        //     return next(createError(400, "Avatar does not exist for data sent !!!"))
-        // }
-        // const result = req.file;
-
-        // const bufferImg = await got(result.path, { responseType: 'buffer' });
-        // const imageBuffer = bufferImg.body;
-
-        // const resizedImageBuffer = await sharp(imageBuffer)
-        //     .resize({
-        //         width: 150,
-        //         height: 150,
-        //         fit: sharp.fit.inside,
-        //         withoutEnlargement: true,
-        //     })
-        //     .toBuffer();
-
-        // // const publicID = Date.now() + result.originalname;
-        // const regex = /\/([^/]+)\.jpg$/;
-        // let publicID = "";
-        // const resultRegex = regex.exec(result.path);
-        // if (resultRegex && resultRegex[1]) {
-        //     publicID = resultRegex[1];
-        //     console.log(publicID);
-        // } else {
-        //     console.log('Không tìm thấy tên ảnh trong URL');
-        // }
-        // const response = await cloudinary.uploader.upload_stream({
-        //     resource_type: 'image',
-        //     folder: "shoeshop",
-        //     public_id: publicID,
-        //     overwrite: true,
-        // }, (error, result) => {
-        //     if (error) {
-        //         console.log('Error uploading resized image:', error);
-        //         res.status(500).json({
-        //             message: "Error uploading resized image",
-        //             error,
-        //         });
-        //     } else {
-        //         res.status(200).json({
-        //             message: "Photo uploaded and resized successfully",
-        //             result,
-        //         });
-        //     }
-        // }).end(resizedImageBuffer);
     } catch (err) {
         next(err);
     }
