@@ -424,6 +424,7 @@ export const {
             if (
                 status !== 'Confirming' &&
                 status !== 'Delivering' &&
+                status !== 'Accepted' &&
                 status !== 'Successful' &&
                 status !== 'Cancel' &&
                 status !== 'Return'
@@ -464,6 +465,7 @@ export const {
             if (
                 status !== 'Confirming' &&
                 status !== 'Delivering' &&
+                status !== 'Accepted' &&
                 status !== 'Successful' &&
                 status !== 'Cancel' &&
                 status !== 'Return'
