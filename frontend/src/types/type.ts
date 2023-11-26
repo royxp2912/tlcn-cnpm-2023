@@ -13,13 +13,21 @@ export type SignUp = {
 };
 
 export type User = {
-    _id?: string | undefined;
+    _id: string;
     fullName: string;
-    email?: string;
+    email: string;
     gender: string;
     birthDay: string;
     phone: string;
     avatar: string;
+};
+
+export type upUser = {
+    user: string;
+    fullName: string;
+    gender: string;
+    birthDay: string;
+    phone: string;
 };
 
 export type updatePassword = {
@@ -110,7 +118,7 @@ export type Cart = {
 };
 
 export type Order = {
-    _id?: string;
+    _id: string;
     items: ItemCart[];
     userID: string;
     deliveryAddress: string;
@@ -127,7 +135,6 @@ export type RemoveItemCart = {
 
 export type updateOrder = {
     order: string;
-    user: string;
     status: string;
 };
 
@@ -172,4 +179,9 @@ export type productByCate = {
     brand: string;
     color: string;
     pageNumber: number;
+};
+
+export type orderStatus = {
+    status: string;
+    user: string;
 };

@@ -1,20 +1,21 @@
 import usersApi from '@/apis/users';
-import { User, upAvatar, updatePassword } from '@/types/type';
+import { User, upAvatar, updatePassword, upUser } from '@/types/type';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 export const getUser = createAsyncThunk('users/getUser', async (userId: string, { rejectWithValue }) => {
     try {
         const res = await usersApi.getUser(userId);
+        localStorage.setItem('user', JSON.stringify(res.data.data));
         return res;
     } catch (err: any) {
         return rejectWithValue(err.res.data);
     }
 });
 
-export const updateUser = createAsyncThunk('users/updateUser', async (user: User, { dispatch, rejectWithValue }) => {
+export const updateUser = createAsyncThunk('users/updateUser', async (user: upUser, { dispatch, rejectWithValue }) => {
     try {
         const res = await usersApi.updateUser(user);
-        await dispatch(getUser(user._id));
+        await dispatch(getUser(user.user));
         return res;
     } catch (err: any) {
         return rejectWithValue(err.res.data);
@@ -64,7 +65,7 @@ export const userSlice = createSlice({
         });
         builder.addCase(getUser.fulfilled, (state, action) => {
             state.loading = false;
-            state.user = action.payload.data;
+            state.user = action.payload.data.data;
         });
         builder.addCase(updateUser.pending, (state) => {
             state.loading = true;

@@ -23,10 +23,10 @@ const unProp = {
     isNext: false,
     next: 0,
     back: 0,
-    setBack: () => { },
-    setNext: () => { },
-    setIsBack: () => { },
-    setIsNext: () => { },
+    setBack: () => {},
+    setNext: () => {},
+    setIsBack: () => {},
+    setIsNext: () => {},
 };
 
 const ManShoes = () => {
@@ -64,11 +64,10 @@ const ManShoes = () => {
                 brand: brand,
                 color: color,
                 sort: view,
-
                 pageNumber: pageNum,
             };
 
-            console.log("product of cate: ", item);
+            console.log('product of cate: ', item);
             await dispatch(getAllProductByCateId(item)).unwrap();
         };
         fetchData();
