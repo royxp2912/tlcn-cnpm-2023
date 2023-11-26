@@ -104,7 +104,7 @@ const SingleSellShoe = ({
     const handleDetail = (id: string) => {
         router.push(`/shoes/${id}`);
     };
-    if (products[0] && pathname.startsWith(products[0].category.name.toLowerCase().replace(/\s/g, ''))) {
+    if (products[0] && pathname.startsWith(`/${products[0].category.name.toLowerCase().replace(/\s/g, '')}`)) {
         return (
             <div className="grid  grid-cols-3 gap-[50px]">
                 {products && products.length === 0 ? (

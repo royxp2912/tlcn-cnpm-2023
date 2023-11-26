@@ -1,7 +1,7 @@
 'use client';
 import { Rating } from '@mui/material';
 import Image from 'next/image';
-import React from 'react';
+import React, { MouseEvent } from 'react';
 import Border from '../shared/Border';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
@@ -35,7 +35,11 @@ const ShoesWithTag = ({ listProduct }: Props) => {
         router.push(`/shoes/${id}`);
     };
 
-    const handleAddtoCart = async ({ product, image, name, price }: itemCartRandomVari) => {
+    const handleAddtoCart = async (
+        e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>,
+        { product, image, name, price }: itemCartRandomVari,
+    ) => {
+        e.stopPropagation();
         if (!user) {
             toast.error('Please login before add to cart', {
                 onClose: () => {
@@ -88,8 +92,8 @@ const ShoesWithTag = ({ listProduct }: Props) => {
                                 <div className="flex-grow"></div>
                                 <div
                                     className="w-40 h-[40px] flex items-center justify-center gap-4 bg-buy text-blue rounded-md"
-                                    onClick={() =>
-                                        handleAddtoCart({
+                                    onClick={(e) =>
+                                        handleAddtoCart(e, {
                                             product: product._id,
                                             image: product.images[0],
                                             name: product.name,

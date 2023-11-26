@@ -8,6 +8,7 @@ import {
     receivedOrder,
 } from '@/slices/orderSlice';
 import { Order, User, orderStatus } from '@/types/type';
+import axios from '@/utils/axios';
 import { AppDispatch } from '@/utils/store';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
@@ -53,8 +54,13 @@ const Orders = () => {
         }
     };
     const handleCancel = async (id: string) => {
-        const res = await dispatch(cancelOrderByOrderId(id));
-        if ((res.payload as { status: number }).status === 200) {
+        console.log('Hiii');
+        const { data } = await axios.patch('/orders/cancel', {
+            order: id,
+        });
+        console.log(data);
+
+        if (data.success) {
             toast.success('Cancel order success');
             setLoad((prev) => !prev);
         } else {
@@ -130,18 +136,24 @@ const Orders = () => {
                                     ))}
                                 </div>
                                 <div className="flex gap-5 mt-[10px] items-center">
-                                    <button
-                                        className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm"
-                                        onClick={() => handleReceived(order._id)}
-                                    >
-                                        RECEIVED
-                                    </button>
-                                    <button
-                                        className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm"
-                                        onClick={() => handleCancel(order._id)}
-                                    >
-                                        RETURN
-                                    </button>
+                                    {order.status === 'Cancel' ? (
+                                        ''
+                                    ) : (
+                                        <div className="flex gap-5">
+                                            <button
+                                                className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm"
+                                                onClick={() => handleReceived(order._id)}
+                                            >
+                                                RECEIVED
+                                            </button>
+                                            <button
+                                                className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm"
+                                                onClick={() => handleCancel(order._id)}
+                                            >
+                                                RETURN
+                                            </button>
+                                        </div>
+                                    )}
                                     <div className="flex-grow"></div>
                                     <div className="flex items-center font-bold gap-2">
                                         <span>Total Price:</span>

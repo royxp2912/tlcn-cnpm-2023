@@ -16,7 +16,7 @@ const ordersApi = {
         });
     },
     getAllOrderByUserAndStatus: (item: orderStatus) => {
-        const url = `/orders`;
+        const url = `/orders/user/status`;
         return axios.get(url, {
             params: {
                 status: item.status,
