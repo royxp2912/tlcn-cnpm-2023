@@ -58,30 +58,30 @@ const OrderDetail = () => {
                             <div className="flex gap-[350px]">
                                 <div className="flex gap-8">
                                     <span className="font-semibold">Receiver:</span>
-                                    <span>{order.deliveryAddress.receiver}</span>
+                                    <span>{order?.deliveryAddress?.receiver}</span>
                                 </div>
                                 <div className="flex gap-8">
                                     <span className="font-semibold">Phone:</span>
-                                    <span>{order.deliveryAddress.phone}</span>
+                                    <span>{order?.deliveryAddress?.phone}</span>
                                 </div>
                             </div>
                             <div className="flex gap-[100px]">
                                 <div className="flex gap-8">
-                                    <span className="font-semibold">Province/City::</span>
-                                    <span>{order.deliveryAddress.province}</span>
+                                    <span className="font-semibold">Province/City:</span>
+                                    <span>{order?.deliveryAddress?.province}</span>
                                 </div>
                                 <div className="flex gap-8">
                                     <span className="font-semibold">District:</span>
-                                    <span>{order.deliveryAddress.districts}</span>
+                                    <span>{order?.deliveryAddress?.districts}</span>
                                 </div>
                                 <div className="flex gap-8">
                                     <span className="font-semibold">Wards:</span>
-                                    <span>{order.deliveryAddress.wards}</span>
+                                    <span>{order?.deliveryAddress?.wards}</span>
                                 </div>
                             </div>
                             <div className="flex gap-8">
                                 <span className="font-semibold">Specific Address:</span>
-                                <span>{order.deliveryAddress.specific}</span>
+                                <span>{order?.deliveryAddress?.specific}</span>
                             </div>
                         </div>
                     </div>
@@ -90,7 +90,7 @@ const OrderDetail = () => {
                         {/* <Border /> */}
                         <div>
                             <div>
-                                {order.items.map((item) => (
+                                {order?.items?.map((item) => (
                                     <div className="flex items-center gap-5 my-[10px]">
                                         <Image
                                             src={item.image}
