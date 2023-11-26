@@ -61,6 +61,8 @@ export const {
                         count: "",
                     });
                 }
+            } else {
+                listSold.length = 5;
             }
 
             return {
@@ -88,7 +90,18 @@ export const {
             const listTotal = await Promise.all(listUser.map((item) => totalSpentByUserIDThisMonth(item, firstDayOfMonth, firstDayOfNextMonth)));
 
             listTotal.sort((a, b) => b.total - a.total);
-            listTotal.length = 5;
+            if (listTotal.length < 5) {
+                for (let i = listTotal.length; i < 5; i++) {
+                    listTotal.push({
+                        id: "",
+                        name: "",
+                        image: "",
+                        count: "",
+                    });
+                }
+            } else {
+                listTotal.length = 5;
+            }
 
             return {
                 success: true,
@@ -172,18 +185,15 @@ export const {
             const dayOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
             const today = new Date();
             const result = getStartAndEndOfWeek(today.getDate(), today.getMonth(), today.getFullYear());
-            const endOfWeek = result.end;
             const fristOfWeek = result.start;
 
             let i = 0;
             let detailTotalOrder = [];
-            let endDay = endOfWeek.getDate();
-            let firstDay = fristOfWeek.getDate();
-            while (firstDay < endDay) {
-                let totalToday = await totalOrderOfDay(firstDay - 1, today.getMonth(), today.getFullYear());
+            while (i < 7) {
+                fristOfWeek.setDate(fristOfWeek.getDate() + i)
+                let totalToday = await totalOrderOfDay(fristOfWeek.getDate(), fristOfWeek.getMonth(), fristOfWeek.getFullYear());
                 detailTotalOrder.push({ day: dayOfWeek[i], total: totalToday.data });
                 i += 1;
-                firstDay += 1;
             }
 
             return {
@@ -268,18 +278,15 @@ export const {
             const dayOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
             const today = new Date();
             const result = getStartAndEndOfWeek(today.getDate(), today.getMonth(), today.getFullYear());
-            const endOfWeek = result.end;
             const fristOfWeek = result.start;
 
             let i = 0;
             let detailRevenue = [];
-            let endDay = endOfWeek.getDate();
-            let firstDay = fristOfWeek.getDate();
-            while (firstDay < endDay) {
-                let revToday = await revenueOfDay(firstDay - 1, today.getMonth(), today.getFullYear());
+            while (i < 7) {
+                fristOfWeek.setDate(fristOfWeek.getDate() + i);
+                let revToday = await revenueOfDay(fristOfWeek.getDate(), fristOfWeek.getMonth(), fristOfWeek.getFullYear());
                 detailRevenue.push({ day: dayOfWeek[i], total: revToday.data });
                 i += 1;
-                firstDay += 1;
             }
 
             return {
@@ -319,7 +326,7 @@ export const {
                     type = "No Change";
                 }
             } else {
-                percent = (((totalLastMonth.data - totalThisMonth.data) / totalLastMonth.data) * 100).toFixed(2);
+                percent = (((totalThisMonth.data - totalLastMonth.data) / totalLastMonth.data) * 100).toFixed(2);
             }
 
             return {
@@ -328,7 +335,7 @@ export const {
                 message: "Get Total Product Sold This Month Successful!!!",
                 data: {
                     total: totalThisMonth.data,
-                    percent: Math.abs(percent),
+                    percent: Number(percent),
                     type,
                 },
             }
@@ -363,7 +370,7 @@ export const {
                     type = "No Change";
                 }
             } else {
-                percent = (((totalLastWeek.data - totalThisWeek.data) / totalLastWeek.data) * 100).toFixed(2);
+                percent = (((totalThisWeek.data - totalLastWeek.data) / totalLastWeek.data) * 100).toFixed(2);
             }
 
             return {
@@ -372,7 +379,7 @@ export const {
                 message: "Get Total Product Sold This Week Successful!!!",
                 data: {
                     total: totalThisWeek.data,
-                    percent: Math.abs(percent),
+                    percent: Number(percent),
                     type,
                 },
             }
@@ -419,7 +426,7 @@ export const {
                 message: "Get Total Product Sold Today Successful!!!",
                 data: {
                     total: totalToday.data,
-                    percent: Math.abs(percent),
+                    percent: Number(percent),
                     type,
                 },
             }
@@ -454,7 +461,7 @@ export const {
                     type = "No Change";
                 }
             } else {
-                percent = (((totalLastMonth.data - totalThisMonth.data) / totalLastMonth.data) * 100).toFixed(2);
+                percent = (((totalThisMonth.data - totalLastMonth.data) / totalLastMonth.data) * 100).toFixed(2);
             }
 
             return {
@@ -463,7 +470,7 @@ export const {
                 message: "Get Total Order This Month Successful!!!",
                 data: {
                     total: totalThisMonth.data,
-                    percent: Math.abs(percent),
+                    percent: Number(percent),
                     type,
                 },
             }
@@ -498,7 +505,7 @@ export const {
                     type = "No Change";
                 }
             } else {
-                percent = (((totalLastWeek.data - totalThisWeek.data) / totalLastWeek.data) * 100).toFixed(2);
+                percent = (((totalThisWeek.data - totalLastWeek.data) / totalLastWeek.data) * 100).toFixed(2);
             }
 
             return {
@@ -507,7 +514,7 @@ export const {
                 message: "Get Total Ordere This Week Successful!!!",
                 data: {
                     total: totalThisWeek.data,
-                    percent: Math.abs(percent),
+                    percent: Number(percent),
                     type,
                 },
             }
@@ -554,7 +561,7 @@ export const {
                 message: "Get Total Order Today Successful!!!",
                 data: {
                     total: totalToday.data,
-                    percent: Math.abs(percent),
+                    percent: Number(percent),
                     type,
                 },
             }
@@ -589,7 +596,7 @@ export const {
                     type = "No Change";
                 }
             } else {
-                percent = (((totalUserLastMonth.data - totalUserThisMonth.data) / totalUserLastMonth.data) * 100).toFixed(2);
+                percent = (((totalUserThisMonth.data - totalUserLastMonth.data) / totalUserLastMonth.data) * 100).toFixed(2);
             }
 
             return {
@@ -598,7 +605,7 @@ export const {
                 message: "Get Revenue This Month Successful!!!",
                 data: {
                     total: totalUserThisMonth.data,
-                    percent: Math.abs(percent),
+                    percent: Number(percent),
                     type,
                 },
             }
@@ -633,7 +640,7 @@ export const {
                     type = "No Change";
                 }
             } else {
-                percent = (((totalUserLastWeek.data - totalUserThisWeek.data) / totalUserLastWeek.data) * 100).toFixed(2);
+                percent = (((totalUserThisWeek.data - totalUserLastWeek.data) / totalUserLastWeek.data) * 100).toFixed(2);
             }
 
             return {
@@ -642,7 +649,7 @@ export const {
                 message: "Get Total New User This Week Successful!!!",
                 data: {
                     total: totalUserThisWeek.data,
-                    percent: Math.abs(percent),
+                    percent: Number(percent),
                     type,
                 },
             }
@@ -689,7 +696,7 @@ export const {
                 message: "Get Total New User Today Successful!!!",
                 data: {
                     total: totalUserToday.data,
-                    percent: Math.abs(percent),
+                    percent: Number(percent),
                     type,
                 },
             }
@@ -724,7 +731,7 @@ export const {
                     type = "No Change";
                 }
             } else {
-                percent = (((revLastMonth.data - revThisMonth.data) / revLastMonth.data) * 100).toFixed(2);
+                percent = (((revThisMonth.data - revLastMonth.data) / revLastMonth.data) * 100).toFixed(2);
             }
 
             return {
@@ -733,7 +740,7 @@ export const {
                 message: "Get Revenue This Month Successful!!!",
                 data: {
                     total: revThisMonth.data,
-                    percent: Math.abs(percent),
+                    percent: Number(percent),
                     type,
                 },
             }
@@ -768,7 +775,7 @@ export const {
                     type = "No Change";
                 }
             } else {
-                percent = (((revLastWeek.data - revThisWeek.data) / revLastWeek.data) * 100).toFixed(2);
+                percent = (((revThisWeek.data - revLastWeek.data) / revLastWeek.data) * 100).toFixed(2);
             }
 
             return {
@@ -777,7 +784,7 @@ export const {
                 message: "Get Revenue This Week Successful!!!",
                 data: {
                     total: revThisWeek.data,
-                    percent: Math.abs(percent),
+                    percent: Number(percent),
                     type,
                 },
             }
@@ -824,7 +831,7 @@ export const {
                 message: "Get Revenue Today Successful!!!",
                 data: {
                     total: revToday.data,
-                    percent: Math.abs(percent),
+                    percent: Number(percent),
                     type,
                 },
             }

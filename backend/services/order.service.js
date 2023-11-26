@@ -98,10 +98,16 @@ export const {
                     $gte: firstOfMonth,
                     $lte: firstOfNextMonth,
                 },
-            }).select("user");
+            }).select("user -_id");
 
             const newList = listUser.map((item) => item.user);
             const result = [...new Set(newList.map(String))];
+
+            let i;
+            for (i = 0; i < result.length; i++) {
+                const a = await User.findById(result[i]);
+                if (!a) result.splice(i, 1);
+            };
 
             return result;
         } catch (err) {
