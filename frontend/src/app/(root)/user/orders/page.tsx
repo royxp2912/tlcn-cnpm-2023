@@ -45,16 +45,30 @@ const Orders = () => {
     }, [status, load]);
 
     const handleReceived = async (id: string) => {
-        const res = await dispatch(receivedOrder(id));
-        if ((res.payload as { status: number }).status === 200) {
+        const { data } = await axios.patch('/orders/received', {
+            order: id,
+        });
+        if (data.success) {
             toast.success('Received order success');
             setLoad((prev) => !prev);
         } else {
             toast.error('Received order fail');
         }
     };
+    const handleReturn = async (id: string) => {
+        const { data } = await axios.patch('/orders/return', {
+            order: id,
+        });
+        console.log(data);
+
+        if (data.success) {
+            toast.success('Cancel order success');
+            setLoad((prev) => !prev);
+        } else {
+            toast.error('Cancel order fail');
+        }
+    };
     const handleCancel = async (id: string) => {
-        console.log('Hiii');
         const { data } = await axios.patch('/orders/cancel', {
             order: id,
         });
@@ -140,18 +154,31 @@ const Orders = () => {
                                         ''
                                     ) : (
                                         <div className="flex gap-5">
-                                            <button
-                                                className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm"
-                                                onClick={() => handleReceived(order._id)}
-                                            >
-                                                RECEIVED
-                                            </button>
-                                            <button
-                                                className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm"
-                                                onClick={() => handleCancel(order._id)}
-                                            >
-                                                RETURN
-                                            </button>
+                                            {order.status === 'Successful' || order.status === 'Delivering' ? (
+                                                <button
+                                                    className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm"
+                                                    onClick={() => handleReceived(order._id)}
+                                                >
+                                                    RECEIVED
+                                                </button>
+                                            ) : (
+                                                ''
+                                            )}
+                                            {order.status === 'Successful' ? (
+                                                <button
+                                                    className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm"
+                                                    onClick={() => handleReturn(order._id)}
+                                                >
+                                                    RETURN
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm"
+                                                    onClick={() => handleCancel(order._id)}
+                                                >
+                                                    Cancel
+                                                </button>
+                                            )}
                                         </div>
                                     )}
                                     <div className="flex-grow"></div>

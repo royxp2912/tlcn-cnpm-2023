@@ -15,6 +15,7 @@ type Props = {
     top: top[];
 };
 const Top = ({ path, top }: Props) => {
+    console.log(top);
     return (
         <div className="shadow-revenue bg-white py-20 pt-10 pb-[35px] flex gap-20 justify-center">
             <div className="flex flex-col items-center">
@@ -64,7 +65,7 @@ const Top = ({ path, top }: Props) => {
                                                 {item.name === '' ? 'Not Found' : item.name}
                                             </TableCell>
                                             <TableCell align="center">
-                                                {item.count.toString() === ''
+                                                {item.count === 0
                                                     ? 'Not Found'
                                                     : `${path === 'user' ? '$' : ''}` + item.count}
                                             </TableCell>

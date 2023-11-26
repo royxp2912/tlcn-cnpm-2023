@@ -27,23 +27,24 @@ export const {
     totalSpentByUserIDThisMonth,
     soldProductByProIDThisMonth,
 } = {
-
     soldProductByProIDThisMonth: async (proID, firstOfMonth, firstOfNextMonth) => {
         try {
             const listOrder = await Order.find({
-                "items.product": proID,
+                'items.product': proID,
                 createdAt: {
                     $gte: firstOfMonth,
                     $lte: firstOfNextMonth,
                 },
-            }).select("items");
+            }).select('items');
 
-            const newList = listOrder.flatMap(cur => cur.items.map((item) => {
-                return {
-                    product: item.product,
-                    quantity: item.quantity,
-                }
-            }));
+            const newList = listOrder.flatMap((cur) =>
+                cur.items.map((item) => {
+                    return {
+                        product: item.product,
+                        quantity: item.quantity,
+                    };
+                }),
+            );
 
             const result = newList.reduce((arc, item) => {
                 if (item.product.equals(proID)) {
@@ -52,7 +53,7 @@ export const {
                 return arc;
             }, 0);
 
-            const info = await Product.findById(proID).select("images name");
+            const info = await Product.findById(proID).select('images name');
 
             return {
                 id: proID,
@@ -76,9 +77,9 @@ export const {
                     $gte: firstOfMonth,
                     $lte: firstOfNextMonth,
                 },
-            }).select("items.product");
+            }).select('items.product');
 
-            const newList = listProduct.flatMap(cur => cur.items.map(item => item.product));
+            const newList = listProduct.flatMap((cur) => cur.items.map((item) => item.product));
             const result = [...new Set(newList.map(String))];
 
             return result;
@@ -98,7 +99,7 @@ export const {
                     $gte: firstOfMonth,
                     $lte: firstOfNextMonth,
                 },
-            }).select("user");
+            }).select('user');
 
             const newList = listUser.map((item) => item.user);
             const result = [...new Set(newList.map(String))];
@@ -121,10 +122,10 @@ export const {
                     $gte: firstOfMonth,
                     $lte: firstOfNextMonth,
                 },
-            }).select("total");
+            }).select('total');
 
             const result = listOrder.reduce((arc, item) => arc + item.total, 0);
-            const info = await User.findById(userID).select("avatar fullName");
+            const info = await User.findById(userID).select('avatar fullName');
 
             return {
                 id: userID,
@@ -151,8 +152,7 @@ export const {
                         { status: { $regex: keyword, $options: 'i' } },
                         { paymentMethod: { $regex: keyword, $options: 'i' } },
                     ],
-                })
-                    .select('-createdAt -updatedAt -__v -user -deliveryAddress');
+                }).select('-createdAt -updatedAt -__v -user -deliveryAddress');
             } else {
                 result = await Order.find({
                     $or: [
@@ -161,8 +161,7 @@ export const {
                         { status: { $regex: keyword, $options: 'i' } },
                         { paymentMethod: { $regex: keyword, $options: 'i' } },
                     ],
-                })
-                    .select('-createdAt -updatedAt -__v -user -deliveryAddress');
+                }).select('-createdAt -updatedAt -__v -user -deliveryAddress');
             }
 
             const final = result.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
@@ -230,11 +229,12 @@ export const {
             checkedObjectId(orderID, 'Order ID');
             const result = await Order.findById(orderID);
             checkedNull(result, "Order doesn't exist !!!");
-            if (result.status !== "Confirming") return {
-                success: false,
-                status: 400,
-                message: 'The order is in a non-cancellable status!!!',
-            }
+            if (result.status !== 'Confirming')
+                return {
+                    success: false,
+                    status: 400,
+                    message: 'The order is in a non-cancellable status!!!',
+                };
 
             result.status = 'Cancel';
             await result.save();
@@ -258,11 +258,12 @@ export const {
             checkedObjectId(orderID, 'Order ID');
             const result = await Order.findById(orderID);
             checkedNull(result, "Order doesn't exist !!!");
-            if (result.status !== "Successful") return {
-                success: false,
-                status: 400,
-                message: 'The order is not in returnable status!!!',
-            }
+            if (result.status !== 'Successful')
+                return {
+                    success: false,
+                    status: 400,
+                    message: 'The order is not in returnable status!!!',
+                };
 
             result.status = 'Return';
             await result.save();
@@ -286,11 +287,12 @@ export const {
             checkedObjectId(orderID, 'Order ID');
             const result = await Order.findById(orderID);
             checkedNull(result, "Order doesn't exist !!!");
-            if (result.status !== "Delivering") return {
-                success: false,
-                status: 400,
-                message: 'The order is not in a state for pickup!!!',
-            }
+            if (result.status !== 'Delivering' || result.status !== 'Successful')
+                return {
+                    success: false,
+                    status: 400,
+                    message: 'The order is not in a state for pickup!!!',
+                };
 
             result.status = 'Successful';
             await result.save();
@@ -313,12 +315,7 @@ export const {
         try {
             checkedObjectId(orderID, 'Order ID');
 
-            if (
-                status !== 'Accepted' &&
-                status !== 'Delivering' &&
-                status !== 'Successful' &&
-                status !== 'Cancel'
-            )
+            if (status !== 'Accepted' && status !== 'Delivering' && status !== 'Successful' && status !== 'Cancel')
                 return {
                     success: false,
                     status: 400,
@@ -343,33 +340,33 @@ export const {
                     },
                 });
             }
-            if (status === "Accepted" || status === "Cancel") {
-                if (existOrder.status !== "Confirming") {
+            if (status === 'Accepted' || status === 'Cancel') {
+                if (existOrder.status !== 'Confirming') {
                     return {
                         success: false,
                         status: 400,
                         message: 'The order is in a non-cancellable status!!!',
-                    }
+                    };
                 }
             }
 
-            if (status === "Delivering") {
-                if (existOrder.status !== "Accepted") {
+            if (status === 'Delivering') {
+                if (existOrder.status !== 'Accepted') {
                     return {
                         success: false,
                         status: 400,
                         message: 'The order is not in a shippable state!!!',
-                    }
+                    };
                 }
             }
 
-            if (status === "Successful") {
-                if (existOrder.status !== "Delivering") {
+            if (status === 'Successful') {
+                if (existOrder.status !== 'Delivering') {
                     return {
                         success: false,
                         status: 400,
                         message: 'The order is not in a fulfillable state!!!',
-                    }
+                    };
                 }
             }
             await Order.findByIdAndUpdate(orderID, { $set: { status: status } });
@@ -414,7 +411,7 @@ export const {
 
     getAllByStatusAndUser: async (userID, status, pageSize, pageNumber) => {
         try {
-            checkedObjectId(userID, "User ID");
+            checkedObjectId(userID, 'User ID');
             if (
                 status !== 'Confirming' &&
                 status !== 'Delivering' &&
@@ -430,7 +427,7 @@ export const {
 
             const result = await Order.find({
                 user: userID,
-                status: status
+                status: status,
             })
                 .select('-updatedAt -createdAt -__v')
                 .sort({ createdAt: -1 });
@@ -520,9 +517,7 @@ export const {
 
     getAll: async (pageSize, pageNumber) => {
         try {
-            const result = await Order.find()
-                .select('-updatedAt -createdAt -__v')
-                .sort({ createdAt: -1 });
+            const result = await Order.find().select('-updatedAt -createdAt -__v').sort({ createdAt: -1 });
             const final = result.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
 
             return {
@@ -543,24 +538,26 @@ export const {
 
     create: async (body) => {
         try {
-            checkedObjectId(body.userID, "User ID");
+            checkedObjectId(body.userID, 'User ID');
 
             const existUser = await getUserByID(body.userID);
             if (!existUser.success) return existUser;
 
-            const listCheck = await Promise.all(body.items.map((item) => {
-                let result = checkedQuantity(item.product, item.color, item.size, item.quantity);
-                return result;
-            }));
+            const listCheck = await Promise.all(
+                body.items.map((item) => {
+                    let result = checkedQuantity(item.product, item.color, item.size, item.quantity);
+                    return result;
+                }),
+            );
 
             const isStocking = listCheck.reduce((arc, cur) => {
                 return {
                     success: arc && cur.success,
                     status: cur.status,
                     message: cur.message,
-                }
+                };
             }, true);
-            if (!isStocking.success) return isStocking
+            if (!isStocking.success) return isStocking;
 
             const newOrder = new Order({
                 user: body.userID,
@@ -571,11 +568,13 @@ export const {
             });
             await newOrder.save();
 
-            await Promise.all(body.items.map((item) => {
-                removeFromCart(body.userID, item.product);
-                reduceQuantity(item.product, item.color, item.size, item.quantity);
-                updateSoldOfProduct(item.product, item.quantity);
-            }));
+            await Promise.all(
+                body.items.map((item) => {
+                    removeFromCart(body.userID, item.product);
+                    reduceQuantity(item.product, item.color, item.size, item.quantity);
+                    updateSoldOfProduct(item.product, item.quantity);
+                }),
+            );
 
             await updateSpentByUserID(body.userID, body.total);
 

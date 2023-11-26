@@ -12,16 +12,18 @@ type Props = {
 };
 
 const RevenueChart = ({ path }: Props) => {
-    const dispath = useDispatch<AppDispatch>();
+    const dispatch = useDispatch<AppDispatch>();
     const { detailWeek }: { detailWeek: detailTotal } = useSelector((state: any) => state.revenue);
 
     useEffect(() => {
         if (path == 'Revenue') {
-            dispath(getDetailRevenueThisWeek());
+            dispatch(getDetailRevenueThisWeek());
         } else {
-            dispath(getDetailTotalOrderThisWeek());
+            dispatch(getDetailTotalOrderThisWeek());
         }
-    }, [dispath]);
+    }, [dispatch]);
+
+    console.log(detailWeek);
 
     return (
         <div className="flex gap-10">

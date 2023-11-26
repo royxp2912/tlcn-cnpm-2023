@@ -12,7 +12,7 @@ import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import { signIn } from '@/slices/authSlice';
 import { AppDispatch } from '@/utils/store';
-// import { toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 
 const Login = () => {
     const router = useRouter();

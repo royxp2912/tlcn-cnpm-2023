@@ -10,7 +10,7 @@ import { User } from '@/types/type';
 const AdminNav = () => {
     const router = useRouter();
     const path = usePathname();
-    const userString = localStorage.getItem('admin');
+    const userString = typeof window !== 'undefined' ? localStorage.getItem('admin') : null;
     let user: User;
     if (!userString) {
         router.push('/sign-in');
@@ -20,7 +20,7 @@ const AdminNav = () => {
 
     const handleLogout = async () => {
         await axios.delete(`/logout/${user._id}`);
-        localStorage.removeItem('user');
+        localStorage.removeItem('admin');
     };
 
     return (
@@ -43,8 +43,9 @@ const AdminNav = () => {
                             <div
                                 key={item.label}
                                 onClick={() => router.push(item.route)}
-                                className={`font-semibold w-[200px] h-10 pl-[18px] py-[10px] text-sm flex items-center gap-[12px] text-black rounded-xl cursor-pointer ${isActive && 'bg-blue text-white'
-                                    }`}
+                                className={`font-semibold w-[200px] h-10 pl-[18px] py-[10px] text-sm flex items-center gap-[12px] text-black rounded-xl cursor-pointer ${
+                                    isActive && 'bg-blue text-white'
+                                }`}
                             >
                                 <item.icon />
                                 <span>{item.label}</span>

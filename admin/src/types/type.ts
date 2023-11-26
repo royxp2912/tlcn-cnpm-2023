@@ -90,7 +90,7 @@ export type Cart = {
 };
 
 export type Order = {
-    _id?: string;
+    _id: string;
     items: ItemCart[];
     user: string;
     deliveryAddress: Address;

@@ -64,7 +64,8 @@ const Revenue = ({ path }: Props) => {
                     />
                     <div className="flex flex-col gap-[6px] items-center">
                         <span className={`text-3xl ${today.percent >= 0 ? 'text-[#00BE98]' : 'text-red'} font-bak`}>
-                            {path === 'Revenue' ? "$" : ""}{today.total}
+                            {path === 'Revenue' ? '$' : ''}
+                            {today.total}
                         </span>
                         <div className="text-sm flex items-center gap-1">
                             <span>{today.percent >= 0 ? 'Increase' : 'Decrease'}</span>
@@ -91,7 +92,7 @@ const Revenue = ({ path }: Props) => {
                     />
                     <div className="flex flex-col gap-[6px] items-center">
                         <span className={`text-3xl ${thisWeek.percent >= 0 ? 'text-[#00BE98]' : 'text-red'} font-bak`}>
-                            {path === "Revenue" ? "$" : ""} {thisWeek.total}
+                            {path === 'Revenue' ? '$' : ''} {thisWeek.total}
                         </span>
                         <div className="text-sm flex items-center gap-1">
                             <span>{thisWeek.percent >= 0 ? 'Increase' : 'Decrease'}</span>
@@ -118,7 +119,8 @@ const Revenue = ({ path }: Props) => {
                     />
                     <div className="flex flex-col gap-[6px] items-center">
                         <span className={`text-3xl ${thisMonth.percent >= 0 ? 'text-[#00BE98]' : 'text-red'} font-bak`}>
-                            {path === 'Revenue' ? "$" : ""}{thisMonth.total}
+                            {path === 'Revenue' ? '$' : ''}
+                            {thisMonth.total}
                         </span>
                         <div className="text-sm flex items-center gap-1">
                             <span>{thisMonth.percent >= 0 ? 'Increase' : 'Decrease'}</span>
