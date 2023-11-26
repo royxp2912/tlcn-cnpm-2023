@@ -286,7 +286,7 @@ export const {
             checkedObjectId(orderID, 'Order ID');
             const result = await Order.findById(orderID);
             checkedNull(result, "Order doesn't exist !!!");
-            if (result.status !== "Delivering") return {
+            if (result.status !== "Delivering" || result.status !== "Successful") return {
                 success: false,
                 status: 400,
                 message: 'The order is not in a state for pickup!!!',
