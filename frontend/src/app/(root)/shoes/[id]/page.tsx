@@ -258,7 +258,7 @@ const ShoesSinglePage = () => {
                         <div className="flex gap-5 ">
                             <div
                                 onClick={handleAddToCart}
-                                className="w-40 h-[50px] flex items-center justify-center gap-4 bg-buy text-blue rounded-md cursor-pointer"
+                                className="w-40 h-[50px] flex items-center justify-center gap-4 bg-buy text-blue rounded-md cursor-pointer hover:bg-blue hover:text-white"
                             >
                                 <ShoppingCartOutlinedIcon />
                                 <span className="font-bold">Add To Cart</span>

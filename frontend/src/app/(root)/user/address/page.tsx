@@ -110,19 +110,19 @@ const Address = () => {
                             </span>
                             <div className="flex gap-[10px] absolute top-[-14px] right-20">
                                 <div
-                                    className="text-blue px-1 bg-white cursor-pointer"
+                                    className="text-blue px-1 bg-white cursor-pointer hover:opacity-60"
                                     onClick={() => handleUpdate(item._id)}
                                 >
                                     <LoopOutlinedIcon />
                                 </div>
                                 <div
-                                    className="text-red px-1 bg-white cursor-pointer"
+                                    className="text-red px-1 bg-white cursor-pointer hover:opacity-60"
                                     onClick={() => handleDelete(item._id)}
                                 >
                                     <CloseOutlinedIcon />
                                 </div>
                                 <div
-                                    className="text-[#FF00B4] px-1 bg-white cursor-pointer"
+                                    className="text-[#FF00B4] px-1 bg-white cursor-pointer hover:opacity-60"
                                     onClick={() => handleDefault(item._id)}
                                 >
                                     <DoneRoundedIcon />

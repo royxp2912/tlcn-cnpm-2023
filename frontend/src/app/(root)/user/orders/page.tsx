@@ -92,7 +92,7 @@ const Orders = () => {
                             const isActive = status === item;
                             return (
                                 <span
-                                    className={`w-[140px] h-max block pt-[10px] pb-[12px] text-center uppercase ${
+                                    className={`w-[140px] h-max block pt-[10px] pb-[12px] text-center uppercase hover:text-blue cursor-pointer ${
                                         isActive && 'text-blue border-b-2 border-b-blue'
                                     }`}
                                     onClick={() => setStatus(item)}
@@ -156,7 +156,7 @@ const Orders = () => {
                                         <div className="flex gap-5">
                                             {order.status === 'Successful' || order.status === 'Delivering' ? (
                                                 <button
-                                                    className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm"
+                                                    className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm hover:bg-opacity-100 hover:text-white"
                                                     onClick={() => handleReceived(order._id)}
                                                 >
                                                     RECEIVED
@@ -166,7 +166,7 @@ const Orders = () => {
                                             )}
                                             {order.status === 'Successful' ? (
                                                 <button
-                                                    className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm"
+                                                    className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm hover:bg-opacity-100 hover:text-white"
                                                     onClick={() => handleReturn(order._id)}
                                                 >
                                                     RETURN
@@ -175,7 +175,7 @@ const Orders = () => {
                                                 ''
                                             ) : (
                                                 <button
-                                                    className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm"
+                                                    className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm hover:bg-opacity-100 hover:text-white"
                                                     onClick={() => handleCancel(order._id)}
                                                 >
                                                     Cancel

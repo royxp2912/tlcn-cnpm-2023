@@ -43,7 +43,7 @@ const AdminNav = () => {
                             <div
                                 key={item.label}
                                 onClick={() => router.push(item.route)}
-                                className={`font-semibold w-[200px] h-10 pl-[18px] py-[10px] text-sm flex items-center gap-[12px] text-black rounded-xl cursor-pointer ${
+                                className={`font-semibold w-[200px] h-10 pl-[18px] py-[10px] text-sm flex items-center gap-[12px] text-black rounded-xl cursor-pointer hover:text-blue ${
                                     isActive && 'bg-blue text-white'
                                 }`}
                             >

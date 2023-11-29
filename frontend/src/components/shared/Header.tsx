@@ -107,14 +107,16 @@ const Header = () => {
                 </div>
                 <div className="flex items-center gap-10">
                     <div className="flex items-center gap-8">
-                        <div className="relative">
+                        <div className="relative cursor-pointer">
                             <FavoriteBorderOutlinedIcon
-                                className={`w-7 h-7 ${pathname === '/' ? 'text-orange' : 'text-blue'}`}
+                                className={`w-7 h-7 ${
+                                    pathname === '/' ? 'text-orange hover:text-blue' : 'text-blue hover:text-orange'
+                                }`}
                             />
                             {userString !== null && (
                                 <div
                                     className={`absolute top-[-8px] right-[-6px] border rounded-full w-4 h-4 border-white ${
-                                        pathname === '/' ? 'bg-orange' : 'bg-blue'
+                                        pathname === '/' ? 'bg-orange' : 'bg-blue '
                                     }`}
                                 >
                                     <span className="text-white text-xs ml-[0.2rem] absolute">2</span>
@@ -123,7 +125,9 @@ const Header = () => {
                         </div>
                         <div className="relative cursor-pointer" onClick={handelCart}>
                             <ShoppingCartOutlinedIcon
-                                className={`w-7 h-7 ${pathname === '/' ? 'text-orange' : 'text-blue'}`}
+                                className={`w-7 h-7 ${
+                                    pathname === '/' ? 'text-orange hover:text-blue' : 'text-blue hover:text-orange'
+                                }`}
                             />
                             {userString !== null && (
                                 <div
@@ -139,7 +143,9 @@ const Header = () => {
                         </div>
 
                         <PersonOutlineOutlinedIcon
-                            className={`${pathname === '/' ? 'text-orange' : 'text-blue'} cursor-pointer`}
+                            className={`${
+                                pathname === '/' ? 'text-orange hover:text-blue' : 'text-blue hover:text-orange'
+                            } cursor-pointer`}
                             fontSize="large"
                             aria-controls={open ? 'basic-menu' : undefined}
                             aria-haspopup="true"

@@ -87,7 +87,7 @@ const WareHouseManage = () => {
                     ))}
                 </div>
                 <button
-                    className="bg-blue bg-opacity-60 h-10 px-4 text-sm font-medium text-white rounded-lg"
+                    className="bg-blue bg-opacity-60 h-10 px-4 text-sm font-medium text-white rounded-lg hover:bg-opacity-100"
                     onClick={() => router.push('/warehouse/addnew')}
                 >
                     Add Product

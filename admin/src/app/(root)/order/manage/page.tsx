@@ -142,7 +142,7 @@ const OrderManage = () => {
                         const isActive = status === item;
                         return (
                             <span
-                                className={`w-[140px] h-max block pt-[10px] pb-[12px] text-center uppercase ${
+                                className={`w-[140px] h-max block pt-[10px] pb-[12px] text-center uppercase cursor-pointer hover:text-blue ${
                                     isActive && 'text-blue border-b-2 border-b-blue'
                                 }`}
                                 onClick={() => handleStatus(item)}
@@ -219,7 +219,7 @@ const OrderManage = () => {
                             <div className="flex gap-5 mt-[10px] items-center">
                                 {order.status === 'Confirming' ? (
                                     <button
-                                        className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm"
+                                        className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm hover:bg-opacity-100"
                                         onClick={(e) => handleComfirm(e, order._id)}
                                     >
                                         CONFIRM
@@ -229,7 +229,7 @@ const OrderManage = () => {
                                 )}
                                 {order.status === 'Accepted' ? (
                                     <button
-                                        className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm"
+                                        className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm hover:bg-opacity-100"
                                         onClick={(e) => handleDelivery(e, order._id)}
                                     >
                                         DELIVERY
@@ -239,7 +239,7 @@ const OrderManage = () => {
                                 )}
                                 {order.status === 'Confirming' ? (
                                     <button
-                                        className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm"
+                                        className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm hover:bg-opacity-100"
                                         onClick={(e) => handleCancel(e, order._id)}
                                     >
                                         CANCEL
@@ -249,7 +249,7 @@ const OrderManage = () => {
                                 )}
                                 {order.status === 'Delivering' ? (
                                     <button
-                                        className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm"
+                                        className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm hover:bg-opacity-100"
                                         onClick={(e) => handleSuccess(e, order._id)}
                                     >
                                         SUCCESS
