@@ -151,7 +151,7 @@ const SingleSellShoe = ({
         return (
             <div className="flex items-center gap-[10px]">
                 <ArrowBackIosRoundedIcon
-                    className={`text-3xl ${isBack ? 'cursor-pointer' : 'text-gray'}`}
+                    className={`text-3xl ${back === 0 ? ' text-gray' : 'cursor-pointer'}`}
                     onClick={isBack ? handleBack : undefined}
                 />
                 {products && products.length === 0 ? (
@@ -192,7 +192,7 @@ const SingleSellShoe = ({
                     ))
                 )}
                 <ArrowForwardIosRoundedIcon
-                    className={`text-3xl ${isNext ? 'cursor-pointer' : 'text-gray'}`}
+                    className={`text-3xl ${next === products.length ? 'text-gray' : 'cursor-pointer'}`}
                     onClick={isNext ? handleNext : undefined}
                 />
             </div>
@@ -201,7 +201,7 @@ const SingleSellShoe = ({
     return (
         <div className="flex justify-center gap-[10px] items-center">
             <ArrowBackIosRoundedIcon
-                className={`text-3xl ${isBack ? 'cursor-pointer' : 'text-gray'}`}
+                className={`text-3xl ${back === 0 ? ' text-gray' : 'cursor-pointer'}`}
                 onClick={isBack ? handleBack : undefined}
             />
             {active
@@ -284,7 +284,7 @@ const SingleSellShoe = ({
                       </div>
                   ))}
             <ArrowForwardIosRoundedIcon
-                className={`text-3xl ${isNext ? 'cursor-pointer' : 'text-gray'}`}
+                className={`text-3xl ${next === productHots.length ? 'text-gray' : 'cursor-pointer'}`}
                 onClick={isNext ? handleNext : undefined}
             />
         </div>
