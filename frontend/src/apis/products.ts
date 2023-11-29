@@ -62,7 +62,7 @@ const productsApi = {
     },
     getProductHotDeal: () => {
         const url = '/products/search/hotDeal';
-        return axios.get(url, { params: { pageSize: 4 } });
+        return axios.get(url);
     },
     getQtyOfBrand: () => {
         const url = '/products/brand';
