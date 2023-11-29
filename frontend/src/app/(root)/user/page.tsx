@@ -204,14 +204,14 @@ const Profile = () => {
                                 )}
                             </div>
                             <div
-                                className="w-40 h-10 rounded-lg bg-blue bg-opacity-20 text-blue flex items-center justify-center gap-2 cursor-pointer"
+                                className="w-40 h-10 rounded-lg bg-blue bg-opacity-20 text-blue flex items-center justify-center gap-2 cursor-pointer hover:bg-opacity-100 hover:text-white"
                                 onClick={handleToggleInput}
                             >
                                 <InsertPhotoOutlinedIcon />
                                 <span className="font-medium text-sm">Upload Avatar</span>
                             </div>
                             <div
-                                className="w-40 h-10 rounded-lg bg-blue bg-opacity-20 text-blue flex items-center justify-center gap-2 cursor-pointer"
+                                className="w-40 h-10 rounded-lg bg-blue bg-opacity-20 text-blue flex items-center justify-center gap-2 cursor-pointer hover:bg-opacity-100 hover:text-white"
                                 onClick={handleUpload}
                             >
                                 <CloudUploadOutlinedIcon />
@@ -307,7 +307,7 @@ const Profile = () => {
                             </div>
                             <div className="flex justify-center">
                                 <div
-                                    className="w-[200px] h-11 bg-blue bg-opacity-20 text-blue rounded-lg flex items-center justify-center gap-2 cursor-pointer"
+                                    className="w-[200px] h-11 bg-blue bg-opacity-20 text-blue rounded-lg flex items-center justify-center gap-2 cursor-pointer hover:bg-opacity-100 hover:text-white"
                                     onClick={handleSumbit}
                                 >
                                     <CloudUploadOutlinedIcon />

@@ -214,7 +214,7 @@ const SingleSellShoe = ({
                       >
                           <div className="border-2 border-gray2 w-[304px] rounded-md p-1">
                               {/* Single Product */}
-                              <div className="bg-bg_sell rounded-md w-[292px] h-[236px] relative overflow-hidden">
+                              <div className="bg-bg_sell rounded-md w-[292px] h-[236px] relative overflow-hidden hover:scale-110">
                                   <Image src={product.images[0]} alt="Nike" fill />
                               </div>
                               <div className="px-5 py-1 flex flex-col items-center gap-2">
@@ -254,7 +254,7 @@ const SingleSellShoe = ({
                       >
                           <div className="border-2 border-gray2 w-[304px] rounded-md p-1">
                               {/* Single Product */}
-                              <div className="bg-bg_sell rounded-md w-[292px] h-[236px] relative overflow-hidden">
+                              <div className="bg-bg_sell rounded-md w-[292px] h-[236px] relative overflow-hidden hover:scale-110">
                                   <Image src={product.images[0]} alt="Nike" fill />
                               </div>
                               <div className="px-5 py-1 flex flex-col items-center gap-2">

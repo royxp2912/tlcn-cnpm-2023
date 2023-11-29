@@ -101,7 +101,7 @@ const ChangePassword = () => {
                 />
 
                 <div
-                    className="w-[500px] h-11 bg-blue bg-opacity-20 text-blue rounded-full flex items-center justify-center gap-2 font-medium text-xl"
+                    className="w-[500px] h-11 bg-blue bg-opacity-20 text-blue rounded-full flex items-center justify-center gap-2 font-medium text-xl hover:bg-opacity-100 hover:text-white cursor-pointer"
                     onClick={handleSubmit}
                 >
                     <CloudUploadOutlinedIcon />

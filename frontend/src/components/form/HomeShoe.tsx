@@ -118,7 +118,7 @@ const HomeShoe = () => {
                                         <FavoriteBorderOutlinedIcon className="w-5 h-5 text-orange" />
                                     </div>
                                     <button
-                                        className="mt-3 px-2 py-2 border-2 border-orange text-[12px] font-bold text-orange rounded-lg w-full"
+                                        className="mt-3 px-2 py-2 border-2 border-orange text-[12px] font-bold text-orange rounded-lg w-full hover:opacity-60"
                                         onClick={() =>
                                             handleAddtoCart({
                                                 product: productHot._id,

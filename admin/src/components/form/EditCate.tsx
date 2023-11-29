@@ -112,7 +112,7 @@ const EditCate = ({ item, setLoad }: Props) => {
             </div>
             <div className="text-right">
                 <button
-                    className="w-[140px] h-10 bg-blue bg-opacity-60 font-medium text-sm text-white"
+                    className="w-[140px] h-10 bg-blue bg-opacity-60 font-medium text-sm text-white hover:bg-opacity-100"
                     onClick={handleSubmit}
                 >
                     Edit

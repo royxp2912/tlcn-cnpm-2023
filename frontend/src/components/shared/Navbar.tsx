@@ -21,7 +21,7 @@ const Navbar = () => {
             <Link
                 href="/"
                 className={`w-[120px] h-10 text-center ${
-                    pathname === '/' ? 'text-orange border-orange border-b-2' : ' '
+                    pathname === '/' ? 'text-orange border-orange border-b-2' : 'hover:text-blue '
                 }  `}
             >
                 <span>Home</span>
@@ -34,7 +34,7 @@ const Navbar = () => {
                         className={`w-[120px] h-10 text-center ${
                             pathname === `/${category.name.toLowerCase().replace(/\s/g, '')}`
                                 ? 'text-blue border-blue border-b-2'
-                                : ' '
+                                : 'hover:text-blue'
                         }  `}
                     >
                         <span>{category.name}</span>

@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react';
 import { userNav } from '@/constants';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { User } from '@/types/type';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/utils/store';
@@ -10,6 +10,7 @@ import { getUser } from '@/slices/userSlice';
 
 const UserNav = () => {
     const router = useRouter();
+    const pathname = usePathname();
     const dispatch = useDispatch<AppDispatch>;
 
     const userString = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
@@ -33,7 +34,9 @@ const UserNav = () => {
             {userNav.map((item) => (
                 <div
                     key={item.label}
-                    className="mt-5 flex items-center gap-5 font-semibold cursor-pointer"
+                    className={`mt-5 flex items-center gap-5 font-semibold cursor-pointer hover:text-blue ${
+                        pathname === item.route ? 'text-blue' : ''
+                    } `}
                     onClick={() => router.push(item.route)}
                 >
                     <item.icon />
