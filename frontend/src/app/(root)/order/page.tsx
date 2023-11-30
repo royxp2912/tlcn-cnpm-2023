@@ -1,4 +1,6 @@
 'use client';
+import AddAddress from '@/components/form/AddAddress';
+import ListAddress from '@/components/form/ListAddress';
 import Border from '@/components/shared/Border';
 import { getAllAddressByUserId } from '@/slices/addressSlice';
 import { getCartByUserId } from '@/slices/cartSlice';
@@ -12,8 +14,25 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
+const unProps = {
+    update: false,
+    setUpdate: () => {},
+    addressDetail: {
+        _id: '',
+        user: '',
+        receiver: '',
+        phone: '',
+        province: '',
+        districts: '',
+        wards: '',
+        specific: '',
+        default: false,
+    },
+    addressId: '',
+};
+
 const Order = () => {
-    const userString = localStorage.getItem('user');
+    const userString = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
     let user: User | null = null;
 
     if (userString !== null) {
@@ -30,24 +49,31 @@ const Order = () => {
     const [datas, setDatas] = useState<Address>();
     const router = useRouter();
 
-    const itemOrders = localStorage.getItem('itemOrders');
+    const itemOrders = typeof window !== 'undefined' ? localStorage.getItem('itemOrders') : null;
     const items: ItemCart[] = itemOrders ? JSON.parse(itemOrders) : [];
-    const total = localStorage.getItem('totalPrice');
+    const total = typeof window !== 'undefined' ? localStorage.getItem('totalPrice') : null;
     const totalPrice: number = total ? parseFloat(total) : 0;
+    const [load, setLoad] = useState<boolean>(false);
+    const [change, setChange] = useState<boolean>(false);
+    const [open, setOpen] = useState<boolean>(false);
 
     const [pay, setPay] = useState<string>('');
     useEffect(() => {
-        try {
+        dispatch(getCartByUserId(id));
+        dispatch(getAllAddressByUserId(id));
+    }, [id, load]);
+
+    useEffect(() => {
+        if (address.length !== 0) {
             const fetchData = async () => {
                 const { data } = await axios.get(`/address/user/default?user=${id}`);
-                setDatas(data.data);
+                if (data.success) {
+                    setDatas(data.data);
+                }
             };
             fetchData();
-            dispatch(getCartByUserId(id));
-        } catch (error) {
-            console.log(error);
         }
-    }, [id]);
+    }, [address.length]);
 
     const idAddress = datas?._id as string;
 
@@ -94,7 +120,6 @@ const Order = () => {
     const handleCancel = () => {
         router.push('/cart');
     };
-    console.log(cartItem.items);
 
     return (
         <div className="flex flex-col items-center mt-[26px] px-[100px] gap-[10px]">
@@ -102,7 +127,21 @@ const Order = () => {
             <div className="w-full mt-10 p-5 shadow-xl rounded-lg">
                 <div className="flex justify-between">
                     <span className="font-bold text-lg">Delivery Details</span>
-                    <button className="w-[120px] h-10 bg-blue opacity-50 font-bold text-sm text-white">Change</button>
+                    {address.length === 0 ? (
+                        <button
+                            className="w-[120px] h-10 bg-blue bg-opacity-50 font-bold text-sm text-white hover:bg-opacity-100"
+                            onClick={() => setAdd(true)}
+                        >
+                            Add New
+                        </button>
+                    ) : (
+                        <button
+                            className="w-[120px] h-10 bg-blue bg-opacity-50 font-bold text-sm text-white hover:bg-opacity-100"
+                            onClick={() => setChange(true)}
+                        >
+                            Change
+                        </button>
+                    )}
                 </div>
                 <div className="px-5 flex flex-col gap-[15px]">
                     <div className="flex gap-[320px]">
@@ -199,6 +238,8 @@ const Order = () => {
                     Confirm
                 </button>
             </div>
+            {change && <ListAddress setLoad={setLoad} address={address} setChange={setChange} />}
+            {open && <AddAddress setLoad={setLoad} setOpen={setOpen} {...unProps} />}
         </div>
     );
 };

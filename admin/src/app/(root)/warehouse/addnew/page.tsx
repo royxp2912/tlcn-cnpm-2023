@@ -16,6 +16,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { toast } from 'react-toastify';
 
 const brands = ['Adidas', 'Nike', 'Vans', 'Balenciaga', 'Converse', 'Puma'];
 
@@ -110,6 +111,9 @@ const AddNewProduct = () => {
                 'Content-Type': 'multipart/form-data',
             },
         });
+        if (data.success) {
+            toast.success('Create Product success');
+        }
     };
     const handleDeleteImg = (i: number) => {
         if (image) {

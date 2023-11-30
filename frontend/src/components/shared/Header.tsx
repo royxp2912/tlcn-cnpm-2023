@@ -105,73 +105,72 @@ const Header = () => {
                         height={24}
                     />
                 </div>
-                <div className="flex items-center gap-10">
-                    <div className="flex items-center gap-8">
-                        <div className="relative cursor-pointer">
-                            <FavoriteBorderOutlinedIcon
-                                className={`w-7 h-7 ${
-                                    pathname === '/' ? 'text-orange hover:text-blue' : 'text-blue hover:text-orange'
-                                }`}
-                            />
-                            {userString !== null && (
-                                <div
-                                    className={`absolute top-[-8px] right-[-6px] border rounded-full w-4 h-4 border-white ${
-                                        pathname === '/' ? 'bg-orange' : 'bg-blue '
-                                    }`}
-                                >
-                                    <span className="text-white text-xs ml-[0.2rem] absolute">2</span>
-                                </div>
-                            )}
-                        </div>
-                        <div className="relative cursor-pointer" onClick={handelCart}>
-                            <ShoppingCartOutlinedIcon
-                                className={`w-7 h-7 ${
-                                    pathname === '/' ? 'text-orange hover:text-blue' : 'text-blue hover:text-orange'
-                                }`}
-                            />
-                            {userString !== null && (
-                                <div
-                                    className={`absolute top-[-8px] right-[-6px] border rounded-full w-4 h-4 border-white ${
-                                        pathname === '/' ? 'bg-orange' : 'bg-blue'
-                                    }`}
-                                >
-                                    <span className="text-white text-xs ml-[0.2rem] absolute">
-                                        {cartItem.items && cartItem.items.length}
-                                    </span>
-                                </div>
-                            )}
-                        </div>
 
-                        <PersonOutlineOutlinedIcon
-                            className={`${
+                <div className="flex items-center gap-8">
+                    <div className="relative cursor-pointer">
+                        <FavoriteBorderOutlinedIcon
+                            className={`w-7 h-7 ${
                                 pathname === '/' ? 'text-orange hover:text-blue' : 'text-blue hover:text-orange'
-                            } cursor-pointer`}
-                            fontSize="large"
-                            aria-controls={open ? 'basic-menu' : undefined}
-                            aria-haspopup="true"
-                            aria-expanded={open ? 'true' : undefined}
-                            onClick={handleClick}
+                            }`}
                         />
-                        <Menu
-                            id="basic-menu"
-                            anchorEl={anchorEl}
-                            open={open}
-                            onClose={handleClose}
-                            MenuListProps={{
-                                'aria-labelledby': 'basic-button',
-                            }}
-                        >
-                            <MenuItem onClick={() => router.push('/user')}>Profile</MenuItem>
-                            <MenuItem onClick={handleLogout}>Logout</MenuItem>
-                        </Menu>
+                        {userString !== null && (
+                            <div
+                                className={`absolute top-[-8px] right-[-6px] border rounded-full w-4 h-4 border-white ${
+                                    pathname === '/' ? 'bg-orange' : 'bg-blue '
+                                }`}
+                            >
+                                <span className="text-white text-xs ml-[0.2rem] absolute">2</span>
+                            </div>
+                        )}
                     </div>
+                    <div className="relative cursor-pointer" onClick={handelCart}>
+                        <ShoppingCartOutlinedIcon
+                            className={`w-7 h-7 ${
+                                pathname === '/' ? 'text-orange hover:text-blue' : 'text-blue hover:text-orange'
+                            }`}
+                        />
+                        {userString !== null && (
+                            <div
+                                className={`absolute top-[-8px] right-[-6px] border rounded-full w-4 h-4 border-white ${
+                                    pathname === '/' ? 'bg-orange' : 'bg-blue'
+                                }`}
+                            >
+                                <span className="text-white text-xs ml-[0.2rem] absolute">
+                                    {cartItem.items && cartItem.items.length}
+                                </span>
+                            </div>
+                        )}
+                    </div>
+
+                    <PersonOutlineOutlinedIcon
+                        className={`${
+                            pathname === '/' ? 'text-orange hover:text-blue' : 'text-blue hover:text-orange'
+                        } cursor-pointer`}
+                        fontSize="large"
+                        aria-controls={open ? 'basic-menu' : undefined}
+                        aria-haspopup="true"
+                        aria-expanded={open ? 'true' : undefined}
+                        onClick={handleClick}
+                    />
+                    <Menu
+                        id="basic-menu"
+                        anchorEl={anchorEl}
+                        open={open}
+                        onClose={handleClose}
+                        MenuListProps={{
+                            'aria-labelledby': 'basic-button',
+                        }}
+                    >
+                        <MenuItem onClick={() => router.push('/user')}>Profile</MenuItem>
+                        <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                    </Menu>
                 </div>
             </div>
-            <span
+            <div
                 className={`border-b w-[calc(100vw-128px)] ${
                     pathname === '/' ? 'border-orange' : 'border-blue'
-                } opacity-40 block mb-5`}
-            ></span>
+                } opacity-40 mb-5`}
+            ></div>
         </div>
     );
 };

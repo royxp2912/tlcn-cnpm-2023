@@ -5,6 +5,7 @@ import React, { Dispatch, useEffect, useRef, useState } from 'react';
 import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
 import { Category } from '@/types/type';
 import axios from '@/utils/axios';
+import { toast } from 'react-toastify';
 
 type Props = {
     item: Category;
@@ -49,6 +50,7 @@ const EditCate = ({ item, setLoad }: Props) => {
             },
         });
         if (data.success) {
+            toast.success('Edit Category Success');
             setLoad(true);
         }
     };
