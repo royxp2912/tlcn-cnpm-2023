@@ -11,6 +11,7 @@ import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import Image from 'next/image';
 import { Product } from '@/types/type';
+import { useRouter } from 'next/navigation';
 
 function createData(
     img: string,
@@ -27,13 +28,10 @@ type Props = {
     products: Product[];
 };
 const TableProduct = ({ products }: Props) => {
-    const rows = [
-        createData('/avt.png', 'Nike', 'Running', 'Nike', 100, 12, true),
-        createData('/avt.png', 'Nike', 'Running', 'Nike', 100, 12, false),
-        createData('/avt.png', 'Nike', 'Running', 'Nike', 100, 12, false),
-        createData('/avt.png', 'Nike', 'Running', 'Nike', 100, 12, true),
-        createData('/avt.png', 'Nike', 'Running', 'Nike', 100, 12, false),
-    ];
+    const router = useRouter();
+    const handleUpdate = (id: string) => {
+        router.push(`/warehouse/${id}`);
+    };
     return (
         <div>
             <TableContainer component={Paper}>
@@ -56,7 +54,7 @@ const TableProduct = ({ products }: Props) => {
                     <TableBody>
                         {products &&
                             products.map((product, i) => (
-                                <TableRow key={i}>
+                                <TableRow key={i} onClick={() => handleUpdate(product._id)}>
                                     <TableCell align="left">
                                         <input type="checkbox" className="w-[26px] h-[26px] " />
                                     </TableCell>

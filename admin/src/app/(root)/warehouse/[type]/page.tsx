@@ -8,15 +8,16 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/utils/store';
 import axios from '@/utils/axios';
 import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
-import { useRouter } from 'next/navigation';
+import { useParams, usePathname, useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
-import { Category } from '@/types/type';
+import { Category, Product, Variant } from '@/types/type';
 import { getAllCategory } from '@/slices/categorySlice';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { toast } from 'react-toastify';
+import { getProductById } from '@/slices/productSlice';
 
 const brands = ['Adidas', 'Nike', 'Vans', 'Balenciaga', 'Converse', 'Puma'];
 
@@ -24,22 +25,27 @@ const AddNewProduct = () => {
     const dispatch = useDispatch<AppDispatch>();
     const [image, setImage] = useState<File[]>();
     const [addVariants, setAddVariants] = useState<{}[]>([]);
-    const [variants, setVariants] = useState<{ color: string; size: string; quantity: string }[]>([]);
+    const [vars, setVars] = useState<{ color: string; size: string; quantity: string }[]>([]);
     const { categories }: { categories: Category[] } = useSelector((state: any) => state.categories);
-    const [brand, setBrand] = useState<string>('Adidas');
-    const [category, setCategory] = useState<string>('');
+    const { productDetail, variants }: { productDetail: Product; variants: Variant } = useSelector(
+        (state: any) => state.products,
+    );
+    const pathname = usePathname();
+    const [brand, setBrand] = useState<string>(pathname === '/warehouse/addnew' ? 'Adidas' : productDetail.brand);
+    const [category, setCategory] = useState<string>(
+        pathname === '/warehouse/addnew' ? '' : 'productDetail.category._id',
+    );
+    const id = pathname.split('/').pop() as string;
+    console.log(id);
+    console.log(productDetail);
     const [product, setProduct] = useState<{
         name: string;
-        category: string;
-        brand: string;
         price: number;
         desc: string;
     }>({
-        name: '',
-        category: '',
-        brand: '',
-        price: 0,
-        desc: '',
+        name: pathname === '/warehouse/addnew' ? '' : productDetail.name,
+        price: pathname === '/warehouse/addnew' ? 0 : productDetail.price,
+        desc: pathname === '/warehouse/addnew' ? '' : productDetail.desc,
     });
     const router = useRouter();
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -71,7 +77,7 @@ const AddNewProduct = () => {
     };
 
     const handleVariantChange = (index: number, field: string, value: string) => {
-        setVariants((prevVariants) => {
+        setVars((prevVariants) => {
             const updatedVariants = [...prevVariants];
             updatedVariants[index] = {
                 ...updatedVariants[index],
@@ -81,7 +87,7 @@ const AddNewProduct = () => {
         });
     };
     const handleDeleteVariant = (index: number) => {
-        setVariants((prevVariants) => {
+        setVars((prevVariants) => {
             const updatedVariants = [...prevVariants];
             updatedVariants.splice(index, 1);
             return updatedVariants;
@@ -101,7 +107,7 @@ const AddNewProduct = () => {
             image.forEach((i) => {
                 formData.append('images', i);
             });
-        formData.append('brand', product.brand);
+        formData.append('brand', brand);
         formData.append('price', product.price.toString());
         formData.append('rating', rating.toString()), formData.append('category', '6518dd3405588557052f184b');
         formData.append('variants', JSON.stringify(variants));
@@ -142,11 +148,14 @@ const AddNewProduct = () => {
 
     useEffect(() => {
         dispatchGetAllCategory();
+        dispatch(getProductById(id));
     }, []);
 
     useEffect(() => {
-        setInitialCategory();
-    }, [categories]);
+        if (pathname === '/warehouse/addnew') {
+            setInitialCategory();
+        }
+    }, [categories, pathname]);
 
     return (
         <div className="flex flex-col gap-[10px]">

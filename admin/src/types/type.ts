@@ -57,7 +57,6 @@ export type Product = {
 export type Variant = {
     listColor: string[];
     listSize: string[];
-    quantity: number;
 };
 
 export type Address = {

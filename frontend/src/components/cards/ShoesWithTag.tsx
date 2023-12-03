@@ -68,44 +68,51 @@ const ShoesWithTag = ({ listProduct }: Props) => {
                 <span>Sản phẩm đã hiển thị hết</span>
             ) : (
                 listProduct.map((product) => (
-                    <div key={product._id} className="flex gap-5 mb-5" onClick={() => handleDetail(product._id)}>
-                        <div className="bg-deal flex items-center justify-center rounded-xl w-[300px] h-[280px] relative overflow-hidden">
-                            <Image src={product.images[0]} alt="Giày" fill />
-                        </div>
-                        <div className="w-[700px]">
-                            <span className="text-2xl font-bold truncate w-full block ">{product.name}</span>
-                            <div className="flex gap-10 items-center mt-[15px] mb-[27px] flex-grow">
-                                <Rating name="read-only" value={4} readOnly />
-                                <span className="text-rv font-medium">0 reviews</span>
-                                <span className="font-medium text-blue">Submit a review</span>
+                    <div
+                        key={product._id}
+                        className="flex flex-col gap-5 mb-5"
+                        onClick={() => handleDetail(product._id)}
+                    >
+                        <div className="flex gap-5">
+                            <div className="bg-deal flex items-center justify-center rounded-xl w-[300px] h-[280px] relative overflow-hidden">
+                                <Image src={product.images[0]} alt="Giày" fill />
+                            </div>
+                            <div className="w-[700px]">
+                                <span className="text-2xl font-bold truncate w-full block ">{product.name}</span>
+                                <div className="flex gap-10 items-center mt-[15px] mb-[27px] flex-grow">
+                                    <Rating name="read-only" value={4} readOnly />
+                                    <span className="text-rv font-medium">0 reviews</span>
+                                    <span className="font-medium text-blue">Submit a review</span>
 
-                                <div className="flex-grow" />
-                                <div className="w-10 h-10 rounded-lg text-center text-3xl bg-bluev2 text-blue">
-                                    <FavoriteBorderOutlinedIcon />
+                                    <div className="flex-grow" />
+                                    <div className="w-10 h-10 rounded-lg text-center text-3xl bg-bluev2 text-blue">
+                                        <FavoriteBorderOutlinedIcon />
+                                    </div>
                                 </div>
-                            </div>
-                            <Border />
-                            <span className="text-2xl text-money my-[15px] block">${product.price}</span>
-                            <p className="text-sm text-justify mb-[11px] truncate w-full">{product.desc}</p>
-                            <Border />
-                            <div className="flex mt-[10px]">
-                                <div className="flex-grow"></div>
-                                <div
-                                    className="w-40 h-[40px] flex items-center justify-center gap-4 bg-buy text-blue rounded-md"
-                                    onClick={(e) =>
-                                        handleAddtoCart(e, {
-                                            product: product._id,
-                                            image: product.images[0],
-                                            name: product.name,
-                                            price: product.price,
-                                        })
-                                    }
-                                >
-                                    <ShoppingCartOutlinedIcon />
-                                    <span className="font-bold">Add To Cart</span>
+                                <Border />
+                                <span className="text-2xl text-money my-[15px] block">${product.price}</span>
+                                <p className="text-sm text-justify mb-[11px] truncate w-full">{product.desc}</p>
+                                <Border />
+                                <div className="flex mt-[10px]">
+                                    <div className="flex-grow"></div>
+                                    <div
+                                        className="w-40 h-[40px] flex items-center justify-center gap-4 bg-buy text-blue rounded-md"
+                                        onClick={(e) =>
+                                            handleAddtoCart(e, {
+                                                product: product._id,
+                                                image: product.images[0],
+                                                name: product.name,
+                                                price: product.price,
+                                            })
+                                        }
+                                    >
+                                        <ShoppingCartOutlinedIcon />
+                                        <span className="font-bold">Add To Cart</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        <Border />
                     </div>
                 ))
             )}
