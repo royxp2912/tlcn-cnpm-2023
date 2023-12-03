@@ -29,8 +29,6 @@ const AddAddress = ({ setOpen, update, setUpdate, addressDetail, addressId, setL
         }
     }
     const id = user?._id as string;
-    console.log(addressDetail);
-    console.log(update);
 
     const [address, setAddress] = useState<AddressLess>({
         user: id,
@@ -90,6 +88,7 @@ const AddAddress = ({ setOpen, update, setUpdate, addressDetail, addressId, setL
                 const res = await dispatch(createAddress(address));
                 if ((res.payload as { status: number }).status === 201) {
                     setOpen(false);
+                    setLoad((prev) => !prev);
                     toast.success('Add Address success');
                 }
             } catch (error) {

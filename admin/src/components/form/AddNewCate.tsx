@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { Dispatch, useRef, useState } from 'react';
 import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
 import axios from '@/utils/axios';
+import { toast } from 'react-toastify';
 
 type Props = {
     setLoad: Dispatch<React.SetStateAction<boolean>>;
@@ -41,6 +42,7 @@ const AddNewCate = ({ setLoad }: Props) => {
         if (data.success) {
             setLoad(true);
             setName('');
+            toast.success('Create Category Success');
             setImage(undefined);
         }
     };

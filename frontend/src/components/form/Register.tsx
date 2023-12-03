@@ -56,22 +56,7 @@ const Register = () => {
     const [code, setCode] = useState<string>('');
     const [email, setEmail] = useState('');
 
-    // const onSubmit = async (values: z.infer<typeof RegisterValidation>) => {
-    //     try {
-    //         if (!regis) return;
-
-    //         const res = await dispatch(signUp(values));
-
-    //         if ((res.payload as { status: number }).status === 201) {
-    //             toast.success('Register Success');
-    //             router.push('/sign-in');
-    //         } else {
-    //             toast.error((res.payload as { response: any }).response.data.message);
-    //         }
-    //     } catch (error: any) {
-    //         toast.error(error);
-    //     }
-    // };
+    const onSubmit = async (values: z.infer<typeof RegisterValidation>) => {};
 
     const handleOpen = async () => {
         const values = form.getValues();
@@ -95,9 +80,30 @@ const Register = () => {
         }
     };
 
+    useEffect(() => {
+        const submitForm = async () => {
+            try {
+                if (!regis) return;
+
+                const res = await dispatch(signUp(form.getValues()));
+
+                if ((res.payload as { status: number }).status === 201) {
+                    toast.success('Register Success');
+                    router.push('/sign-in');
+                } else {
+                    toast.error((res.payload as { response: any }).response.data.message);
+                }
+            } catch (error: any) {
+                toast.error(error);
+            }
+        };
+
+        submitForm();
+    }, [regis]);
+
     return (
         <Form {...form}>
-            <form className="space-y-8 w-[380px]">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-[380px]">
                 <FormField
                     control={form.control}
                     name="email"

@@ -223,7 +223,9 @@ const ShoesSinglePage = () => {
                                 variant.map((size: variantColor, i: number) => (
                                     <div
                                         key={i}
-                                        className="text-sm w-9 h-7 bg-size2 rounded-md flex items-center justify-center cursor-pointer"
+                                        className={`text-sm w-9 h-7  rounded-md flex items-center justify-center cursor-pointer ${
+                                            size.size === sizeQty.size ? 'bg-blue' : 'bg-size2'
+                                        }`}
                                         onClick={() => handleSizeQty(size)}
                                     >
                                         {size.size}
