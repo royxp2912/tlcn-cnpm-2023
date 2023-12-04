@@ -11,7 +11,8 @@ import { Order, User, orderStatus } from '@/types/type';
 import axios from '@/utils/axios';
 import { AppDispatch } from '@/utils/store';
 import Image from 'next/image';
-import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import React, { MouseEvent, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
@@ -34,6 +35,7 @@ const Orders = () => {
     const { orders }: { orders: Order[] } = useSelector((state: any) => state.orders);
     const dispatch = useDispatch<AppDispatch>();
     const [load, setLoad] = useState<boolean>(false);
+    const router = useRouter();
 
     useEffect(() => {
         const item: orderStatus = {
@@ -44,7 +46,9 @@ const Orders = () => {
         else dispatch(getAllOrderByUserAndStatus(item));
     }, [status, load]);
 
-    const handleReceived = async (id: string) => {
+    const handleReceived = async (e: MouseEvent<HTMLButtonElement>, id: string) => {
+        e.stopPropagation();
+
         const { data } = await axios.patch('/orders/received', {
             order: id,
         });
@@ -55,7 +59,9 @@ const Orders = () => {
             toast.error('Received order fail');
         }
     };
-    const handleReturn = async (id: string) => {
+    const handleReturn = async (e: MouseEvent<HTMLButtonElement>, id: string) => {
+        e.stopPropagation();
+
         const { data } = await axios.patch('/orders/return', {
             order: id,
         });
@@ -68,7 +74,9 @@ const Orders = () => {
             toast.error('Cancel order fail');
         }
     };
-    const handleCancel = async (id: string) => {
+    const handleCancel = async (e: MouseEvent<HTMLButtonElement>, id: string) => {
+        e.stopPropagation();
+
         const { data } = await axios.patch('/orders/cancel', {
             order: id,
         });
@@ -108,7 +116,11 @@ const Orders = () => {
                         <span className="text-xl font-bold text-center block mt-[10px]">Nothing</span>
                     ) : (
                         orders.map((order) => (
-                            <div key={order._id} className="px-[15px] pt-[15px] pb-[10px] shadow-lg">
+                            <div
+                                key={order._id}
+                                className="px-[15px] pt-[15px] pb-[10px] shadow-lg"
+                                onClick={() => router.push(`orders/${order._id}`)}
+                            >
                                 <div className="flex justify-between mb-[8px]">
                                     <h1 className="ml-[12px] font-bold text-[14px]">ID: {order._id}</h1>
                                     <h1 className="mr-[12px] font-bold text-[14px] uppercase">{order.status}</h1>
@@ -157,7 +169,7 @@ const Orders = () => {
                                             {order.status === 'Successful' || order.status === 'Delivering' ? (
                                                 <button
                                                     className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm hover:bg-opacity-100 hover:text-white"
-                                                    onClick={() => handleReceived(order._id)}
+                                                    onClick={(e) => handleReceived(e, order._id)}
                                                 >
                                                     RECEIVED
                                                 </button>
@@ -167,7 +179,7 @@ const Orders = () => {
                                             {order.status === 'Successful' ? (
                                                 <button
                                                     className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm hover:bg-opacity-100 hover:text-white"
-                                                    onClick={() => handleReturn(order._id)}
+                                                    onClick={(e) => handleReturn(e, order._id)}
                                                 >
                                                     RETURN
                                                 </button>
@@ -176,7 +188,7 @@ const Orders = () => {
                                             ) : (
                                                 <button
                                                     className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm hover:bg-opacity-100 hover:text-white"
-                                                    onClick={() => handleCancel(order._id)}
+                                                    onClick={(e) => handleCancel(e, order._id)}
                                                 >
                                                     Cancel
                                                 </button>
