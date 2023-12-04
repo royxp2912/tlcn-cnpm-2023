@@ -16,10 +16,10 @@ export const getStartAndEndOfWeek = (day, month, year) => {
     let endOfWeek = new Date(today);;
 
     if (today.getDay() === 0) {
-        startOfWeek.setDate(today.getDate() - 5);
+        startOfWeek.setDate(today.getDate() - 6);
         endOfWeek.setDate(today.getDate() + 1);
     } else {
-        startOfWeek.setDate(today.getDate() - today.getDay() + 2);
+        startOfWeek.setDate(today.getDate() - today.getDay() + 1);
         endOfWeek.setDate(startOfWeek.getDate() + 7);
     }
 
