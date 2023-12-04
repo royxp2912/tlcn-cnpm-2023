@@ -1093,6 +1093,8 @@ export const {
             const result = getStartAndEndOfWeek(day, month, year);
             const startOfWeek = result.start;
             const endOfWeek = result.end;
+            console.log("startOfWeek: ", startOfWeek);
+            console.log("endOfWeek: ", endOfWeek);
 
             const listTotal = await Order.find({ createdAt: { $gte: startOfWeek, $lte: endOfWeek } })
                 .select("total -_id");
