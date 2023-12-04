@@ -5,17 +5,19 @@ const colors: { [key: string]: string } = {
     Blue: 'bg-[#006CFF]',
     Red: 'bg-[#FC3E39]',
     Black: 'bg-[#171717]',
+    White: 'bg-white',
     Pink: 'bg-[#FF00B4]',
     Yellow: 'bg-[#FFF600]',
-    Wheat: 'bg-[#EFDFDF]',
+    Gray: 'bg-[#808080]',
 };
 const borders: { [key: string]: string } = {
     Blue: 'border-[#006CFF]',
     Red: 'border-[#FC3E39]',
     Black: 'border-[#171717]',
+    White: 'border-black',
     Pink: 'border-[#FF00B4]',
     Yellow: 'border-[#FFF600]',
-    Wheat: 'border-[#EFDFDF]',
+    Gray: 'border-[#808080]',
 };
 type Props = {
     color: string;

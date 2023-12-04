@@ -121,11 +121,12 @@ export type Order = {
     _id: string;
     items: ItemCart[];
     userID: string;
-    deliveryAddress: string;
+    deliveryAddress: Address;
     paymentMethod: string;
     total: number;
     status?: string;
     isPaid?: boolean;
+    isDelivered?: boolean;
 };
 
 export type RemoveItemCart = {

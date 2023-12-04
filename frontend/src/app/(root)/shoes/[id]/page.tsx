@@ -283,7 +283,7 @@ const ShoesSinglePage = () => {
                     </div>
                 </div>
                 {/* view about shoes info and review*/}
-                <ShoeInfo />
+                <ShoeInfo detail={productDetail.desc} />
                 {/* <Reviews /> */}
             </div>
             <div className="mt-24 flex flex-col items-center">
