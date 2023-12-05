@@ -31,22 +31,19 @@ const AddNewProduct = () => {
         (state: any) => state.products,
     );
     const pathname = usePathname();
-    const [brand, setBrand] = useState<string>(pathname === '/warehouse/addnew' ? 'Adidas' : productDetail.brand);
-    const [category, setCategory] = useState<string>(
-        pathname === '/warehouse/addnew' ? '' : 'productDetail.category._id',
-    );
-    const id = pathname.split('/').pop() as string;
-    console.log(id);
-    console.log(productDetail);
+    const [brand, setBrand] = useState<string>('Adidas');
+    const [category, setCategory] = useState<string>('');
+    const { id }: { id: string } = useParams();
     const [product, setProduct] = useState<{
         name: string;
         price: number;
         desc: string;
     }>({
-        name: pathname === '/warehouse/addnew' ? '' : productDetail.name,
-        price: pathname === '/warehouse/addnew' ? 0 : productDetail.price,
-        desc: pathname === '/warehouse/addnew' ? '' : productDetail.desc,
+        name: '',
+        price: 0,
+        desc: '',
     });
+    const [mount, setMount] = useState(false);
     const router = useRouter();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -58,13 +55,16 @@ const AddNewProduct = () => {
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files;
-        const arr = [];
+        const arr: File[] = [];
         if (files) {
             for (let i = 0; i < files.length; i++) {
-                arr.push(files[i]);
+                const file = files[i];
+                const url = URL.createObjectURL(file);
+                const fileWithUrl = new File([file], url);
+                arr.push(fileWithUrl);
             }
         }
-        setImage(arr);
+        setImage((prevImages = []) => [...prevImages, ...arr]);
     };
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         setProduct((prev) => ({
@@ -109,16 +109,16 @@ const AddNewProduct = () => {
             });
         formData.append('brand', brand);
         formData.append('price', product.price.toString());
-        formData.append('rating', rating.toString()), formData.append('category', '6518dd3405588557052f184b');
+        formData.append('rating', rating.toString()), formData.append('category', category);
         formData.append('variants', JSON.stringify(variants));
 
-        const { data } = await axios.post('/products/create', formData, {
+        const { data } = await axios.put(`/products/update/${id}`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
         });
         if (data.success) {
-            toast.success('Create Product success');
+            toast.success('Update Product success');
         }
     };
     const handleDeleteImg = (i: number) => {
@@ -148,23 +148,43 @@ const AddNewProduct = () => {
 
     useEffect(() => {
         dispatchGetAllCategory();
-        dispatch(getProductById(id));
-    }, []);
+        dispatch(getProductById(id)).then(() => {
+            setMount(true);
+        });
+    }, [id]);
 
     useEffect(() => {
-        if (pathname === '/warehouse/addnew') {
-            setInitialCategory();
+        if (mount) {
+            setProduct({
+                name: productDetail.name,
+                price: productDetail.price,
+                desc: productDetail.desc,
+            });
+            setBrand(productDetail.brand);
+            setCategory(productDetail.category._id);
+            const imageUrls = productDetail.images;
+            const imageFiles = imageUrls.map((url) => new File([url], url));
+            setImage(imageFiles);
+            const newVars = variants.listColor.map((color, index) => {
+                return {
+                    color,
+                    size: variants.listSize[index],
+                    quantity: '', // Set the initial quantity value as desired
+                };
+            });
+            console.log(newVars);
+            setVars(newVars);
+            setAddVariants(Array.from({ length: newVars.length }, () => ({})));
         }
-    }, [categories, pathname]);
-
+    }, [mount, pathname]);
     return (
         <div className="flex flex-col gap-[10px]">
             <div className="font-bold">
-                <div className="flex items-center" onClick={() => router.push('/warehouse/manage')}>
+                <div className="flex items-center cursor-pointer" onClick={() => router.push('/warehouse/manage')}>
                     <ChevronLeftRoundedIcon />
                     <span>Back</span>
                 </div>
-                <span className="block mt-2 text-center text-lg">Add New Product</span>
+                <span className="block mt-2 text-center text-lg">Update Product</span>
             </div>
             <div className="px-[60px] py-5 bg-white shadow-product mt-5">
                 <span className="font-bold text-lg">Images Of Product</span>
@@ -173,16 +193,11 @@ const AddNewProduct = () => {
                         {image &&
                             image.map((item, i) => (
                                 <div className="w-[100px] h-[100px] relative" onClick={() => handleDeleteImg(i)}>
-                                    <Image
-                                        key={i}
-                                        src={URL.createObjectURL(item)}
-                                        alt="Shoes"
-                                        fill
-                                        className="shadow-cate"
-                                    />
+                                    <Image key={i} src={item.name} alt="Shoes" fill className="shadow-cate" />
                                 </div>
                             ))}
                     </div>
+
                     <div>
                         <div
                             onClick={handleToggleInput}
@@ -197,7 +212,13 @@ const AddNewProduct = () => {
             </div>
             <div className="px-10 py-5 bg-white shadow-product flex flex-col gap-5">
                 <span className="ml-5 font-bold text-lg">Product Details</span>
-                <TextField id="name" label="Name Of Product" variant="outlined" onChange={handleChange} />
+                <TextField
+                    id="name"
+                    label="Name Of Product"
+                    variant="outlined"
+                    value={product.name}
+                    onChange={handleChange}
+                />
                 <div className="flex justify-between items-center">
                     <FormControl className="w-[320px]">
                         <InputLabel id="categoryId">Category</InputLabel>
@@ -243,6 +264,7 @@ const AddNewProduct = () => {
                         inputProps={{
                             className: 'text-orange font-bak',
                         }}
+                        value={product.price}
                         onChange={handleChange}
                     />
                 </div>
@@ -252,6 +274,7 @@ const AddNewProduct = () => {
                     variant="outlined"
                     multiline
                     rows={10}
+                    value={product.desc}
                     onChange={handleChange}
                 />
             </div>
@@ -275,6 +298,7 @@ const AddNewProduct = () => {
                                     inputProps={{
                                         className: 'w-[320px]',
                                     }}
+                                    value={index < vars.length ? vars[index].color : ''}
                                     onChange={(event) => handleVariantChange(index, 'color', event.target.value)}
                                 />
                                 <TextField
@@ -283,6 +307,7 @@ const AddNewProduct = () => {
                                     inputProps={{
                                         className: 'w-[320px]',
                                     }}
+                                    value={index < vars.length ? vars[index].size : ''}
                                     onChange={(event) => handleVariantChange(index, 'size', event.target.value)}
                                 />
                                 <TextField
@@ -291,6 +316,7 @@ const AddNewProduct = () => {
                                     inputProps={{
                                         className: 'w-[320px]',
                                     }}
+                                    value={index < vars.length ? vars[index].quantity : ''}
                                     onChange={(event) => handleVariantChange(index, 'quantity', event.target.value)}
                                 />
                             </div>
