@@ -2,6 +2,7 @@ import Product from '../models/Product.js';
 import Category from '../models/Category.js';
 import { checkedNull } from '../utils/handel_null.js';
 import { deleteAllByProID } from './comment.service.js';
+import { checkedObjectId } from '../utils/checkedOthers.js';
 import { createList, getListVarByProID, deleteListVarByProID, findProIDByColor, isColorInProduct } from './variant.service.js';
 
 export const {
@@ -13,6 +14,7 @@ export const {
     deleteById,
     getByStatus,
     findByColor,
+    updateImages,
     countByCateID,
     findByKeyword,
     getAllByCateID,
@@ -479,6 +481,27 @@ export const {
                 success: false,
                 status: err.status || 500,
                 message: err.message || 'Something went wrong in User Service !!!',
+            };
+        }
+    },
+
+    updateImages: async (proID, images) => {
+        try {
+            checkedObjectId(proID, 'Product ID');
+            const oldProduct = await Product.findByIdAndUpdate(proID, { images });
+            checkedNull(oldProduct, "Product doen't exist !!!");
+
+            return {
+                success: true,
+                status: 200,
+                message: 'Update Images Product Successful!!!',
+                data: oldProduct,
+            };
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || 'Something went wrong in Product Service !!!',
             };
         }
     },

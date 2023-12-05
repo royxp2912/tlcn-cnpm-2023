@@ -9,10 +9,11 @@ import {
     getProductHotDeal,
     findProductByColor,
     getInfoOfEachBarnd,
+    getProductByStatus,
     findProductByKeyword,
     getAllProductByCategory,
     getQuantityHotDealOfEachBarnd,
-    getProductByStatus,
+    updateImagesProduct,
 } from "../controllers/product.controller.js";
 
 const router = express.Router();
@@ -35,6 +36,7 @@ router.post("/create", uploadCloud.array("images"), createProduct);
 
 // UPDATE
 router.put("/update", updateProduct);
+router.patch("/updateImgs", uploadCloud.array("images"), updateImagesProduct);
 
 // DELETE
 router.delete("/", deleteProduct);
