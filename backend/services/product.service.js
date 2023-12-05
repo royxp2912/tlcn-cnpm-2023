@@ -13,6 +13,7 @@ export const {
     getHotDeal,
     deleteById,
     getByStatus,
+    deleteImage,
     findByColor,
     updateImages,
     countByCateID,
@@ -485,17 +486,39 @@ export const {
         }
     },
 
+    deleteImage: async (proID, image) => {
+        try {
+            checkedObjectId(proID, 'Product ID');
+            const deletedProduct = await Product.findByIdAndUpdate(proID, { $pull: { images: image } });
+            checkedNull(deletedProduct, "Product doen't exist !!!");
+
+            return {
+                success: true,
+                status: 200,
+                message: 'Delete Image Product Successful!!!',
+            };
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || 'Something went wrong in Product Service !!!',
+            };
+        }
+    },
+
     updateImages: async (proID, images) => {
         try {
             checkedObjectId(proID, 'Product ID');
-            const oldProduct = await Product.findByIdAndUpdate(proID, { images });
+            const oldProduct = await Product.findByIdAndUpdate(
+                proID,
+                { $push: { images: { $each: images } } }
+            );
             checkedNull(oldProduct, "Product doen't exist !!!");
 
             return {
                 success: true,
                 status: 200,
                 message: 'Update Images Product Successful!!!',
-                data: oldProduct,
             };
         } catch (err) {
             return {

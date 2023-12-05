@@ -14,6 +14,7 @@ import {
     getAllProductByCategory,
     getQuantityHotDealOfEachBarnd,
     updateImagesProduct,
+    deleteImageProduct,
 } from "../controllers/product.controller.js";
 
 const router = express.Router();
@@ -40,5 +41,6 @@ router.patch("/updateImgs", uploadCloud.array("images"), updateImagesProduct);
 
 // DELETE
 router.delete("/", deleteProduct);
+router.delete("/image", deleteImageProduct);
 
 export default router
