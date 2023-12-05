@@ -7,16 +7,47 @@ import {
     getAll,
     getById,
     deleteById,
-    getAllByCateID,
-    findByKeyword,
-    findByKeywordAndSort,
-    findByColor,
-    findByColorAndSort,
     getHotDeal,
+    findByColor,
+    getByStatus,
+    updateImages,
+    findByKeyword,
+    getAllByCateID,
+    findByColorAndSort,
+    findByKeywordAndSort,
     getQuantityByEachBrand,
     getQuantityHotDealByEachBrand,
-    getByStatus,
 } from '../services/product.service.js';
+
+export const updateImagesProduct = async (req, res, next) => {
+    if (!req.files) return next(createError(404, "No image changes exist !"))
+    const images = req.files.map((image) => image.path);
+    try {
+        const product = req.body.product;
+        const { success, message, data, status } = await updateImages(product, images);
+        if (!success) {
+            // Xóa tất cả các ảnh nếu update thất bại !!!
+            const listPublicId = images.map((path) => extractPublicId(path));
+            const result = await cloudinary.api.delete_resources(listPublicId);
+            if (Object.values(result.deleted)[0] === 'not_found')
+                return next(createError(404, 'Delete Image Failed !!!'));
+
+            return next(createError(status, message));
+        }
+
+        const listPublicId = data.images.map((path) => extractPublicId(path));
+        const result = await cloudinary.api.delete_resources(listPublicId);
+        if (Object.values(result.deleted)[0] === 'not_found')
+            return next(createError(404, 'Delete Image Failed !!!'));
+
+        res.status(status).send({
+            success: success,
+            message: message,
+        });
+    } catch (err) {
+        next(err);
+    }
+};
 
 export const getProductByStatus = async (req, res, next) => {
     try {

@@ -11,15 +11,6 @@ const storage = new CloudinaryStorage({
     }
 });
 
-// test
-// const storage = new CloudinaryStorage({
-//     cloudinary,
-//     allowedFormats: ['jpg', 'png', 'jpeg'],
-//     params: {
-//         folder: 'test'
-//     }
-// });
-
 const uploadCloud = multer({ storage });
 
 export default uploadCloud
