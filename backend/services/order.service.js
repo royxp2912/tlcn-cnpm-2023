@@ -293,7 +293,7 @@ export const {
             checkedObjectId(orderID, 'Order ID');
             const result = await Order.findById(orderID);
             checkedNull(result, "Order doesn't exist !!!");
-            if (result.status !== 'Delivering')
+            if (result.status !== 'Delivering' && result.status !== 'Successful')
                 return {
                     success: false,
                     status: 400,
@@ -306,7 +306,7 @@ export const {
             return {
                 success: true,
                 status: 200,
-                message: 'Return Order Successful!!!',
+                message: 'Received Order Successful!!!',
             };
         } catch (err) {
             return {

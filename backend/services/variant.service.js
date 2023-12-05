@@ -15,12 +15,13 @@ export const {
     reduceQuantity,
     checkedQuantity,
     findProIDByColor,
+    isColorInProduct,
     getListVarByProID,
     deleteListVarByProID,
     getVarByColorAndSize,
     getSizeByColorAndProID,
     getColorBySizeAndProID,
-    isColorInProduct,
+    getDetailListVarByProID,
 } = {
 
     isColorInProduct: async (proID, color) => {
@@ -350,6 +351,30 @@ export const {
                     listColor: [...new Set(listColor)],
                     listSize: [...new Set(listSize)],
                 },
+            }
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong on Variant !!!",
+            }
+        }
+    },
+
+    getDetailListVarByProID: async (proID) => {
+        try {
+            const listVariant = await Variant.find({ product: proID }).select("-createdAt -updatedAt -__v -product");
+            if (listVariant.length === 0) return {
+                success: false,
+                status: 404,
+                message: "Product doesn't exist !!!"
+            }
+
+            return {
+                success: true,
+                status: 200,
+                message: "Get List Variant Successful !!!",
+                data: listVariant,
             }
         } catch (err) {
             return {
