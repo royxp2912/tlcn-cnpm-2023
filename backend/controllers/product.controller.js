@@ -20,8 +20,9 @@ import {
 } from '../services/product.service.js';
 
 export const updateImagesProduct = async (req, res, next) => {
-    if (!req.files) return next(createError(404, "No image changes exist !"))
+    if (!req.files) return next(createError(404, 'No image changes exist !'));
     const images = req.files.map((image) => image.path);
+    console.log(images);
     try {
         const product = req.body.product;
         const { success, message, data, status } = await updateImages(product, images);
@@ -37,8 +38,7 @@ export const updateImagesProduct = async (req, res, next) => {
 
         const listPublicId = data.images.map((path) => extractPublicId(path));
         const result = await cloudinary.api.delete_resources(listPublicId);
-        if (Object.values(result.deleted)[0] === 'not_found')
-            return next(createError(404, 'Delete Image Failed !!!'));
+        if (Object.values(result.deleted)[0] === 'not_found') return next(createError(404, 'Delete Image Failed !!!'));
 
         res.status(status).send({
             success: success,
@@ -51,7 +51,7 @@ export const updateImagesProduct = async (req, res, next) => {
 
 export const getProductByStatus = async (req, res, next) => {
     try {
-        const statusProduct = req.query.status || "Available";
+        const statusProduct = req.query.status || 'Available';
         const pageSize = req.query.pageSize || 8;
         const pageNumber = req.query.pageNumber || 1;
         const { success, message, pages, data, status } = await getByStatus(statusProduct, pageSize, pageNumber);
@@ -106,7 +106,12 @@ export const findProductByColor = async (req, res, next) => {
         const pageNumber = req.query.pageNumber || 1;
 
         if (sort) {
-            const { success, message, pages, data, status } = await findByColorAndSort(color, pageSize, pageNumber, sort);
+            const { success, message, pages, data, status } = await findByColorAndSort(
+                color,
+                pageSize,
+                pageNumber,
+                sort,
+            );
             if (!success) return next(createError(status, message));
             res.status(status).json({
                 success: success,
@@ -146,7 +151,12 @@ export const findProductByKeyword = async (req, res, next) => {
         const pageNumber = req.query.pageNumber || 1;
 
         if (sort) {
-            const { success, message, pages, data, status } = await findByKeywordAndSort(keyword, pageSize, pageNumber, sort);
+            const { success, message, pages, data, status } = await findByKeywordAndSort(
+                keyword,
+                pageSize,
+                pageNumber,
+                sort,
+            );
             if (!success) return next(createError(status, message));
             res.status(status).json({
                 success: success,
@@ -235,11 +245,18 @@ export const getAllProductByCategory = async (req, res, next) => {
         const color = req.query.color;
         const brand = req.query.brand;
         const category = req.query.category;
-        const sort = req.query.sort || "new";
+        const sort = req.query.sort || 'new';
         const pageSize = req.query.pageSize || 8;
         const pageNumber = req.query.pageNumber || 1;
 
-        const { success, message, pages, data, status } = await getAllByCateID(category, color, brand, sort, pageSize, pageNumber);
+        const { success, message, pages, data, status } = await getAllByCateID(
+            category,
+            color,
+            brand,
+            sort,
+            pageSize,
+            pageNumber,
+        );
         if (!success) return next(createError(status, message));
 
         res.status(status).json({

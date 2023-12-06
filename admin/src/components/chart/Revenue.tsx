@@ -70,7 +70,7 @@ const Revenue = ({ path }: Props) => {
                         <div className="text-sm flex items-center gap-1">
                             <span>{today.percent >= 0 ? 'Increase' : 'Decrease'}</span>
                             <span className={`font-bold ${today.percent >= 0 ? 'text-[#00BE98]' : 'text-red'}`}>
-                                {today.percent >= 0 ? '+' : '-'}
+                                {today.percent >= 0 ? '+' : ''}
                                 {today.percent}%
                             </span>
                         </div>
@@ -97,7 +97,7 @@ const Revenue = ({ path }: Props) => {
                         <div className="text-sm flex items-center gap-1">
                             <span>{thisWeek.percent >= 0 ? 'Increase' : 'Decrease'}</span>
                             <span className={`font-bold ${thisWeek.percent >= 0 ? 'text-[#00BE98]' : 'text-red'}`}>
-                                {thisWeek.percent >= 0 ? '+' : '-'}
+                                {thisWeek.percent >= 0 ? '+' : ''}
                                 {thisWeek.percent}%
                             </span>
                         </div>
@@ -125,7 +125,7 @@ const Revenue = ({ path }: Props) => {
                         <div className="text-sm flex items-center gap-1">
                             <span>{thisMonth.percent >= 0 ? 'Increase' : 'Decrease'}</span>
                             <span className={`font-bold ${thisMonth.percent >= 0 ? 'text-[#00BE98]' : 'text-red'}`}>
-                                {thisMonth.percent >= 0 ? '+' : '-'}
+                                {thisMonth.percent >= 0 ? '+' : ''}
                                 {thisMonth.percent}%
                             </span>
                         </div>

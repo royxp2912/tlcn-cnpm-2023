@@ -33,6 +33,7 @@ module.exports = {
                 cate: '2px 2px 2px 0 rgba(38,38,38,0.25)',
                 cate2: '1px 1px 2px 0 rgba(38,38,38,0.2)',
                 product2: '2px 2px 4px 0 rgba(38,38,38,0.25)',
+                form: '2px 2px 2px 0 rgba(0,0,0,0.2)',
             },
             fontFamily: {
                 poppin: ['Poppins', 'sans-serif'],

@@ -13,9 +13,10 @@ const theme = createTheme({
 
 type Props = {
     setPageNum: Dispatch<SetStateAction<number>>;
+    pages: number;
 };
 
-const Pagetination = ({ setPageNum }: Props) => {
+const Pagetination = ({ setPageNum, pages }: Props) => {
     const handleChangePage = (i: number) => {
         setPageNum(i);
     };
@@ -23,7 +24,7 @@ const Pagetination = ({ setPageNum }: Props) => {
         <div className="flex justify-center shadow-product2 bg-white mt-5">
             <ThemeProvider theme={theme}>
                 <Pagination
-                    count={5}
+                    count={pages}
                     shape="rounded"
                     onChange={(_, page: number) => handleChangePage(page)}
                     color="primary"

@@ -59,6 +59,13 @@ export type Variant = {
     listSize: string[];
 };
 
+export type detailVariant = {
+    _id: string;
+    color: string;
+    size: string;
+    quantity: string;
+};
+
 export type Address = {
     _id?: string;
     user: string;

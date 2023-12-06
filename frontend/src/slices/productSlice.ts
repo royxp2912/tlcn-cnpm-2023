@@ -26,6 +26,7 @@ export const getAllProductByCateId = createAsyncThunk(
     async (category: productByCate, { rejectWithValue }) => {
         try {
             const res = await productsApi.getAllProductByCateId(category);
+            console.log(res);
             return res;
         } catch (err: any) {
             return rejectWithValue(err);
@@ -96,6 +97,7 @@ export const productSlice = createSlice({
         variants: {},
         brands: [],
         hotdeals: [],
+        pages: {},
         loading: false,
         error: null as string | null,
     },
@@ -111,6 +113,7 @@ export const productSlice = createSlice({
         builder.addCase(getAllProduct.fulfilled, (state, action) => {
             state.loading = false;
             state.products = action.payload.data.data;
+            state.pages = action.payload.data.pages;
         });
         builder.addCase(getProductById.pending, (state) => {
             state.loading = true;
@@ -134,6 +137,7 @@ export const productSlice = createSlice({
         builder.addCase(getAllProductByCateId.fulfilled, (state, action) => {
             state.loading = false;
             state.products = action.payload.data.data;
+            state.pages = action.payload.data.pages;
         });
         builder.addCase(findProductByKeyword.pending, (state) => {
             state.loading = true;
@@ -168,6 +172,7 @@ export const productSlice = createSlice({
         builder.addCase(getProductHotDeal.fulfilled, (state, action) => {
             state.loading = false;
             state.productHots = action.payload.data.data;
+            state.pages = action.payload.data.pages;
         });
         builder.addCase(getQtyOfBrand.pending, (state) => {
             state.loading = true;

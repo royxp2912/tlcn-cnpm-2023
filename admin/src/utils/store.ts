@@ -9,6 +9,7 @@ import categoryReducer from '../slices/categorySlice';
 import userReducer from '../slices/userSlice';
 import orderReducer from '../slices/orderSlice';
 import revenueReducer from '../slices/revenueSlice';
+import variantReducer from '../slices/variantSlice';
 
 const store = configureStore({
     reducer: {
@@ -19,6 +20,7 @@ const store = configureStore({
         users: userReducer,
         orders: orderReducer,
         revenue: revenueReducer,
+        variants: variantReducer,
     },
 
     middleware: (getDefaultMiddleware) =>

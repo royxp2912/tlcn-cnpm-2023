@@ -31,7 +31,12 @@ const unProp = {
 
 const ManShoes = () => {
     const { categories }: { categories: Category[] } = useSelector((state: any) => state.categories);
-    const { products, brands, hotdeals }: { products: Product[]; brands: Brand[]; hotdeals: Brand[] } = useSelector(
+    const {
+        products,
+        brands,
+        hotdeals,
+        pages,
+    }: { products: Product[]; brands: Brand[]; hotdeals: Brand[]; pages: number } = useSelector(
         (state: any) => state.products,
     );
 
@@ -87,6 +92,7 @@ const ManShoes = () => {
         };
         fetchData();
     }, [dispatch]);
+    console.log(pages);
 
     return (
         <div className="flex px-[100px] gap-10 mt-5">
@@ -113,7 +119,7 @@ const ManShoes = () => {
                 ) : (
                     <SingleSellShoe products={products.length !== 0 ? listProduct : products} {...unProp} />
                 )}
-                <Pagetination setPageNum={setPageNum} />
+                <Pagetination setPageNum={setPageNum} pages={pages} />
             </div>
         </div>
     );

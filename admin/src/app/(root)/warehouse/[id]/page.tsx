@@ -10,7 +10,7 @@ import axios from '@/utils/axios';
 import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import { useParams, usePathname, useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
-import { Category, Product, Variant } from '@/types/type';
+import { Category, Product, Variant, detailVariant } from '@/types/type';
 import { getAllCategory } from '@/slices/categorySlice';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -18,18 +18,20 @@ import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { toast } from 'react-toastify';
 import { getProductById } from '@/slices/productSlice';
-
+import { getDetailByProduct } from '@/slices/variantSlice';
 const brands = ['Adidas', 'Nike', 'Vans', 'Balenciaga', 'Converse', 'Puma'];
 
 const AddNewProduct = () => {
     const dispatch = useDispatch<AppDispatch>();
     const [image, setImage] = useState<File[]>();
+    const [upImage, setUpImage] = useState<File[]>();
     const [addVariants, setAddVariants] = useState<{}[]>([]);
-    const [vars, setVars] = useState<{ color: string; size: string; quantity: string }[]>([]);
+    const [vars, setVars] = useState<{ variant: string; color: string; size: string; quantity: string }[]>([]);
     const { categories }: { categories: Category[] } = useSelector((state: any) => state.categories);
-    const { productDetail, variants }: { productDetail: Product; variants: Variant } = useSelector(
+    const { productDetail }: { productDetail: Product; variants: Variant } = useSelector(
         (state: any) => state.products,
     );
+    const { variants }: { variants: detailVariant[] } = useSelector((state: any) => state.variants);
     const pathname = usePathname();
     const [brand, setBrand] = useState<string>('Adidas');
     const [category, setCategory] = useState<string>('');
@@ -44,6 +46,9 @@ const AddNewProduct = () => {
         desc: '',
     });
     const [mount, setMount] = useState(false);
+    const [load, setLoad] = useState(false);
+    const [open, setOpen] = useState(false);
+    const [del, setDel] = useState(false);
     const router = useRouter();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -64,6 +69,7 @@ const AddNewProduct = () => {
                 arr.push(fileWithUrl);
             }
         }
+        setUpImage((prevImages = []) => [...prevImages, ...arr]);
         setImage((prevImages = []) => [...prevImages, ...arr]);
     };
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -98,36 +104,6 @@ const AddNewProduct = () => {
             return updatedVariants;
         });
     };
-    const handleSubmit = async () => {
-        const formData = new FormData();
-        const rating = 0;
-        formData.append('name', product.name);
-        formData.append('desc', product.desc);
-        image &&
-            image.forEach((i) => {
-                formData.append('images', i);
-            });
-        formData.append('brand', brand);
-        formData.append('price', product.price.toString());
-        formData.append('rating', rating.toString()), formData.append('category', category);
-        formData.append('variants', JSON.stringify(variants));
-
-        const { data } = await axios.put(`/products/update/${id}`, formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        });
-        if (data.success) {
-            toast.success('Update Product success');
-        }
-    };
-    const handleDeleteImg = (i: number) => {
-        if (image) {
-            const newImage = [...image];
-            newImage.splice(i, 1);
-            setImage(newImage);
-        }
-    };
 
     const handleChangeCate = (event: SelectChangeEvent) => {
         setCategory(event.target.value as string);
@@ -140,18 +116,88 @@ const AddNewProduct = () => {
         dispatch(getAllCategory());
     }, [dispatch]);
 
-    const setInitialCategory = useCallback(() => {
-        if (categories && categories.length > 0) {
-            setCategory(categories[0]._id);
+    const handleUpdateImage = async () => {
+        const formData = new FormData();
+        upImage &&
+            upImage.forEach((i) => {
+                formData.append('images', i);
+            });
+        const imageValues = formData.getAll('images');
+        console.log('Key images:', imageValues);
+        console.log(id);
+        formData.append('product', id);
+        console.log('Id:', formData.get('product'));
+
+        const { data } = await axios.patch('/products/updateImgs', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        if (data.success) {
+            toast.success('Update Image Product success');
+            setMount(false);
+            setLoad((prev) => !prev);
         }
-    }, [categories]);
+    };
+
+    const handleSubmit = async () => {
+        const { data } = await axios.put(`/products/update`, {
+            product: id,
+            name: product.name,
+            price: product.price,
+            desc: product.desc,
+            category: category,
+            brand: brand,
+        });
+        if (data.success) {
+            toast.success('Update Product success');
+            setLoad((prev) => !prev);
+            setMount(false);
+        }
+    };
+    const handleUpdateVariant = async (variant: string, index: number) => {
+        const { data } = await axios.put('/variants/update', {
+            variant: variant,
+            color: vars[index].color,
+            size: vars[index].size,
+            quantity: vars[index].quantity,
+        });
+        if (data.success) {
+            toast.success('Update Variant Success');
+            setLoad((prev) => !prev);
+            setMount(false);
+        }
+    };
+
+    const handleDeleteImg = async (name: string, i: number) => {
+        if (image) {
+            const newImage = [...image];
+            if (name.includes('http')) {
+                const { data } = await axios.delete('/products/image', {
+                    params: {
+                        product: id,
+                        image: name,
+                    },
+                });
+                if (data.success) {
+                    newImage.splice(i, 1);
+                    setImage(newImage);
+                }
+                setOpen(true);
+            } else {
+                newImage.splice(i, 1);
+                setImage(newImage);
+            }
+        }
+    };
 
     useEffect(() => {
         dispatchGetAllCategory();
         dispatch(getProductById(id)).then(() => {
             setMount(true);
         });
-    }, [id]);
+        dispatch(getDetailByProduct(id));
+    }, [id, load]);
 
     useEffect(() => {
         if (mount) {
@@ -165,18 +211,18 @@ const AddNewProduct = () => {
             const imageUrls = productDetail.images;
             const imageFiles = imageUrls.map((url) => new File([url], url));
             setImage(imageFiles);
-            const newVars = variants.listColor.map((color, index) => {
+            const newVars = variants.map((item) => {
                 return {
-                    color,
-                    size: variants.listSize[index],
-                    quantity: '', // Set the initial quantity value as desired
+                    variant: item._id,
+                    color: item.color,
+                    size: item.size,
+                    quantity: item.quantity,
                 };
             });
-            console.log(newVars);
             setVars(newVars);
             setAddVariants(Array.from({ length: newVars.length }, () => ({})));
         }
-    }, [mount, pathname]);
+    }, [mount]);
     return (
         <div className="flex flex-col gap-[10px]">
             <div className="font-bold">
@@ -188,26 +234,45 @@ const AddNewProduct = () => {
             </div>
             <div className="px-[60px] py-5 bg-white shadow-product mt-5">
                 <span className="font-bold text-lg">Images Of Product</span>
-                <div className="flex gap-[10px] mt-5 justify-center">
+                <div className="flex gap-[10px] mt-5 justify-center items-center">
                     <div className="flex gap-5">
                         {image &&
                             image.map((item, i) => (
-                                <div className="w-[100px] h-[100px] relative" onClick={() => handleDeleteImg(i)}>
+                                <div
+                                    className="w-[100px] h-[100px] relative"
+                                    onClick={() => handleDeleteImg(item.name, i)}
+                                >
                                     <Image key={i} src={item.name} alt="Shoes" fill className="shadow-cate" />
                                 </div>
                             ))}
                     </div>
 
-                    <div>
-                        <div
-                            onClick={handleToggleInput}
-                            className="opacity-50 w-[100px] h-[100px] border-4 border-dashed flex flex-col items-center justify-center gap-[5px] p-[10px]"
-                        >
-                            <AddPhotoAlternateOutlinedIcon />
-                            <span className="text-center">Add Image</span>
+                    {image === undefined || image.length < 4 ? (
+                        <div>
+                            <div
+                                onClick={handleToggleInput}
+                                className="opacity-50 w-[100px] h-[100px] border-4 border-dashed flex flex-col items-center justify-center gap-[5px] p-[10px]"
+                            >
+                                <AddPhotoAlternateOutlinedIcon />
+                                <span className="text-center">Add Image</span>
+                            </div>
+                            <input type="file" hidden ref={fileInputRef} onChange={handleFileChange} multiple />
                         </div>
-                        <input type="file" hidden ref={fileInputRef} onChange={handleFileChange} multiple />
-                    </div>
+                    ) : (
+                        <div>
+                            <div className="opacity-50 w-[100px] h-[100px] border-4 border-dashed flex flex-col items-center justify-center gap-[5px] p-[10px]">
+                                <AddPhotoAlternateOutlinedIcon />
+                                <span className="text-center">Max 4 Image (Delete image for Update)</span>
+                            </div>
+                            <input type="file" hidden ref={fileInputRef} onChange={handleFileChange} multiple />
+                        </div>
+                    )}
+                    <button
+                        className="w-[100px] h-[50px] bg-blue opacity-50 text-white font-bold text-sm"
+                        onClick={handleUpdateImage}
+                    >
+                        Update Image
+                    </button>
                 </div>
             </div>
             <div className="px-10 py-5 bg-white shadow-product flex flex-col gap-5">
@@ -320,6 +385,12 @@ const AddNewProduct = () => {
                                     onChange={(event) => handleVariantChange(index, 'quantity', event.target.value)}
                                 />
                             </div>
+                            <button
+                                className="w-[100px] h-[50px] bg-blue opacity-50 text-white font-bold text-sm"
+                                onClick={() => handleUpdateVariant(vars[index].variant, index)}
+                            >
+                                Update
+                            </button>
                             <CloseOutlinedIcon className="text-red " onClick={() => handleDeleteVariant(index)} />
                         </div>
                     ))}
@@ -331,10 +402,7 @@ const AddNewProduct = () => {
                     className="w-[200px] h-[50px] bg-blue opacity-50 text-white font-bold text-sm"
                     onClick={handleSubmit}
                 >
-                    SAVE & ON SALE
-                </button>
-                <button className="w-[200px] h-[50px] bg-blue opacity-50 text-white font-bold text-sm">
-                    SAVE & HIDDEN
+                    Update Info Product
                 </button>
             </div>
         </div>
