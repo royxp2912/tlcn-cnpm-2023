@@ -1,5 +1,6 @@
 'use client';
 import Border from '@/components/shared/Border';
+import Sure from '@/components/shared/Sure';
 import UserNav from '@/components/shared/UserNav';
 import {
     cancelOrderByOrderId,
@@ -35,6 +36,9 @@ const Orders = () => {
     const { orders }: { orders: Order[] } = useSelector((state: any) => state.orders);
     const dispatch = useDispatch<AppDispatch>();
     const [load, setLoad] = useState<boolean>(false);
+    const [open, setOpen] = useState<boolean>(false);
+    const [current, setCurrent] = useState<string>('');
+    const [orderId, setOrderId] = useState<string>('');
     const router = useRouter();
 
     useEffect(() => {
@@ -49,45 +53,45 @@ const Orders = () => {
     const handleReceived = async (e: MouseEvent<HTMLButtonElement>, id: string) => {
         e.stopPropagation();
 
-        const { data } = await axios.patch('/orders/received', {
-            order: id,
-        });
-        if (data.success) {
-            toast.success('Received order success');
-            setLoad((prev) => !prev);
-        } else {
-            toast.error('Received order fail');
-        }
+        setOrderId(id);
+        setOpen(true);
+        setCurrent('Received');
+
+        // const { data } = await axios.patch('/orders/received', {
+        //     order: id,
+        // });
+        // if (data.success) {
+        //     toast.success('Received order success');
+        //     setLoad((prev) => !prev);
+        // } else {
+        //     toast.error('Received order fail');
+        // }
     };
     const handleReturn = async (e: MouseEvent<HTMLButtonElement>, id: string) => {
         e.stopPropagation();
 
-        const { data } = await axios.patch('/orders/return', {
-            order: id,
-        });
-        console.log(data);
+        setOrderId(id);
+        setOpen(true);
+        setCurrent('Return');
 
-        if (data.success) {
-            toast.success('Cancel order success');
-            setLoad((prev) => !prev);
-        } else {
-            toast.error('Cancel order fail');
-        }
+        // const { data } = await axios.patch('/orders/return', {
+        //     order: id,
+        // });
+        // console.log(data);
+
+        // if (data.success) {
+        //     toast.success('Return order success');
+        //     setLoad((prev) => !prev);
+        // } else {
+        //     toast.error('Return order fail');
+        // }
     };
     const handleCancel = async (e: MouseEvent<HTMLButtonElement>, id: string) => {
         e.stopPropagation();
 
-        const { data } = await axios.patch('/orders/cancel', {
-            order: id,
-        });
-        console.log(data);
-
-        if (data.success) {
-            toast.success('Cancel order success');
-            setLoad((prev) => !prev);
-        } else {
-            toast.error('Cancel order fail');
-        }
+        setOrderId(id);
+        setOpen(true);
+        setCurrent('Cancel');
     };
     return (
         <div className="flex px-20 mt-10 gap-5">
@@ -206,6 +210,16 @@ const Orders = () => {
                     )}
                 </div>
             </div>
+            {open && (
+                <Sure
+                    setOpen={setOpen}
+                    setLoad={setLoad}
+                    orderId={orderId}
+                    setOrderId={setOrderId}
+                    setCurrent={setCurrent}
+                    current={current}
+                />
+            )}
         </div>
     );
 };

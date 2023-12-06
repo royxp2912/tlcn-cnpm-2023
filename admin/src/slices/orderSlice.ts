@@ -129,6 +129,7 @@ export const orderSlice = createSlice({
     initialState: {
         orders: [],
         order: {},
+        pages: {},
         loading: false,
         error: null as string | null,
     },
@@ -144,6 +145,7 @@ export const orderSlice = createSlice({
         builder.addCase(getAllOrders.fulfilled, (state, action) => {
             state.loading = false;
             state.orders = action.payload.data.data;
+            state.pages = action.payload.data.pages;
         });
         builder.addCase(getAllOrderByUserId.pending, (state) => {
             state.loading = true;
@@ -167,6 +169,7 @@ export const orderSlice = createSlice({
         builder.addCase(getAllOrderByOrderStatus.fulfilled, (state, action) => {
             state.loading = false;
             state.orders = action.payload.data.data;
+            state.pages = action.payload.data.pages;
         });
         builder.addCase(getOrderByOrderId.pending, (state) => {
             state.loading = true;

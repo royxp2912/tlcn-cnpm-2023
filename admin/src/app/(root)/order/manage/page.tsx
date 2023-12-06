@@ -13,6 +13,7 @@ import axios from '@/utils/axios';
 import { toast } from 'react-toastify';
 import Pagination from '@mui/material/Pagination';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import Sure from '@/components/shared/Sure';
 
 const statuses = ['All', 'Confirming', 'Accepted', 'Delivering', 'Successful', 'Cancel', 'Return'];
 const buttons = [
@@ -36,9 +37,12 @@ const theme = createTheme({
 const OrderManage = () => {
     const [status, setStatus] = useState('All');
     const dispatch = useDispatch<AppDispatch>();
-    const { orders }: { orders: Order[] } = useSelector((state: any) => state.orders);
+    const { orders, pages }: { orders: Order[]; pages: number } = useSelector((state: any) => state.orders);
     const [load, setLoad] = useState<boolean>(false);
     const [pageNumber, setPageNumber] = useState<number>(1);
+    const [open, setOpen] = useState<boolean>(false);
+    const [current, setCurrent] = useState<string>('');
+    const [orderId, setOrderId] = useState<string>('');
 
     const [page, setPage] = useState<string>('Management');
 
@@ -60,51 +64,63 @@ const OrderManage = () => {
 
     const handleComfirm = async (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>, id: string) => {
         e.stopPropagation();
+        setOrderId(id);
+        setOpen(true);
+        setCurrent('Accepted');
 
-        const { data } = await axios.patch('/orders', {
-            order: id,
-            status: 'Accepted',
-        });
-        if (data.success) {
-            toast.success('Comfirm Success');
-            setLoad((prev) => !prev);
-        }
+        // const { data } = await axios.patch('/orders', {
+        //     order: id,
+        //     status: 'Accepted',
+        // });
+        // if (data.success) {
+        //     toast.success('Comfirm Success');
+        //     setLoad((prev) => !prev);
+        // }
     };
     const handleDelivery = async (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>, id: string) => {
         e.stopPropagation();
+        setOrderId(id);
+        setOpen(true);
+        setCurrent('Delivering');
 
-        const { data } = await axios.patch('/orders', {
-            order: id,
-            status: 'Delivering',
-        });
-        if (data.success) {
-            toast.success('Delivery Success');
-            setLoad((prev) => !prev);
-        }
+        // const { data } = await axios.patch('/orders', {
+        //     order: id,
+        //     status: 'Delivering',
+        // });
+        // if (data.success) {
+        //     toast.success('Delivery Success');
+        //     setLoad((prev) => !prev);
+        // }
     };
     const handleCancel = async (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>, id: string) => {
         e.stopPropagation();
+        setOrderId(id);
+        setOpen(true);
+        setCurrent('Cancel');
 
-        const { data } = await axios.patch('/orders', {
-            order: id,
-            status: 'Cancel',
-        });
-        if (data.success) {
-            toast.success('Cancel Success');
-            setLoad((prev) => !prev);
-        }
+        // const { data } = await axios.patch('/orders', {
+        //     order: id,
+        //     status: 'Cancel',
+        // });
+        // if (data.success) {
+        //     toast.success('Cancel Success');
+        //     setLoad((prev) => !prev);
+        // }
     };
     const handleSuccess = async (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>, id: string) => {
         e.stopPropagation();
+        setOrderId(id);
+        setOpen(true);
+        setCurrent('Successful');
 
-        const { data } = await axios.patch('/orders', {
-            order: id,
-            status: 'Successful',
-        });
-        if (data.success) {
-            toast.success('Success Success');
-            setLoad((prev) => !prev);
-        }
+        // const { data } = await axios.patch('/orders', {
+        //     order: id,
+        //     status: 'Successful',
+        // });
+        // if (data.success) {
+        //     toast.success('Success Success');
+        //     setLoad((prev) => !prev);
+        // }
     };
 
     useEffect(() => {
@@ -270,7 +286,7 @@ const OrderManage = () => {
             <div className="flex justify-center shadow-product2 bg-white">
                 <ThemeProvider theme={theme}>
                     <Pagination
-                        count={5}
+                        count={pages}
                         shape="rounded"
                         onChange={(_, page: number) => handleChangePage(page)}
                         page={pageNumber}
@@ -278,6 +294,16 @@ const OrderManage = () => {
                     />
                 </ThemeProvider>
             </div>
+            {open && (
+                <Sure
+                    setOpen={setOpen}
+                    setLoad={setLoad}
+                    orderId={orderId}
+                    setOrderId={setOrderId}
+                    setCurrent={setCurrent}
+                    current={current}
+                />
+            )}
         </div>
     );
 };

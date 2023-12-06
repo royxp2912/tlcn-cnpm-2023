@@ -111,6 +111,7 @@ export const productSlice = createSlice({
         productDetail: {},
         variants: {},
         brands: [],
+        pages: {},
         loading: false,
         error: null as string | null,
     },
@@ -126,6 +127,7 @@ export const productSlice = createSlice({
         builder.addCase(getAllProduct.fulfilled, (state, action) => {
             state.loading = false;
             state.products = action.payload.data.data;
+            state.pages = action.payload.data.pages;
         });
         builder.addCase(getProductById.pending, (state) => {
             state.loading = true;

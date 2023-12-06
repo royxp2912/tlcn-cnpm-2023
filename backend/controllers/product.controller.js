@@ -17,7 +17,28 @@ import {
     findByKeywordAndSort,
     getQuantityByEachBrand,
     getQuantityHotDealByEachBrand,
+    deleteImage,
 } from '../services/product.service.js';
+
+export const deleteImageProduct = async (req, res, next) => {
+    try {
+        const image = req.query.image;
+        const product = req.query.product;
+        const { success, message, status } = await deleteImage(product, image);
+        if (!success) return next(createError(status, message));
+
+        const publicId = extractPublicId(image);
+        const result = await cloudinary.uploader.destroy(publicId);
+        if (result.result !== 'ok') return next(createError(404, 'Xóa Hình ảnh trên Cloud thất bại!'));
+
+        res.status(status).send({
+            success: success,
+            message: message,
+        });
+    } catch (err) {
+        next(err);
+    }
+};
 
 export const updateImagesProduct = async (req, res, next) => {
     if (!req.files) return next(createError(404, 'No image changes exist !'));
@@ -35,10 +56,6 @@ export const updateImagesProduct = async (req, res, next) => {
 
             return next(createError(status, message));
         }
-
-        const listPublicId = data.images.map((path) => extractPublicId(path));
-        const result = await cloudinary.api.delete_resources(listPublicId);
-        if (Object.values(result.deleted)[0] === 'not_found') return next(createError(404, 'Delete Image Failed !!!'));
 
         res.status(status).send({
             success: success,

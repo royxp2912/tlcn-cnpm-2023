@@ -27,7 +27,7 @@ const theme = createTheme({
 const WareHouseManage = () => {
     const [active, setActive] = useState(0);
     const dispatch = useDispatch<AppDispatch>();
-    const { products }: { products: Product[] } = useSelector((state: any) => state.products);
+    const { products, pages }: { products: Product[]; pages: number } = useSelector((state: any) => state.products);
     const [pageNumber, setPageNumber] = useState<number>(1);
 
     const [page, setPage] = useState<string>('Management');
@@ -97,7 +97,7 @@ const WareHouseManage = () => {
             <div className="flex justify-center shadow-product2 bg-white">
                 <ThemeProvider theme={theme}>
                     <Pagination
-                        count={5}
+                        count={pages}
                         shape="rounded"
                         onChange={(_, page: number) => handleChangePage(page)}
                         color="primary"

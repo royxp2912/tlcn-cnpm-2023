@@ -132,7 +132,6 @@ export const updateVariantByID = async (req, res, next) => {
         res.status(status).send({
             success,
             message,
-            data,
         });
     } catch (err) {
         next(err);

@@ -122,12 +122,7 @@ const AddNewProduct = () => {
             upImage.forEach((i) => {
                 formData.append('images', i);
             });
-        const imageValues = formData.getAll('images');
-        console.log('Key images:', imageValues);
-        console.log(id);
         formData.append('product', id);
-        console.log('Id:', formData.get('product'));
-
         const { data } = await axios.patch('/products/updateImgs', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
