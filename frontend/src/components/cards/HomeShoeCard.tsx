@@ -59,7 +59,7 @@ const HomeShoeCard = () => {
                             ))}
                     </div>
                 </div>
-                <span className="text-4xl font-bold text-[#FFD6AE] mt-5 mb-2">$ {productDetail.price}</span>
+                <span className="text-4xl font-bak text-[#FFD6AE] mt-5 mb-2">$ {productDetail.price}</span>
                 <button className="w-60 h-[50px] border-2 border-orange rounded-md text-lg font-bold text-orange">
                     Buy Now
                 </button>

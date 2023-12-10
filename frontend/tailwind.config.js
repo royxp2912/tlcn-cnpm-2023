@@ -44,6 +44,7 @@ module.exports = {
                 black: '#262626',
                 bluev4: '#71BDFF',
                 red: '#FF4252',
+                border: '#E9E9E9',
             },
             boxShadow: {
                 form: '2px 2px 2px 0 rgba(0,0,0,0.2)',
@@ -61,6 +62,12 @@ module.exports = {
             animation: {
                 'accordion-down': 'accordion-down 0.2s ease-out',
                 'accordion-up': 'accordion-up 0.2s ease-out',
+            },
+            fontFamily: {
+                poppin: ['Poppins', 'sans-serif'],
+                birsmark: ['Bismarck', 'sans-serif'],
+                fb: ['Agency FB', 'sans-serif'],
+                bak: ['Bakbak One', 'sans-serif'],
             },
         },
     },

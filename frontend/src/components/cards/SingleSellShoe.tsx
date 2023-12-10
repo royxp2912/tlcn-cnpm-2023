@@ -132,9 +132,9 @@ const SingleSellShoe = ({
                           />
                         )} */}
                                     </div>
-                                    <h1 className="font-bold text-lg truncate w-full">{product.name}</h1>
+                                    <h1 className="font-bold text-lg text-center truncate w-full">{product.name}</h1>
                                     <Rating name="read-only" value={product.rating} readOnly />
-                                    <span className="font-bold text-money">${product.price}</span>
+                                    <span className="font-bak text-money ">${product.price}</span>
                                     <div className="w-full flex items-center justify-between text-gray font-bold">
                                         <span>Sold</span>
                                         <span>{product.sold}</span>
@@ -179,9 +179,9 @@ const SingleSellShoe = ({
                           />
                         )} */}
                                     </div>
-                                    <h1 className="font-bold text-lg truncate w-full">{product.name}</h1>
+                                    <h1 className="font-bold text-lg text-center truncate w-full">{product.name}</h1>
                                     <Rating name="read-only" value={product.rating} readOnly />
-                                    <span className="font-bold text-money">${product.price}</span>
+                                    <span className="font-bak text-money">${product.price}</span>
                                     <div className="w-full flex items-center justify-between text-gray font-bold">
                                         <span>Sold</span>
                                         <span>{product.sold}</span>
@@ -236,7 +236,7 @@ const SingleSellShoe = ({
                                   <p className="font-bold text-lg text-center truncate w-full">{product.name}</p>
 
                                   <Rating name="read-only" value={product.rating} readOnly />
-                                  <span className="font-bold text-money">${product.price}</span>
+                                  <span className="font-bak text-money">${product.price}</span>
                                   <div className="w-full flex items-center justify-between text-gray font-bold">
                                       <span>Sold</span>
                                       <span>{product.sold}</span>

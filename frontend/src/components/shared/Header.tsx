@@ -97,13 +97,22 @@ const Header = () => {
     return (
         <div className={`${pathname === '/' ? 'bg-bg' : 'bg-white'} flex flex-col items-center`}>
             <div className=" flex items-center justify-between px-20 pt-6 pb-5 w-full">
-                <div>
-                    <Image
-                        src={pathname === '/' ? '/search.png' : '/search2.png'}
-                        alt="Search"
-                        width={24}
-                        height={24}
-                    />
+                <div className="flex items-center gap-5">
+                    <div
+                        className={`text-5xl flex items-center gap-1 ${pathname === '/' ? 'text-orange' : 'text-blue'}`}
+                    >
+                        <span className="font-birsmark scale-x-[-1]">P</span>
+                        <span className="font-fb">&</span>
+                        <span className="font-birsmark">P</span>
+                    </div>
+                    <div>
+                        <Image
+                            src={pathname === '/' ? '/search.png' : '/search2.png'}
+                            alt="Search"
+                            width={24}
+                            height={24}
+                        />
+                    </div>
                 </div>
 
                 <div className="flex items-center gap-8">

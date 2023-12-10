@@ -22,6 +22,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '@/utils/store';
 import { getUser, updateUser } from '@/slices/userSlice';
 import { DateValidationError, PickerChangeHandlerContext } from '@mui/x-date-pickers';
+import Border from '@/components/shared/Border';
 
 const unProp = {
     setRegis: () => {},
@@ -219,7 +220,7 @@ const Profile = () => {
                             </div>
                             <input type="file" hidden ref={fileInputRef} onChange={handleFileChange} multiple />
                         </div>
-                        <div>viền xanh</div>
+                        <div className="h-full w-[1px] border border-blue">{/* <Border /> */}</div>
                         <div className="w-full flex flex-col gap-[50px] ml-[100px] font-medium ">
                             <div className="flex items-center gap-[50px]">
                                 <span className="block w-[100px]">Full name</span>

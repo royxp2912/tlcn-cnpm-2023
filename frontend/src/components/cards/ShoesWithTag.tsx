@@ -90,7 +90,7 @@ const ShoesWithTag = ({ listProduct }: Props) => {
                                     </div>
                                 </div>
                                 <Border />
-                                <span className="text-2xl text-money my-[15px] block">${product.price}</span>
+                                <span className="text-2xl text-money font-bak my-[15px] block">${product.price}</span>
                                 <p className="text-sm text-justify mb-[11px] truncate w-full">{product.desc}</p>
                                 <Border />
                                 <div className="flex mt-[10px]">

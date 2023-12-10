@@ -192,7 +192,7 @@ const ShoesSinglePage = () => {
                         <span className="text-blue cursor-pointer">Submit a review</span>
                     </div>
                     <BorderBlack />
-                    <span className="text-3xl text-money font-bold mt-[25px] mb-[25px] block">
+                    <span className="text-3xl text-money font-bak mt-[25px] mb-[25px] block">
                         ${productDetail.price}
                     </span>
                     <span className="font-medium mb-[25px] block">free shipping</span>
@@ -242,7 +242,7 @@ const ShoesSinglePage = () => {
                     <div className="flex justify-between mt-5">
                         <div className="flex h-[50px] text-xl font-bold">
                             <span
-                                className="w-11 flex items-center justify-center bg-[#F6F7F8] rounded-tl-md rounded-bl-md text-blue cursor-pointer"
+                                className="w-11 flex items-center justify-center bg-[#F6F7F8] rounded-tl-md rounded-bl-md text-blue cursor-pointer hover:bg-blue hover:text-white"
                                 onClick={handleDesc}
                             >
                                 -
@@ -251,7 +251,7 @@ const ShoesSinglePage = () => {
                                 {quantity}
                             </span>
                             <span
-                                className="w-11 flex items-center justify-center bg-[#F6F7F8] rounded-tr-md rounded-br-md text-blue cursor-pointer"
+                                className="w-11 flex items-center justify-center bg-[#F6F7F8] rounded-tr-md rounded-br-md text-blue cursor-pointer hover:bg-blue hover:text-white"
                                 onClick={handleInsc}
                             >
                                 +

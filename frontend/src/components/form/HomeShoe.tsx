@@ -113,7 +113,7 @@ const HomeShoe = () => {
                                     <div className="flex items-center justify-between">
                                         <div className="flex flex-col">
                                             <Rating size="small" name="read-only" value={productHot.rating} readOnly />
-                                            <span className="text-money font-semibold">$ {productHot.price}</span>
+                                            <span className="text-money font-bak">$ {productHot.price}</span>
                                         </div>
                                         <FavoriteBorderOutlinedIcon className="w-5 h-5 text-orange" />
                                     </div>

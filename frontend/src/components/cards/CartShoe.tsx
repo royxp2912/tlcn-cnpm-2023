@@ -16,6 +16,7 @@ import { AppDispatch } from '@/utils/store';
 import { removeItemFromCartByUserId } from '@/slices/cartSlice';
 import { toast } from 'react-toastify';
 import { getProductById } from '@/slices/productSlice';
+import { useRouter } from 'next/navigation';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -85,6 +86,8 @@ const CartShoe = ({
     const { variants } = useSelector((state: any) => state.products) as {
         variants: Variant[];
     };
+
+    const router = useRouter();
 
     const userString = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
     let user: User | null = null;
@@ -243,7 +246,8 @@ const CartShoe = ({
                                         alt=" Ảnh"
                                         width={120}
                                         height={120}
-                                        className="bg-bg_sell rounded-lg"
+                                        className="bg-bg_sell rounded-lg cursor-pointer"
+                                        onClick={() => router.push(`/shoes/${item.product}`)}
                                     />
                                     {item.name}
                                 </TableCell>
@@ -271,6 +275,7 @@ const CartShoe = ({
                                 <TableCell
                                     align="center"
                                     onClick={() => handleChange(item.product, item.color, item.size, item.quantity)}
+                                    className="cursor-pointer hover:text-blue"
                                 >
                                     Change
                                 </TableCell>
