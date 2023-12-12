@@ -16,7 +16,7 @@ import { toast } from 'react-toastify';
 
 const unProps = {
     update: false,
-    setUpdate: () => {},
+    setUpdate: () => { },
     addressDetail: {
         _id: '',
         user: '',
@@ -130,7 +130,7 @@ const Order = () => {
                     {address.length === 0 ? (
                         <button
                             className="w-[120px] h-10 bg-blue bg-opacity-50 font-bold text-sm text-white hover:bg-opacity-100"
-                            onClick={() => setAdd(true)}
+                            onClick={() => setOpen(true)}
                         >
                             Add New
                         </button>
@@ -213,17 +213,15 @@ const Order = () => {
                 <span className="text-lg">Payment Method</span>
                 <button
                     onClick={() => setPay('VNPAY')}
-                    className={`w-[200px] h-10 text-white text-sm bg-blue ${
-                        pay === 'VNPAY' ? 'opacity-100' : 'opacity-50'
-                    }  hover:opacity-100`}
+                    className={`w-[200px] h-10 text-white text-sm bg-blue ${pay === 'VNPAY' ? 'opacity-100' : 'opacity-50'
+                        }  hover:opacity-100`}
                 >
                     VNPAY
                 </button>
                 <button
                     onClick={() => setPay('COD')}
-                    className={`w-[200px] h-10 text-white text-sm bg-blue ${
-                        pay === 'COD' ? 'opacity-100' : 'opacity-50'
-                    } hover:opacity-100`}
+                    className={`w-[200px] h-10 text-white text-sm bg-blue ${pay === 'COD' ? 'opacity-100' : 'opacity-50'
+                        } hover:opacity-100`}
                 >
                     COD
                 </button>
