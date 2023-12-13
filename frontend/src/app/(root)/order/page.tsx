@@ -16,7 +16,7 @@ import { toast } from 'react-toastify';
 
 const unProps = {
     update: false,
-    setUpdate: () => {},
+    setUpdate: () => { },
     addressDetail: {
         _id: '',
         user: '',
@@ -217,17 +217,15 @@ const Order = () => {
                 <span className="text-lg">Payment Method</span>
                 <button
                     onClick={() => setPay('VNPAY')}
-                    className={`w-[200px] h-10 text-white text-sm bg-blue ${
-                        pay === 'VNPAY' ? 'opacity-100' : 'opacity-50'
-                    }  hover:opacity-100`}
+                    className={`w-[200px] h-10 text-white text-sm bg-blue ${pay === 'VNPAY' ? 'opacity-100' : 'opacity-50'
+                        }  hover:opacity-100`}
                 >
                     VNPAY
                 </button>
                 <button
                     onClick={() => setPay('COD')}
-                    className={`w-[200px] h-10 text-white text-sm bg-blue ${
-                        pay === 'COD' ? 'opacity-100' : 'opacity-50'
-                    } hover:opacity-100`}
+                    className={`w-[200px] h-10 text-white text-sm bg-blue ${pay === 'COD' ? 'opacity-100' : 'opacity-50'
+                        } hover:opacity-100`}
                 >
                     COD
                 </button>

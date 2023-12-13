@@ -15,6 +15,8 @@ import {
     getQuantityHotDealOfEachBarnd,
     updateImagesProduct,
     deleteImageProduct,
+    hideProduct,
+    unHideProduct,
 } from "../controllers/product.controller.js";
 
 const router = express.Router();
@@ -37,6 +39,8 @@ router.post("/create", uploadCloud.array("images"), createProduct);
 
 // UPDATE
 router.put("/update", updateProduct);
+router.patch("/hide", hideProduct);
+router.patch("/unHide", unHideProduct);
 router.patch("/updateImgs", uploadCloud.array("images"), updateImagesProduct);
 
 // DELETE

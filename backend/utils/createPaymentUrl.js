@@ -35,7 +35,7 @@ const createPaymentUrl = (req) => {
     let vnpUrl = process.env.VNP_URL;
     let returnUrl = process.env.VNP_RETURNURL;
     let orderId = moment(date).format('DDHHmmss');
-    let amount = req.body.amount;
+    let amount = req.body.amount * 24000;
     let bankCode = req.body.bankCode;
 
     let locale = req.body.language;

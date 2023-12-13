@@ -6,6 +6,8 @@ import { checkedObjectId } from '../utils/checkedOthers.js';
 import { createList, getListVarByProID, deleteListVarByProID, findProIDByColor, isColorInProduct } from './variant.service.js';
 
 export const {
+    hide,
+    unHide,
     create,
     getAll,
     update,
@@ -496,6 +498,52 @@ export const {
                 success: true,
                 status: 200,
                 message: 'Delete Image Product Successful!!!',
+            };
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || 'Something went wrong in Product Service !!!',
+            };
+        }
+    },
+
+    unHide: async (proID) => {
+        try {
+            checkedObjectId(proID, 'Product ID');
+            const oldProduct = await Product.findByIdAndUpdate(
+                proID,
+                { $set: { status: "Available" } }
+            );
+            checkedNull(oldProduct, "Product doen't exist !!!");
+
+            return {
+                success: true,
+                status: 200,
+                message: 'UnHide Product Successful!!!',
+            };
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || 'Something went wrong in Product Service !!!',
+            };
+        }
+    },
+
+    hide: async (proID) => {
+        try {
+            checkedObjectId(proID, 'Product ID');
+            const oldProduct = await Product.findByIdAndUpdate(
+                proID,
+                { $set: { status: "Hide" } }
+            );
+            checkedNull(oldProduct, "Product doen't exist !!!");
+
+            return {
+                success: true,
+                status: 200,
+                message: 'Hide Product Successful!!!',
             };
         } catch (err) {
             return {

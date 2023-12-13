@@ -18,7 +18,39 @@ import {
     getQuantityByEachBrand,
     getQuantityHotDealByEachBrand,
     deleteImage,
+    hide,
+    unHide,
 } from '../services/product.service.js';
+
+export const unHideProduct = async (req, res, next) => {
+    try {
+        const product = req.query.product;
+        const { success, message, status } = await unHide(product);
+        if (!success) return next(createError(status, message));
+
+        res.status(status).send({
+            success: success,
+            message: message,
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const hideProduct = async (req, res, next) => {
+    try {
+        const product = req.query.product;
+        const { success, message, status } = await hide(product);
+        if (!success) return next(createError(status, message));
+
+        res.status(status).send({
+            success: success,
+            message: message,
+        });
+    } catch (err) {
+        next(err);
+    }
+};
 
 export const deleteImageProduct = async (req, res, next) => {
     try {
