@@ -186,7 +186,6 @@ export const {
                             .select('-status -createdAt -updatedAt -__v'),
                     ),
                 );
-
                 limitResult = result
                     .slice((pageNumber - 1) * pageSize, pageNumber * pageSize)
                     .sort((a, b) => b.rating - a.rating);
@@ -197,7 +196,7 @@ export const {
                     listProduct.map((pro) =>
                         Product.findById(pro.product)
                             .populate({ path: 'category', select: 'name' })
-                            .select('-status -createdAt -updatedAt -__v'),
+                            .select('-status -createdAt -updatedAt -__v')
                     ),
                 );
 
@@ -221,12 +220,14 @@ export const {
             }
 
             if (!limitResult) return false;
+            const final = await Promise.all(limitResult.map(item => isStock(item._id)))
+
             return {
                 success: true,
                 status: 200,
                 message: 'Find Successful !!!',
                 pages: Math.ceil(listProduct.length / pageSize),
-                data: limitResult,
+                data: final,
             };
         } catch (err) {
             return {
@@ -250,6 +251,7 @@ export const {
             );
 
             const limitResult = result.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+            const final = await Promise.all(limitResult.map(item => isStock(item._id)))
 
             if (!result) return false;
             return {
@@ -257,7 +259,7 @@ export const {
                 status: 200,
                 message: 'Find Product By Color Successful !!!',
                 pages: Math.ceil(listProduct.length / pageSize),
-                data: limitResult,
+                data: final,
             };
         } catch (err) {
             return {
@@ -281,8 +283,7 @@ export const {
                             { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
                         ],
                     })
-                        .populate({ path: 'category', select: 'name' })
-                        .select('-status -createdAt -updatedAt -__v')
+                        .select('_id')
                         .sort({ price: -1 });
                 }
 
@@ -295,8 +296,7 @@ export const {
                             { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
                         ],
                     })
-                        .populate({ path: 'category', select: 'name' })
-                        .select('-status -createdAt -updatedAt -__v')
+                        .select('_id')
                         .sort({ price: 1 });
                 }
 
@@ -309,8 +309,7 @@ export const {
                             { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
                         ],
                     })
-                        .populate({ path: 'category', select: 'name' })
-                        .select('-status -createdAt -updatedAt -__v')
+                        .select('_id')
                         .sort({ rating: -1 });
                 }
 
@@ -323,8 +322,7 @@ export const {
                             { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
                         ],
                     })
-                        .populate({ path: 'category', select: 'name' })
-                        .select('-status -createdAt -updatedAt -__v')
+                        .select('_id')
                         .sort({ rating: 1 });
                 }
 
@@ -337,8 +335,7 @@ export const {
                             { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
                         ],
                     })
-                        .populate({ path: 'category', select: 'name' })
-                        .select('-status -createdAt -updatedAt -__v')
+                        .select('_id')
                         .sort({ sold: -1 });
                 }
             } else {
@@ -353,8 +350,7 @@ export const {
                             { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
                         ],
                     })
-                        .populate({ path: 'category', select: 'name' })
-                        .select('-status -createdAt -updatedAt -__v')
+                        .select('_id')
                         .sort({ price: -1 });
                 }
 
@@ -369,8 +365,7 @@ export const {
                             { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
                         ],
                     })
-                        .populate({ path: 'category', select: 'name' })
-                        .select('-status -createdAt -updatedAt -__v')
+                        .select('_id')
                         .sort({ price: 1 });
                 }
 
@@ -385,8 +380,7 @@ export const {
                             { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
                         ],
                     })
-                        .populate({ path: 'category', select: 'name' })
-                        .select('-status -createdAt -updatedAt -__v')
+                        .select('_id')
                         .sort({ rating: -1 });
                 }
 
@@ -401,8 +395,7 @@ export const {
                             { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
                         ],
                     })
-                        .populate({ path: 'category', select: 'name' })
-                        .select('-status -createdAt -updatedAt -__v')
+                        .select('_id')
                         .sort({ rating: 1 });
                 }
 
@@ -417,20 +410,21 @@ export const {
                             { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
                         ],
                     })
-                        .populate({ path: 'category', select: 'name' })
-                        .select('-status -createdAt -updatedAt -__v')
+                        .select('_id')
                         .sort({ sold: -1 });
                 }
             }
 
             if (!result) return false;
             const final = result.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+            const finalResult = await Promise.all(final.map(item => isStock(item._id)));
+
             return {
                 success: true,
                 status: 200,
                 message: 'Find Product By Keyword Successful !!!',
                 pages: Math.ceil(result.length / pageSize),
-                data: final,
+                data: finalResult,
             };
         } catch (err) {
             return {
@@ -454,7 +448,7 @@ export const {
                     ],
                 })
                     .populate({ path: 'category', select: 'name' })
-                    .select('-status -createdAt -updatedAt -__v');
+                    .select('_id');
             } else {
                 result = await Product.find({
                     $or: [
@@ -467,17 +461,18 @@ export const {
                     ],
                 })
                     .populate({ path: 'category', select: 'name' })
-                    .select('-status -createdAt -updatedAt -__v');
+                    .select('_id');
             }
 
             if (!result) return false;
             const final = result.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+            const finalResult = await Promise.all(final.map(item => isStock(item._id)));
             return {
                 success: true,
                 status: 200,
                 message: 'Find Product By Keyword Successful !!!',
                 pages: Math.ceil(result.length / pageSize),
-                data: final,
+                data: finalResult,
             };
         } catch (err) {
             return {
@@ -692,16 +687,17 @@ export const {
             const listProduct = await Product.find()
                 .limit(pageSize)
                 .skip(pageSize * (pageNumber - 1))
-                .populate({ path: 'category', select: 'name' })
-                .select('-createdAt -updatedAt -__v')
+                .select('_id')
                 .sort({ sold: -1 });
+
+            const result = await Promise.all(listProduct.map(item => isStock(item._id)));
 
             return {
                 success: true,
                 status: 200,
                 message: 'Get All Product Hot Deal Successful!!!',
                 pages: Math.ceil(all.length / pageSize),
-                data: checkedNull(listProduct, "Resource doesn't exist !!!"),
+                data: checkedNull(result, "Resource doesn't exist !!!"),
             };
         } catch (err) {
             return {
@@ -715,13 +711,6 @@ export const {
     getAll: async (pageSize, pageNumber) => {
         try {
             const all = await Product.find();
-            // const listProduct = await Product.find()
-            //     .limit(pageSize)
-            //     .skip(pageSize * (pageNumber - 1))
-            //     .populate({ path: 'category', select: 'name' })
-            //     .select('-createdAt -updatedAt -__v')
-            //     .sort({ createdAt: -1 });
-
             const listProduct = await Product.find()
                 .limit(pageSize)
                 .skip(pageSize * (pageNumber - 1))
