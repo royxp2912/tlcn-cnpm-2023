@@ -110,7 +110,13 @@ const AddNewProduct = () => {
             },
         });
         if (data.success) {
-            toast.success('Create Product success');
+            toast.success('Create Product success', {
+                onClose: () => {
+                    setTimeout(() => {
+                        router.push('/warehouse/manage');
+                    }, 3000);
+                },
+            });
         }
     };
     const handleDeleteImg = (i: number) => {

@@ -22,6 +22,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useRouter } from 'next/navigation';
+import TypeSure from '@/components/shared/TypeSure';
 
 const UserManage = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -34,9 +35,107 @@ const UserManage = () => {
         setPage(event.target.value as string);
         router.push('/users');
     };
+
+    //Lock and Delete
+    const [open, setOpen] = useState<boolean>(false);
+    const [action, setAction] = useState<string>('');
+    const [id, setId] = useState<string>('');
+    const [load, setLoad] = useState<boolean>(false);
+
+    const handleLock = (id: string) => {
+        setOpen(true);
+        setAction('Lock');
+        setId(id);
+    };
+
+    const handleUnLock = (id: string) => {
+        setOpen(true);
+        setAction('UnLock');
+        setId(id);
+    };
+    const handleDelete = (id: string) => {
+        setOpen(true);
+        setAction('Delete');
+        setId(id);
+    };
+
+    //Check
+    const [checkedAll, setCheckedAll] = useState(false);
+    const initialCheckedItems = (users ?? []).reduce((acc, item) => {
+        acc[item._id] = false;
+        return acc;
+    }, {} as { [key: string]: boolean });
+
+    const [checkedItems, setCheckedItems] = React.useState<{ [key: string]: boolean }>(initialCheckedItems);
+
+    const handleCheckedAll = async () => {
+        setCheckedAll((prev) => !prev);
+
+        if (!checkedAll) {
+            const updatedCheckedItems: { [key: string]: boolean } = {};
+            for (const item of users) {
+                updatedCheckedItems[item._id] = true;
+            }
+            localStorage.setItem('tickUser', JSON.stringify(users));
+            setCheckedItems(updatedCheckedItems);
+        } else {
+            const updatedCheckedItems: { [key: string]: boolean } = {};
+            for (const item of users) {
+                updatedCheckedItems[item._id] = false;
+            }
+            localStorage.setItem('tickUser', '');
+            setCheckedItems(updatedCheckedItems);
+        }
+    };
+
+    const handleChecked = (userId: string) => {
+        setCheckedItems((prevState) => {
+            const newState = {
+                ...prevState,
+                [userId]: !prevState[userId],
+            };
+
+            if (newState[userId]) {
+                const storedItems = localStorage.getItem('tickUser');
+                let storedItemsArray: User[] = [];
+
+                if (storedItems) {
+                    storedItemsArray = JSON.parse(storedItems);
+                }
+
+                const selectedItem = users.find((item) => item._id === userId);
+
+                if (selectedItem) {
+                    storedItemsArray = storedItemsArray.filter((item) => item._id !== userId);
+                    storedItemsArray.push(selectedItem);
+                    localStorage.setItem('tickUser', JSON.stringify(storedItemsArray));
+                }
+            } else {
+                const storedItems = localStorage.getItem('tickUser');
+                let storedItemsArray: User[] = [];
+
+                if (storedItems) {
+                    storedItemsArray = JSON.parse(storedItems);
+                    storedItemsArray = storedItemsArray.filter((item) => item._id !== userId);
+                    localStorage.setItem('tickUser', JSON.stringify(storedItemsArray));
+                }
+            }
+            return newState;
+        });
+    };
+
+    useEffect(() => {
+        let allChecked = false;
+        if (Object.keys(checkedItems).length !== 0) {
+            allChecked = Object.values(checkedItems).every((value) => value === true);
+        }
+        setCheckedAll(allChecked);
+    }, [checkedItems]);
+
     useEffect(() => {
         dispatch(getAllUser());
-    }, [dispatch]);
+        localStorage.setItem('tickUser', '');
+    }, [dispatch, load]);
     return (
         <div className="flex flex-col gap-[10px]">
             <FormControl className="w-[150px]">
@@ -54,7 +153,12 @@ const UserManage = () => {
                 </Select>
             </FormControl>
             <div className="flex gap-5 items-center ml-[15px]">
-                <input type="checkbox" className="w-[26px] h-[26px] border-[#D9D9D9]" />
+                <input
+                    type="checkbox"
+                    checked={checkedAll}
+                    onChange={handleCheckedAll}
+                    className="w-[26px] h-[26px] border-[#D9D9D9]"
+                />
                 <button className="h-[40px] w-[100px] font-medium text-sm bg-blue bg-opacity-60 text-white rounded-lg">
                     Select All
                 </button>
@@ -71,7 +175,12 @@ const UserManage = () => {
                         <TableHead className="mb-[10px]">
                             <TableRow>
                                 <TableCell align="left">
-                                    <input type="checkbox" className="w-[26px] h-[26px] " />
+                                    <input
+                                        type="checkbox"
+                                        className="w-[26px] h-[26px] "
+                                        checked={checkedAll}
+                                        onChange={handleCheckedAll}
+                                    />
                                 </TableCell>
                                 <TableCell align="center">STT</TableCell>
                                 <TableCell align="center">Full Name</TableCell>
@@ -87,27 +196,45 @@ const UserManage = () => {
                             {users.map((item, i) => (
                                 <TableRow key={i}>
                                     <TableCell align="left">
-                                        <input type="checkbox" className="w-[26px] h-[26px] " />
+                                        <input
+                                            type="checkbox"
+                                            className="w-[26px] h-[26px] "
+                                            checked={checkedAll ? checkedAll : checkedItems[item._id]}
+                                            onChange={() => handleChecked(item._id)}
+                                        />
                                     </TableCell>
                                     <TableCell align="center">{i + 1}</TableCell>
                                     <TableCell align="center">{item.fullName}</TableCell>
                                     <TableCell align="center">{item.email}</TableCell>
                                     <TableCell
+                                        className={`${item.gender === 'Male' ? 'text-blue' : 'text-pink'}`}
                                         align="center"
-                                        className={`${item.gender === 'male' ? 'text-blue' : 'text-pink'}`}
                                     >
-                                        {item.gender === 'male' ? <MaleRoundedIcon /> : <FemaleRoundedIcon />}
+                                        {item.gender === 'Male' ? <MaleRoundedIcon /> : <FemaleRoundedIcon />}
                                     </TableCell>
-                                    <TableCell align="center">${}</TableCell>
+                                    <TableCell align="center">${item.spent}</TableCell>
                                     <TableCell align="center">{item.role}</TableCell>
                                     <TableCell
                                         align="center"
                                         className={`${item.status !== 'Available' ? 'text-red' : 'text-green'}`}
                                     >
-                                        {item.status !== 'Available' ? <LockRoundedIcon /> : <LockOpenRoundedIcon />}
+                                        {item.status !== 'Available' ? (
+                                            <LockRoundedIcon
+                                                onClick={() => handleUnLock(item._id)}
+                                                className="cursor-pointer hover:text-green"
+                                            />
+                                        ) : (
+                                            <LockOpenRoundedIcon
+                                                onClick={() => handleLock(item._id)}
+                                                className="cursor-pointer hover:text-red"
+                                            />
+                                        )}
                                     </TableCell>
                                     <TableCell align="center">
-                                        <CloseRoundedIcon className="text-red hover:opacity-60" />
+                                        <CloseRoundedIcon
+                                            onClick={() => handleDelete(item._id)}
+                                            className="text-red cursor-pointer hover:opacity-60"
+                                        />
                                     </TableCell>
                                 </TableRow>
                             ))}
@@ -115,6 +242,16 @@ const UserManage = () => {
                     </Table>
                 </TableContainer>
             </div>
+            {open && (
+                <TypeSure
+                    setOpen={setOpen}
+                    setAction={setAction}
+                    action={action}
+                    setId={setId}
+                    id={id}
+                    setLoad={setLoad}
+                />
+            )}
         </div>
     );
 };

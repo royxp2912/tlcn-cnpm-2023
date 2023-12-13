@@ -20,6 +20,7 @@ export type User = {
     birthDay: string;
     phone: string;
     avatar: string;
+    spent: number;
     role: string;
     status: string;
 };
@@ -52,6 +53,11 @@ export type Product = {
     sold?: number;
     status?: string;
     variant: Variant;
+};
+
+export type ProductByStatus = {
+    status: string;
+    pageNumber: number;
 };
 
 export type Variant = {

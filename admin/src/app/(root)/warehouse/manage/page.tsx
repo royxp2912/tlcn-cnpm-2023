@@ -1,6 +1,6 @@
 'use client';
 import TableProduct from '@/components/shared/TableProduct';
-import { getAllProduct } from '@/slices/productSlice';
+import { getAllProduct, getAllProductByStatus } from '@/slices/productSlice';
 import { Product } from '@/types/type';
 import { AppDispatch } from '@/utils/store';
 import React, { useEffect, useState } from 'react';
@@ -11,8 +11,10 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useRouter } from 'next/navigation';
 import Pagination from '@mui/material/Pagination';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import TypeSure from '@/components/shared/TypeSure';
 
 const nav = ['All', 'on sale', 'hidden', 'out of stock'];
+const status = ['All', 'Available', 'Hidden', 'outOfStock'];
 
 const buttons = ['Select All', 'Hide All', 'Hide Selected', 'On Sale All', 'On Sale Selected'];
 
@@ -32,6 +34,12 @@ const WareHouseManage = () => {
 
     const [page, setPage] = useState<string>('Management');
 
+    //Action Product
+    const [action, setAction] = useState<string>('');
+    const [open, setOpen] = useState<boolean>(false);
+    const [id, setId] = useState<string>('');
+    const [load, setLoad] = useState<boolean>(false);
+
     const router = useRouter();
 
     const handleChange = (event: SelectChangeEvent) => {
@@ -42,8 +50,16 @@ const WareHouseManage = () => {
         setPageNumber(i);
     };
     useEffect(() => {
-        dispatch(getAllProduct(pageNumber));
-    }, [dispatch, pageNumber]);
+        const item = {
+            status: status[active],
+            pageNumber: pageNumber,
+        };
+        if (nav[active] === 'All') {
+            dispatch(getAllProduct(pageNumber));
+        } else {
+            dispatch(getAllProductByStatus(item));
+        }
+    }, [dispatch, active, pageNumber, load]);
 
     return (
         <div className="flex flex-col gap-[10px]">
@@ -61,11 +77,11 @@ const WareHouseManage = () => {
                     <MenuItem value="Management">Management</MenuItem>
                 </Select>
             </FormControl>
-            <div className="flex shadow-order w-max">
+            <div className="flex justify-between shadow-order w-full">
                 {nav.map((item, i) => (
                     <div
                         key={i}
-                        className={`w-[300px] h-[50px] flex items-center justify-center uppercase font-bold ${
+                        className={`w-[300px] h-[50px] flex items-center justify-center uppercase font-bold cursor-pointer ${
                             active === i ? 'border-b-4 border-blue text-blue' : ''
                         }`}
                         onClick={() => setActive(i)}
@@ -93,17 +109,29 @@ const WareHouseManage = () => {
                     Add Product
                 </button>
             </div>
-            <TableProduct products={products} />
-            <div className="flex justify-center shadow-product2 bg-white">
-                <ThemeProvider theme={theme}>
-                    <Pagination
-                        count={pages}
-                        shape="rounded"
-                        onChange={(_, page: number) => handleChangePage(page)}
-                        color="primary"
-                    />
-                </ThemeProvider>
-            </div>
+            <TableProduct products={products} setOpen={setOpen} setAction={setAction} setId={setId} />
+            {pages !== 0 && (
+                <div className="flex justify-center shadow-product2 bg-white">
+                    <ThemeProvider theme={theme}>
+                        <Pagination
+                            count={pages}
+                            shape="rounded"
+                            onChange={(_, page: number) => handleChangePage(page)}
+                            color="primary"
+                        />
+                    </ThemeProvider>
+                </div>
+            )}
+            {open && (
+                <TypeSure
+                    setOpen={setOpen}
+                    setAction={setAction}
+                    action={action}
+                    id={id}
+                    setId={setId}
+                    setLoad={setLoad}
+                />
+            )}
         </div>
     );
 };

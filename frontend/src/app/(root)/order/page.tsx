@@ -5,7 +5,7 @@ import Border from '@/components/shared/Border';
 import { getAllAddressByUserId } from '@/slices/addressSlice';
 import { getCartByUserId } from '@/slices/cartSlice';
 import { createOrder } from '@/slices/orderSlice';
-import type { Address, Cart, ItemCart, Order, User } from '@/types/type';
+import type { Address, Cart, ItemCart, Order, User, checkoutOrder } from '@/types/type';
 import axios from '@/utils/axios';
 import { AppDispatch } from '@/utils/store';
 import Image from 'next/image';
@@ -79,12 +79,16 @@ const Order = () => {
 
     const handleOrder = async () => {
         if (!pay) {
-            toast.error('Please chose method payment');
+            toast.error('Please choose method payment');
+            return;
+        }
+        if (idAddress === '') {
+            toast.error('Please create address for order');
             return;
         }
 
         if (pay === 'VNPAY') {
-            const item: Order = {
+            const item: checkoutOrder = {
                 items: items,
                 userID: id,
                 deliveryAddress: idAddress,
@@ -103,7 +107,7 @@ const Order = () => {
             window.open(data.vnpUrl);
             window.close();
         } else {
-            const item: Order = {
+            const item: checkoutOrder = {
                 items: items,
                 userID: id,
                 deliveryAddress: idAddress,
@@ -130,7 +134,7 @@ const Order = () => {
                     {address.length === 0 ? (
                         <button
                             className="w-[120px] h-10 bg-blue bg-opacity-50 font-bold text-sm text-white hover:bg-opacity-100"
-                            onClick={() => setAdd(true)}
+                            onClick={() => setOpen(true)}
                         >
                             Add New
                         </button>

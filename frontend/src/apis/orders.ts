@@ -1,4 +1,4 @@
-import { Order, orderStatus, updateOrder } from '@/types/type';
+import { Order, checkoutOrder, orderStatus, updateOrder } from '@/types/type';
 import axios from '../utils/axios';
 
 const ordersApi = {
@@ -28,7 +28,7 @@ const ordersApi = {
         const url = '/orders/detail';
         return axios.get(url, { data: { order } });
     },
-    createOrder: (item: Order) => {
+    createOrder: (item: checkoutOrder) => {
         const url = '/orders';
         const data = {
             items: item.items,

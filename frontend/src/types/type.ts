@@ -128,6 +128,13 @@ export type Order = {
     isPaid?: boolean;
     isDelivered?: boolean;
 };
+export type checkoutOrder = {
+    items: ItemCart[];
+    userID: string;
+    deliveryAddress: string;
+    paymentMethod: string;
+    total: number;
+};
 
 export type RemoveItemCart = {
     user: string;

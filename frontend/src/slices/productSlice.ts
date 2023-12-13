@@ -10,6 +10,7 @@ export const getAllProduct = createAsyncThunk('products/getAllProduct', async (_
         return rejectWithValue(err);
     }
 });
+
 export const getProductById = createAsyncThunk(
     'products/getProductById',
     async (product: string, { rejectWithValue }) => {

@@ -9,6 +9,7 @@ import { AppDispatch } from '@/utils/store';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 
 const Cart = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -56,7 +57,12 @@ const Cart = () => {
     }, [length, load]);
 
     const handleCheckout = async () => {
-        router.push('/order');
+        const itemOrder = localStorage.getItem('itemOrders');
+        if (itemOrder) {
+            router.push('/order');
+        } else {
+            toast.error('Please choose shoes to checkout');
+        }
     };
 
     const handleCheckedAll = async () => {

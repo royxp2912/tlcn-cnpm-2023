@@ -392,7 +392,12 @@ const AddNewProduct = () => {
                 </div>
             </div>
             <div className="flex gap-[26px] justify-end">
-                <button className="w-[200px] h-[50px] bg-red opacity-50 text-white font-bold text-sm">CANCEL</button>
+                <button
+                    className="w-[200px] h-[50px] bg-red opacity-50 text-white font-bold text-sm"
+                    onClick={() => router.push('/warehouse/manage')}
+                >
+                    CANCEL
+                </button>
                 <button
                     className="w-[200px] h-[50px] bg-blue opacity-50 text-white font-bold text-sm"
                     onClick={handleSubmit}

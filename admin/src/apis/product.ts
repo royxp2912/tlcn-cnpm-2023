@@ -1,4 +1,4 @@
-import { Product, findProduct } from '@/types/type';
+import { Product, ProductByStatus, findProduct } from '@/types/type';
 import axios from '@/utils/axios';
 
 const productApi = {
@@ -7,6 +7,16 @@ const productApi = {
         return axios.get(url, {
             params: {
                 pageNumber: pageNumber,
+                pageSize: 5,
+            },
+        });
+    },
+    getAllProductByStatus: (item: ProductByStatus) => {
+        const url = '/products/status';
+        return axios.get(url, {
+            params: {
+                status: item.status,
+                pageNumber: item.pageNumber,
                 pageSize: 5,
             },
         });

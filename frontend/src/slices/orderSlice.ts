@@ -1,5 +1,5 @@
 import ordersApi from '@/apis/orders';
-import { Order, orderStatus, updateOrder } from '@/types/type';
+import { Order, checkoutOrder, orderStatus, updateOrder } from '@/types/type';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 export const getAllOrder = createAsyncThunk('orders/getAllOrder', async (_, { rejectWithValue }) => {
@@ -48,7 +48,7 @@ export const getOrderByOrderId = createAsyncThunk(
 );
 export const createOrder = createAsyncThunk(
     'orders/createOrder',
-    async (item: Order, { dispatch, rejectWithValue }) => {
+    async (item: checkoutOrder, { dispatch, rejectWithValue }) => {
         try {
             const res = await ordersApi.createOrder(item);
             await dispatch(getAllOrderByUserId(item.userID));

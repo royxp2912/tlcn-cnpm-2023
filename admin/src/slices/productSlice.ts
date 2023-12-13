@@ -1,5 +1,5 @@
 import productsApi from '@/apis/product';
-import { Product, findProduct } from '@/types/type';
+import { Product, ProductByStatus, findProduct } from '@/types/type';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 export const getAllProduct = createAsyncThunk(
@@ -7,6 +7,17 @@ export const getAllProduct = createAsyncThunk(
     async (pageNumber: number, { rejectWithValue }) => {
         try {
             const res = await productsApi.getAllProduct(pageNumber);
+            return res;
+        } catch (err: any) {
+            return rejectWithValue(err);
+        }
+    },
+);
+export const getAllProductByStatus = createAsyncThunk(
+    'products/getAllProductByStatus',
+    async (item: ProductByStatus, { rejectWithValue }) => {
+        try {
+            const res = await productsApi.getAllProductByStatus(item);
             return res;
         } catch (err: any) {
             return rejectWithValue(err);
@@ -125,6 +136,18 @@ export const productSlice = createSlice({
             state.error = action.error.message || null;
         });
         builder.addCase(getAllProduct.fulfilled, (state, action) => {
+            state.loading = false;
+            state.products = action.payload.data.data;
+            state.pages = action.payload.data.pages;
+        });
+        builder.addCase(getAllProductByStatus.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(getAllProductByStatus.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.error.message || null;
+        });
+        builder.addCase(getAllProductByStatus.fulfilled, (state, action) => {
             state.loading = false;
             state.products = action.payload.data.data;
             state.pages = action.payload.data.pages;
