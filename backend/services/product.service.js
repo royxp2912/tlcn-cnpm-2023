@@ -3,7 +3,7 @@ import Category from '../models/Category.js';
 import { checkedNull } from '../utils/handel_null.js';
 import { deleteAllByProID } from './comment.service.js';
 import { checkedObjectId } from '../utils/checkedOthers.js';
-import { createList, getListVarByProID, deleteListVarByProID, findProIDByColor, isColorInProduct } from './variant.service.js';
+import { createList, getListVarByProID, deleteListVarByProID, findProIDByColor, isColorInProduct, isStock } from './variant.service.js';
 
 export const {
     hide,
@@ -715,19 +715,27 @@ export const {
     getAll: async (pageSize, pageNumber) => {
         try {
             const all = await Product.find();
+            // const listProduct = await Product.find()
+            //     .limit(pageSize)
+            //     .skip(pageSize * (pageNumber - 1))
+            //     .populate({ path: 'category', select: 'name' })
+            //     .select('-createdAt -updatedAt -__v')
+            //     .sort({ createdAt: -1 });
+
             const listProduct = await Product.find()
                 .limit(pageSize)
                 .skip(pageSize * (pageNumber - 1))
-                .populate({ path: 'category', select: 'name' })
-                .select('-createdAt -updatedAt -__v')
+                .select('_id')
                 .sort({ createdAt: -1 });
+
+            const result = await Promise.all(listProduct.map(item => isStock(item._id)));
 
             return {
                 success: true,
                 status: 200,
                 message: 'Get All Product Successful!!!',
                 pages: Math.ceil(all.length / pageSize),
-                data: checkedNull(listProduct, "Resource doesn't exist !!!"),
+                data: result,
             };
         } catch (err) {
             return {
@@ -744,15 +752,16 @@ export const {
             const listProduct = await Product.find({ status: status })
                 .limit(pageSize)
                 .skip(pageSize * (pageNumber - 1))
-                .populate({ path: 'category', select: 'name' })
-                .select('-createdAt -updatedAt -__v');
+                .select('_id');
+
+            const result = await Promise.all(listProduct.map(item => isStock(item._id)));
 
             return {
                 success: true,
                 status: 200,
                 message: 'Get All Product By Status Successful!!!',
                 pages: Math.ceil(all.length / pageSize),
-                data: listProduct,
+                data: result,
             };
         } catch (err) {
             return {
@@ -782,13 +791,14 @@ export const {
                 }
 
                 const final = semiFinal.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+                const finalResult = await Promise.all(final.map(item => isStock(item._id)));
 
                 return {
                     success: true,
                     status: 200,
                     message: 'Get All Product Of Category Successful!!!',
                     pages: Math.ceil(semiFinal.length / pageSize),
-                    data: final,
+                    data: finalResult,
                 };
             }
 
@@ -808,13 +818,14 @@ export const {
             }
 
             const final = semiFinal.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+            const finalResult = await Promise.all(final.map(item => isStock(item._id)));
 
             return {
                 success: true,
                 status: 200,
                 message: 'Get All Product Of Category Successful!!!',
                 pages: Math.ceil(semiFinal.length / pageSize),
-                data: final,
+                data: finalResult,
             };
         } catch (err) {
             return {

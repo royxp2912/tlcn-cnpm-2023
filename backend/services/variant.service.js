@@ -5,6 +5,7 @@ import { checkedNull, checkedNullAndFormatData } from "../utils/handel_null.js";
 import { getById } from "./product.service.js";
 
 export const {
+    isStock,
     createOne,
     createList,
     getVarByID,
@@ -23,6 +24,26 @@ export const {
     getColorBySizeAndProID,
     getDetailListVarByProID,
 } = {
+
+    isStock: async (proID) => {
+        try {
+            const geted = await Variant.find({ product: proID }).select("quantity");
+            const stock = geted.reduce((item, acc) => acc + item.quantity, 0);
+            const isStock = stock === 0 ? false : true;
+
+            const result = await Product.findById(proID)
+                .populate({ path: 'category', select: 'name' })
+                .select('-createdAt -updatedAt -__v')
+            const final = { ...result._doc, isStock };
+            return final;
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong on Variant !!!",
+            }
+        }
+    },
 
     isColorInProduct: async (proID, color) => {
         try {
