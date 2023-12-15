@@ -102,8 +102,7 @@ const HomeShoe = () => {
                                         alt="Nike"
                                         height={120}
                                         width={120}
-                                        style={{ width: '120px', height: '120px' }}
-                                        className="absolute left-[-42px] rotate-[-16deg] "
+                                        className="w-[120px] h-[120px] absolute left-[-42px] rotate-[-16deg] rounded-xl"
                                     />
                                 </div>
                                 <div className="x-4 p-4 pb-2 bg-white rounded-tr-lg rounded-br-lg h-40 w-[200px]">

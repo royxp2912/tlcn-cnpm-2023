@@ -161,8 +161,19 @@ const ShoesSinglePage = () => {
         <div className="flex flex-col items-center">
             <div className="flex justify-between  gap-[100px] mt-[52px] mb-[116px] w-[1020px]">
                 <div className="w-[420px]">
-                    <div className="h-[328px] relative bg-bg_sell rounded-lg border-gray border-2 overflow-hidden">
-                        <Image src={productDetail.images && productDetail.images[number]} alt="giày" fill />
+                    <div className="relative bg-bg_sell rounded-lg border-gray border-2 overflow-hidden">
+                        <Image
+                            src={productDetail.images && productDetail.images[number]}
+                            alt="giày"
+                            width={420}
+                            height={328}
+                            className="h-[328px] w-[420px] rounded-lg"
+                        />
+                        {productDetail.isStock === true && (
+                            <div className="absolute w-[420px] h-[328px] rounded-lg bg-deal bg-opacity-75 top-0 text-xl flex items-center justify-center">
+                                Out Of Stock
+                            </div>
+                        )}
                     </div>
                     <div className="flex gap-5 mt-5">
                         {productDetail &&

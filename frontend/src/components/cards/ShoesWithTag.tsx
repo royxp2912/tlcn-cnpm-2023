@@ -74,8 +74,19 @@ const ShoesWithTag = ({ listProduct }: Props) => {
                         onClick={() => handleDetail(product._id)}
                     >
                         <div className="flex gap-5">
-                            <div className="bg-deal flex items-center justify-center rounded-xl w-[300px] h-[280px] relative overflow-hidden">
-                                <Image src={product.images[0]} alt="Giày" fill />
+                            <div className="bg-deal flex items-center justify-center relative overflow-hidden">
+                                <Image
+                                    src={product.images[0]}
+                                    alt="Giày"
+                                    width={300}
+                                    height={280}
+                                    className="rounded-xl w-[300px] h-[280px] "
+                                />
+                                {product.isStock === false && (
+                                    <div className="absolute w-[300px] h-[280px] rounded-xl bg-deal bg-opacity-75 top-0 text-xl flex items-center justify-center">
+                                        Out Of Stock
+                                    </div>
+                                )}
                             </div>
                             <div className="w-[700px]">
                                 <span className="text-2xl font-bold truncate w-full block ">{product.name}</span>
@@ -95,20 +106,27 @@ const ShoesWithTag = ({ listProduct }: Props) => {
                                 <Border />
                                 <div className="flex mt-[10px]">
                                     <div className="flex-grow"></div>
-                                    <div
-                                        className="w-40 h-[40px] flex items-center justify-center gap-4 bg-buy text-blue rounded-md"
-                                        onClick={(e) =>
-                                            handleAddtoCart(e, {
-                                                product: product._id,
-                                                image: product.images[0],
-                                                name: product.name,
-                                                price: product.price,
-                                            })
-                                        }
-                                    >
-                                        <ShoppingCartOutlinedIcon />
-                                        <span className="font-bold">Add To Cart</span>
-                                    </div>
+                                    {product.isStock === true ? (
+                                        <div
+                                            className="w-40 h-[40px] flex items-center justify-center gap-4 bg-buy text-blue rounded-md cursor-pointer hover:bg-blue hover:text-white"
+                                            onClick={(e) =>
+                                                handleAddtoCart(e, {
+                                                    product: product._id,
+                                                    image: product.images[0],
+                                                    name: product.name,
+                                                    price: product.price,
+                                                })
+                                            }
+                                        >
+                                            <ShoppingCartOutlinedIcon />
+                                            <span className="font-bold">Add To Cart</span>
+                                        </div>
+                                    ) : (
+                                        <div className="w-40 h-[40px] flex items-center justify-center gap-4 bg-buy text-blue rounded-md cursor-pointer">
+                                            <ShoppingCartOutlinedIcon />
+                                            <span className="font-bold">Add To Cart</span>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>

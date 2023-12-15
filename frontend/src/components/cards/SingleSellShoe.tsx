@@ -114,8 +114,19 @@ const SingleSellShoe = ({
                         <div key={product._id} className="flex gap-2" onClick={() => handleDetail(product._id)}>
                             <div className="border-2 border-gray2 rounded-md p-1 w-[304px]">
                                 {/* Single Product */}
-                                <div className="bg-bg_sell rounded-md w-[292px] h-[236px] relative overflow-hidden">
-                                    <Image src={product.images[0]} alt="Nike" fill />
+                                <div className="bg-bg_sell relative overflow-hidden hover:scale-110">
+                                    <Image
+                                        src={product.images[0]}
+                                        alt="Nike"
+                                        width={292}
+                                        height={236}
+                                        className="rounded-md w-[292px] h-[236px]"
+                                    />
+                                    {product.isStock === false && (
+                                        <div className="absolute w-[292px] h-[236px] rounded-md bg-deal bg-opacity-75 top-0 text-xl flex items-center justify-center">
+                                            Out Of Stock
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="px-5 py-1 flex flex-col items-center gap-2">
                                     <div className="flex items-center justify-between mt-3 mb-3 w-full">
@@ -161,8 +172,19 @@ const SingleSellShoe = ({
                         <div key={product._id} className="flex gap-2" onClick={() => handleDetail(product._id)}>
                             <div className="border-2 border-gray2 rounded-md p-1 w-[304px]">
                                 {/* Single Product */}
-                                <div className="bg-bg_sell rounded-md w-[292px] h-[236px] relative overflow-hidden">
-                                    <Image src={product.images[0]} alt="Nike" fill />
+                                <div className="bg-bg_sell relative overflow-hidden hover:scale-110">
+                                    <Image
+                                        src={product.images[0]}
+                                        alt="Nike"
+                                        width={292}
+                                        height={236}
+                                        className="w-[292px] h-[236px] rounded-md"
+                                    />
+                                    {product.isStock === false && (
+                                        <div className="absolute w-[292px] h-[236px] rounded-md bg-deal bg-opacity-75 top-0 text-xl flex items-center justify-center">
+                                            Out Of Stock
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="px-5 py-1 flex flex-col items-center gap-2">
                                     <div className="flex items-center justify-between mt-3 mb-3 w-full">
@@ -214,8 +236,19 @@ const SingleSellShoe = ({
                       >
                           <div className="border-2 border-gray2 w-[304px] rounded-md p-1">
                               {/* Single Product */}
-                              <div className="bg-bg_sell rounded-md w-[292px] h-[236px] relative overflow-hidden hover:scale-110">
-                                  <Image src={product.images[0]} alt="Nike" fill />
+                              <div className="bg-bg_sell relative overflow-hidden hover:scale-110">
+                                  <Image
+                                      src={product.images[0]}
+                                      alt="Nike"
+                                      width={292}
+                                      height={236}
+                                      className="rounded-md w-[292px] h-[236px] "
+                                  />
+                                  {product.isStock === false && (
+                                      <div className="absolute w-[292px] h-[236px] rounded-md bg-deal bg-opacity-75 top-0 text-xl flex items-center justify-center">
+                                          Out Of Stock
+                                      </div>
+                                  )}
                               </div>
                               <div className="px-5 py-1 flex flex-col items-center gap-2">
                                   <div className="flex items-center justify-between mt-3 mb-3 w-full">
@@ -254,8 +287,19 @@ const SingleSellShoe = ({
                       >
                           <div className="border-2 border-gray2 w-[304px] rounded-md p-1">
                               {/* Single Product */}
-                              <div className="bg-bg_sell rounded-md w-[292px] h-[236px] relative overflow-hidden hover:scale-110">
-                                  <Image src={product.images[0]} alt="Nike" fill />
+                              <div className="bg-bg_sell relative overflow-hidden hover:scale-110">
+                                  <Image
+                                      src={product.images[0]}
+                                      alt="Nike"
+                                      width={292}
+                                      height={236}
+                                      className="rounded-md w-[292px] h-[236px] "
+                                  />
+                                  {product.isStock === false && (
+                                      <div className="absolute w-[292px] h-[236px] rounded-md bg-deal bg-opacity-75 top-0 text-xl flex items-center justify-center">
+                                          Out Of Stock
+                                      </div>
+                                  )}
                               </div>
                               <div className="px-5 py-1 flex flex-col items-center gap-2">
                                   <div className="flex items-center justify-between mt-3 mb-3 w-full">

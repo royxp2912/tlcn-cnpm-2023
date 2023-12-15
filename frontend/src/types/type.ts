@@ -58,6 +58,7 @@ export type Product = {
     sold?: number;
     status?: string;
     variant: Variant;
+    isStock?: boolean;
 };
 
 export type Variant = {
