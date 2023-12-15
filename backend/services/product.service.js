@@ -653,9 +653,8 @@ export const {
 
     getById: async (proID) => {
         try {
-            const result = await Product.findById(proID)
-                .populate({ path: 'category', select: 'name' })
-                .select('-createdAt -updatedAt -__v');
+            const result = await Product.findById(proID).select('_id');
+            const final = await isStock(result._id);
 
             // Lấy variants thuộc product
             const { success, status, message, data } = await getListVarByProID(proID);
@@ -668,7 +667,7 @@ export const {
                 status: 200,
                 message: 'Get Product By Id Successful!!!',
                 data: {
-                    product: result,
+                    product: final,
                     variants: data,
                 },
             };
