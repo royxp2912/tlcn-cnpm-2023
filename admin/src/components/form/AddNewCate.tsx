@@ -66,7 +66,7 @@ const AddNewCate = ({ setLoad }: Props) => {
                     <div className="flex gap-5 w-[120px] h-[120px]">
                         {image && (
                             <Image
-                                src={`/${image.name}`}
+                                src={URL.createObjectURL(image)}
                                 alt="Shoes"
                                 width={120}
                                 height={120}

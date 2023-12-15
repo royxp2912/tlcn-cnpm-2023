@@ -81,7 +81,7 @@ const WareHouseManage = () => {
                 {nav.map((item, i) => (
                     <div
                         key={i}
-                        className={`w-[300px] h-[50px] flex items-center justify-center uppercase font-bold cursor-pointer ${
+                        className={`w-[300px] h-[50px] flex items-center justify-center uppercase font-bold cursor-pointer hover:text-blue ${
                             active === i ? 'border-b-4 border-blue text-blue' : ''
                         }`}
                         onClick={() => setActive(i)}

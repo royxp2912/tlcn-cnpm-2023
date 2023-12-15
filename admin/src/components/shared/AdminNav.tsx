@@ -11,7 +11,7 @@ const AdminNav = () => {
     const router = useRouter();
     const path = usePathname();
     const userString = typeof window !== 'undefined' ? localStorage.getItem('admin') : null;
-    let user: User;
+    let user: User | null = null;
     if (!userString) {
         router.push('/sign-in');
     } else {
@@ -19,7 +19,7 @@ const AdminNav = () => {
     }
 
     const handleLogout = async () => {
-        await axios.delete(`/logout/${user._id}`);
+        await axios.delete(`/logout/${user?._id}`);
         localStorage.removeItem('admin');
     };
 
@@ -27,9 +27,11 @@ const AdminNav = () => {
         <div className="flex flex-col gap-[355px] items-center justify-between shadow-nav w-[260px] h-screen">
             <div className="p-5">
                 <div className="flex items-center gap-[10px] mb-5">
-                    <Image src="/avt.png" alt="AVT" width={90} height={90} />
+                    <div className="w-[90px] h-[90px] rounded-full relative">
+                        <Image src={user?.avatar ?? ''} alt="AVT" fill />
+                    </div>
                     <div className="flex flex-col items-center">
-                        <span className="font-bold">Han Soo Hee</span>
+                        <span className="font-bold">{user?.fullName}</span>
                         <span className="text-sm">Admin</span>
                     </div>
                 </div>

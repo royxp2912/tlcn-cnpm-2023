@@ -19,6 +19,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { toast } from 'react-toastify';
 import { getProductById } from '@/slices/productSlice';
 import { getDetailByProduct } from '@/slices/variantSlice';
+import SureForImg from '@/components/shared/SureForImg';
 const brands = ['Adidas', 'Nike', 'Vans', 'Balenciaga', 'Converse', 'Puma'];
 
 const AddNewProduct = () => {
@@ -47,8 +48,7 @@ const AddNewProduct = () => {
     });
     const [mount, setMount] = useState(false);
     const [load, setLoad] = useState(false);
-    const [open, setOpen] = useState(false);
-    const [del, setDel] = useState(false);
+    const [del, setDel] = useState<boolean[]>([]);
     const router = useRouter();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -164,26 +164,50 @@ const AddNewProduct = () => {
         }
     };
 
-    const handleDeleteImg = async (name: string, i: number) => {
-        if (image) {
-            const newImage = [...image];
-            if (name.includes('http')) {
-                const { data } = await axios.delete('/products/image', {
-                    params: {
-                        product: id,
-                        image: name,
-                    },
-                });
-                if (data.success) {
-                    newImage.splice(i, 1);
-                    setImage(newImage);
-                }
-                setOpen(true);
-            } else {
-                newImage.splice(i, 1);
-                setImage(newImage);
-            }
-        }
+    //Delete image
+    const [index, setIndex] = useState<number>(0);
+    const [imgName, setImgName] = useState<string>('');
+    const [open, setOpen] = useState<boolean>(false);
+
+    const handleDeleteImg = (name: string, i: number) => {
+        // if (image) {
+        //     const newImage = [...image];
+        //     if (name.includes('http')) {
+        //         const { data } = await axios.delete('/products/image', {
+        //             params: {
+        //                 product: id,
+        //                 image: name,
+        //             },
+        //         });
+        //         if (data.success) {
+        //             newImage.splice(i, 1);
+        //             setImage(newImage);
+        //         }
+        //         setOpen(true);
+        //     } else {
+        //         newImage.splice(i, 1);
+        //         setImage(newImage);
+        //     }
+        // }
+        setIndex(i);
+        setImgName(name);
+        setOpen(true);
+    };
+
+    const handleMouseEnter = (i: number) => {
+        setDel((prev) => {
+            const update = [...prev];
+            update[i] = true;
+            return update;
+        });
+    };
+
+    const handleMouseLeave = (i: number) => {
+        setDel((prev) => {
+            const update = [...prev];
+            update[i] = false;
+            return update;
+        });
     };
 
     useEffect(() => {
@@ -218,6 +242,7 @@ const AddNewProduct = () => {
             setAddVariants(Array.from({ length: newVars.length }, () => ({})));
         }
     }, [mount]);
+    console.log(upImage);
     return (
         <div className="flex flex-col gap-[10px]">
             <div className="font-bold">
@@ -234,10 +259,28 @@ const AddNewProduct = () => {
                         {image &&
                             image.map((item, i) => (
                                 <div
-                                    className="w-[100px] h-[100px] relative"
-                                    onClick={() => handleDeleteImg(item.name, i)}
+                                    className="relative"
+                                    onMouseEnter={() => handleMouseEnter(i)}
+                                    onMouseLeave={() => handleMouseLeave(i)}
                                 >
-                                    <Image key={i} src={item.name} alt="Shoes" fill className="shadow-cate" />
+                                    <Image
+                                        key={i}
+                                        src={item.name}
+                                        alt="Shoes"
+                                        width={100}
+                                        height={100}
+                                        className="w-[100px] h-[100px] shadow-cate"
+                                    />
+                                    {del[i] && (
+                                        <div className="w-[100px] h-[100px] bg-deal bg-opacity-50 absolute top-0 flex justify-center items-center">
+                                            <button
+                                                onClick={() => handleDeleteImg(item.name, i)}
+                                                className="w-[70px] h-[50px] bg-red text-white hover:opacity-60 rounded-lg"
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
                             ))}
                     </div>
@@ -246,7 +289,7 @@ const AddNewProduct = () => {
                         <div>
                             <div
                                 onClick={handleToggleInput}
-                                className="opacity-50 w-[100px] h-[100px] border-4 border-dashed flex flex-col items-center justify-center gap-[5px] p-[10px]"
+                                className="opacity-50 w-[100px] h-[100px] border-4 border-dashed flex flex-col items-center justify-center gap-[5px] p-[10px] cursor-pointer hover:opacity-100"
                             >
                                 <AddPhotoAlternateOutlinedIcon />
                                 <span className="text-center">Add Image</span>
@@ -255,7 +298,7 @@ const AddNewProduct = () => {
                         </div>
                     ) : (
                         <div>
-                            <div className="opacity-50 w-[100px] h-[100px] border-4 border-dashed flex flex-col items-center justify-center gap-[5px] p-[10px]">
+                            <div className="opacity-50 w-[200px] h-[100px] border-4 border-dashed flex flex-col items-center justify-center gap-[5px] p-[10px]">
                                 <AddPhotoAlternateOutlinedIcon />
                                 <span className="text-center">Max 4 Image (Delete image for Update)</span>
                             </div>
@@ -405,6 +448,20 @@ const AddNewProduct = () => {
                     Update Info Product
                 </button>
             </div>
+            {open && (
+                <SureForImg
+                    setOpen={setOpen}
+                    setIndex={setIndex}
+                    index={index}
+                    setImgName={setImgName}
+                    imgName={imgName}
+                    image={image}
+                    setImage={setImage}
+                    id={id}
+                    upImage={upImage}
+                    setUpImage={setUpImage}
+                />
+            )}
         </div>
     );
 };

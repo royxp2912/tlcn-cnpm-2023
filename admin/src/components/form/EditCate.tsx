@@ -29,7 +29,10 @@ const EditCate = ({ item, setLoad }: Props) => {
         const arr = [];
         if (files) {
             for (let i = 0; i < files.length; i++) {
-                arr.push(files[i]);
+                const file = files[i];
+                const url = URL.createObjectURL(file);
+                const fileWithUrl = new File([file], url);
+                arr.push(fileWithUrl);
             }
         }
         setImage(arr);
@@ -81,7 +84,7 @@ const EditCate = ({ item, setLoad }: Props) => {
                             image.map((item, i) => (
                                 <Image
                                     key={i}
-                                    src={`/${item.name}`}
+                                    src={item.name}
                                     alt="Shoes"
                                     width={120}
                                     height={120}

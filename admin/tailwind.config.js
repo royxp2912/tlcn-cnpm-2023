@@ -24,6 +24,7 @@ module.exports = {
                 green: '#00BE98',
                 product: '#f6f6f6',
                 orange: '#FF952D',
+                deal: '#F6F7F8',
             },
             boxShadow: {
                 nav: '2px 0 1px 0 rgba(0,0,0,0.1)',

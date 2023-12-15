@@ -1,7 +1,20 @@
+'use client';
+import { User } from '@/types/type';
 import Image from 'next/image';
 import React from 'react';
 
 const Header = () => {
+    const userString = typeof window !== 'undefined' ? localStorage.getItem('admin') : null;
+
+    let user: User | null = null;
+    if (userString) {
+        try {
+            user = JSON.parse(userString) as User;
+        } catch (error) {
+            console.error('Error parsing user data:', error);
+        }
+    }
+    console.log(user);
     return (
         <div className="flex px-5 py-4 items-center justify-between shadow-header ml-[2px] bg-white">
             <div className="text-5xl flex items-center gap-1">
@@ -10,8 +23,10 @@ const Header = () => {
                 <span className="font-birsmark">P</span>
             </div>
             <div className="flex items-center gap-[10px]">
-                <span className="font-bold">Han So Hee</span>
-                <Image src="/avt.png" alt="avt" width={40} height={40} />
+                <span className="font-bold">{user?.fullName}</span>
+                {/* <div className="w-10 h-10 rounded-full relative"> */}
+                <Image src={user?.avatar ?? ''} alt="avt" width={40} height={40} className="w-10 h-10 rounded-full" />
+                {/* </div> */}
             </div>
         </div>
     );

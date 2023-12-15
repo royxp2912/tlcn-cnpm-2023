@@ -18,7 +18,7 @@ const TypeSure = ({ setOpen, setAction, action, setId, id, setLoad }: Props) => 
         setId('');
     };
     console.log(id);
-    const handlSubmit = async () => {
+    const handleSubmit = async () => {
         if (action === 'Lock') {
             const { data } = await axios.patch('/users/lock', {
                 user: id,
@@ -55,11 +55,7 @@ const TypeSure = ({ setOpen, setAction, action, setId, id, setLoad }: Props) => 
                 setId('');
             }
         } else if (action === 'Hidden') {
-            const { data } = await axios.delete('/products/hide', {
-                params: {
-                    product: id,
-                },
-            });
+            const { data } = await axios.patch(`/products/hide?product=${id}`);
             if (data.success) {
                 toast.success('Hidden Product Success');
                 setLoad((prev) => !prev);
@@ -68,11 +64,7 @@ const TypeSure = ({ setOpen, setAction, action, setId, id, setLoad }: Props) => 
                 setId('');
             }
         } else {
-            const { data } = await axios.delete('/products/unHide', {
-                params: {
-                    product: id,
-                },
-            });
+            const { data } = await axios.patch(`/products/unHide?product=${id}`);
             if (data.success) {
                 toast.success('On Sale Product Success');
                 setLoad((prev) => !prev);
@@ -91,7 +83,7 @@ const TypeSure = ({ setOpen, setAction, action, setId, id, setLoad }: Props) => 
                 </span>
                 <div className="flex gap-4">
                     <button
-                        onClick={handlSubmit}
+                        onClick={handleSubmit}
                         className="w-[100px] h-[50px] rounded-full bg-blue bg-opacity-60 text-white hover:bg-opacity-100"
                     >
                         Yes

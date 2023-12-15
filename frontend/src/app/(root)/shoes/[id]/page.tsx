@@ -54,7 +54,7 @@ const ShoesSinglePage = () => {
     const dispatch = useDispatch<AppDispatch>();
     const router = useRouter();
 
-    const userString = localStorage.getItem('user');
+    const userString = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
     let user: User | null = null;
     if (userString !== null) {
         try {
