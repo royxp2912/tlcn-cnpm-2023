@@ -9,7 +9,26 @@ import {
     getSizeByColorAndProID,
     getColorBySizeAndProID,
     getDetailListVarByProID,
+    getVarByColorAndSize,
 } from "../services/variant.service.js";
+
+export const getVariantByColorAndSize = async (req, res, next) => {
+    try {
+        const product = req.query.product;
+        const color = req.query.color;
+        const size = req.query.size;
+        const { success, status, message, data } = await getVarByColorAndSize(product, color, size);
+        if (!success) return next(createError(status, message));
+
+        res.status(status).send({
+            success,
+            message,
+            data
+        });
+    } catch (err) {
+        next(err);
+    }
+}
 
 export const getAllDetailVarByProID = async (req, res, next) => {
     try {
