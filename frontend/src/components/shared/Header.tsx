@@ -119,7 +119,8 @@ const Header = () => {
                 </div>
 
                 <div className="flex items-center gap-8">
-                    <div className="relative cursor-pointer">
+                    {/* TODO NEXT TIME */}
+                    {/* <div className="relative cursor-pointer">
                         <FavoriteBorderOutlinedIcon
                             className={`w-7 h-7 ${
                                 pathname === '/' ? 'text-orange hover:text-blue' : 'text-blue hover:text-orange'
@@ -134,7 +135,7 @@ const Header = () => {
                                 <span className="text-white text-xs ml-[0.2rem] absolute">2</span>
                             </div>
                         )}
-                    </div>
+                    </div> */}
                     <div className="relative cursor-pointer" onClick={handelCart}>
                         <ShoppingCartOutlinedIcon
                             className={`w-7 h-7 ${

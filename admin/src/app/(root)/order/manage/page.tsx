@@ -213,7 +213,7 @@ const OrderManage = () => {
                 {buttons.map((item) => (
                     <button
                         key={item}
-                        className="bg-blue bg-opacity-60 h-10 px-4 text-sm font-medium text-white rounded-lg"
+                        className="bg-blue bg-opacity-60 h-10 px-4 text-sm font-medium text-white rounded-lg hover:bg-opacity-100"
                     >
                         {item}
                     </button>

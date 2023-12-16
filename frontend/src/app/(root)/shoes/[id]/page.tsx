@@ -99,13 +99,6 @@ const ShoesSinglePage = () => {
         }
     };
 
-    const handleSizeQty = (size: variantColor) => {
-        setSizeQty({
-            size: size.size,
-            quantity: size.quantity,
-        });
-    };
-
     const handleAddToCart = async () => {
         if (!user) {
             toast.error('Please login before add to cart', {
@@ -143,20 +136,29 @@ const ShoesSinglePage = () => {
             toast.success('Add item to cart success');
         }
     };
+    const [init, setInit] = useState<boolean>(false);
+
+    useEffect(() => {
+        dispatch(getProductHotDeal()).unwrap();
+        dispatch(getProductById(id));
+    }, []);
+
+    console.log(variant);
+    useEffect(() => {
+        if (variants.listColor) {
+            setColor(variants.listColor[0]);
+        }
+    }, [variants]);
     useEffect(() => {
         const item: getSizeOfColor = {
             id: id,
             color: color as string,
         };
-        setSizeQty((prev) => ({
-            ...prev,
-            quantity: 0,
-        }));
-        dispatch(getProductHotDeal()).unwrap();
-        dispatch(getProductById(id));
+        console.log('Hi');
         dispatch(getColorOfSize(item));
+        // setInit(true);
     }, [color]);
-
+    console.log(variant);
     return (
         <div className="flex flex-col items-center">
             <div className="flex justify-between  gap-[100px] mt-[52px] mb-[116px] w-[1020px]">
@@ -216,7 +218,13 @@ const ShoesSinglePage = () => {
                                     <div
                                         key={c}
                                         className={`${colors[c]} relative  h-5 w-5 rounded-full cursor-pointer`}
-                                        onClick={() => setColor(c)}
+                                        onClick={() => {
+                                            setSizeQty((prev) => ({
+                                                ...prev,
+                                                quantity: 0,
+                                            }));
+                                            setColor(c);
+                                        }}
                                     >
                                         {color === c && (
                                             <div
@@ -230,16 +238,16 @@ const ShoesSinglePage = () => {
                     <div className="flex items-center mt-[25px] mb-5">
                         <span className="font-medium flex-1">Size:</span>
                         <div className="font-bold text-white flex gap-1">
-                            {variant &&
-                                variant.map((size: variantColor, i: number) => (
+                            {variants.listSize &&
+                                variants.listSize.map((size, i: number) => (
                                     <div
                                         key={i}
                                         className={`text-sm w-9 h-7  rounded-md flex items-center justify-center cursor-pointer ${
-                                            size.size === sizeQty.size ? 'bg-blue' : 'bg-size2'
+                                            size === sizeQty.size ? 'bg-blue' : 'bg-size2'
                                         }`}
-                                        onClick={() => handleSizeQty(size)}
+                                        // onClick={() => handleSizeQty(size)}
                                     >
-                                        {size.size}
+                                        {size}
                                     </div>
                                 ))}
                         </div>
