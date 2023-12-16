@@ -48,10 +48,10 @@ const ManShoes = () => {
     const dispatch = useDispatch<AppDispatch>();
     const [active, setActive] = useState(false);
     const [sort, setSort] = useState<boolean>(false);
-    const [view, setView] = useState<string>('new');
+    const [view, setView] = useState<string>('');
     const [listProduct, setListProduct] = useState<Product[]>([]);
-    const [color, setColor] = useState<string>('');
-    const [brand, setBrand] = useState<string>('');
+    const [color, setColor] = useState<string>('Blue');
+    const [brand, setBrand] = useState<string>('Nike');
     const [pageNum, setPageNum] = useState<number>(1);
     const [minPrice, setMinPrice] = useState(0);
     const [maxPrice, setMaxPrice] = useState(2000);
@@ -89,7 +89,6 @@ const ManShoes = () => {
         };
         fetchData();
     }, [dispatch]);
-    console.log(pages);
 
     return (
         <div className="flex px-[100px] gap-10 mt-5">

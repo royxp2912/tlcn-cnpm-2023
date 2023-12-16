@@ -1,7 +1,7 @@
 'use client';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
-import React, { MouseEvent, useEffect, useState } from 'react';
+import React, { KeyboardEvent, MouseEvent, useEffect, useState } from 'react';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
@@ -78,8 +78,10 @@ const Header = () => {
             toast.error('Logout fail');
         }
     };
-    const handleSubmit = () => {
-        router.push(`/search/${keyword}`);
+    const handleSubmit = (e: KeyboardEvent<HTMLDivElement>) => {
+        if (e.key === 'Enter') {
+            router.push(`/search/${keyword}`);
+        }
     };
     useEffect(() => {
         dispatch(getCartByUserId(id));
@@ -99,7 +101,7 @@ const Header = () => {
                         <span className="font-birsmark">P</span>
                     </div>
                     <div>
-                        <form onSubmit={handleSubmit} className="relative mx-auto w-max">
+                        <div onKeyUp={(e) => handleSubmit(e)} className="relative mx-auto w-max">
                             <input
                                 type="search"
                                 className="peer relative z-10 h-12 w-12 cursor-pointer rounded-full focus:border bg-transparent pl-12 outline-none focus:w-full focus:cursor-text focus:border-blue focus:pl-16 focus:pr-4"
@@ -119,7 +121,7 @@ const Header = () => {
                                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                                 />
                             </svg>
-                        </form>
+                        </div>
                     </div>
                 </div>
 

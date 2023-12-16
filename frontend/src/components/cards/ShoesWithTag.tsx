@@ -65,7 +65,7 @@ const ShoesWithTag = ({ listProduct }: Props) => {
     return (
         <div>
             {listProduct && listProduct.length === 0 ? (
-                <span>Sản phẩm đã hiển thị hết</span>
+                <span>No Data</span>
             ) : (
                 listProduct.map((product) => (
                     <div

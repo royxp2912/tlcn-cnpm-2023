@@ -108,7 +108,7 @@ const SingleSellShoe = ({
         return (
             <div className="grid  grid-cols-3 gap-[50px]">
                 {products && products.length === 0 ? (
-                    <span>Sản phẩm đã hiển thị hết</span>
+                    <span>No Data</span>
                 ) : (
                     products.map((product: Product, index: number) => (
                         <div
@@ -170,7 +170,7 @@ const SingleSellShoe = ({
                     onClick={isBack ? handleBack : undefined}
                 />
                 {products && products.length === 0 ? (
-                    <span>Sản phẩm đã hiển thị hết</span>
+                    <span>No Data</span>
                 ) : (
                     products.slice(back, next).map((product: Product, index: number) => (
                         <div

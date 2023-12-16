@@ -4,6 +4,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { MenuOutlined, AppsOutlined } from '@mui/icons-material';
+import { usePathname } from 'next/navigation';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -27,6 +28,7 @@ type Props = {
 const Sort = ({ setActive, active, sort, setSort, view, setView }: Props) => {
     const [sorts, setSorts] = useState<string[]>(['Low to High']);
     const name = ['Low to High', 'High to Low'];
+    const pathname = usePathname();
     const handleChange = (event: SelectChangeEvent<typeof sorts>) => {
         const {
             target: { value },
@@ -39,12 +41,19 @@ const Sort = ({ setActive, active, sort, setSort, view, setView }: Props) => {
             setSort((prev) => !prev);
         }
     };
+    const handleSet = () => {
+        if (pathname.startsWith('/search')) {
+            setView('');
+        } else {
+            setView('hot');
+        }
+    };
     return (
         <div className="flex items-center justify-between mt-3 mb-5 bg-deal rounded-lg p-5">
             <div className="flex gap-5 items-center">
                 <button
                     className={`${view === 'new' ? 'bg-blue' : 'bg-[#ADD6FA]'} w-[120px] h-9 font-bold rounded-md`}
-                    onClick={() => setView('new')}
+                    onClick={handleSet}
                 >
                     New
                 </button>
