@@ -194,6 +194,8 @@ export const findProductByColor = async (req, res, next) => {
 
 export const findProductByKeyword = async (req, res, next) => {
     try {
+        const color = req.query.color;
+        const brand = req.query.brand;
         const sort = req.query.sort;
         const keyword = req.query.keyword;
         const pageSize = req.query.pageSize || 8;
@@ -204,6 +206,8 @@ export const findProductByKeyword = async (req, res, next) => {
                 keyword,
                 pageSize,
                 pageNumber,
+                brand,
+                color,
                 sort,
             );
             if (!success) return next(createError(status, message));
@@ -216,15 +220,8 @@ export const findProductByKeyword = async (req, res, next) => {
             });
         }
 
-        const { success, message, pages, data, status } = await findByKeyword(keyword, pageSize, pageNumber);
+        const { success, message, pages, data, status } = await findByKeyword(keyword, pageSize, pageNumber, brand, color);
         if (!success) return next(createError(status, message));
-
-        if (data.length === 0) {
-            res.status(404).json({
-                success: success,
-                message: `No shoes found matching keyword <${keyword}> !!!`,
-            });
-        }
 
         res.status(status).json({
             success: success,
