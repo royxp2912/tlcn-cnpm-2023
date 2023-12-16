@@ -42,24 +42,19 @@ const productsApi = {
     },
     findProductByKeyword: (item: findProduct) => {
         const url = '/products/search/keyword';
-        const items = {
-            keywword: item.keyword,
-            sort: item.sort,
-            pageSize: item.pageSize,
-            pageNumber: item.pageNumber,
-        };
-        return axios.get(url, { data: { items } });
+
+        return axios.get(url, {
+            params: {
+                keyword: item.keyword,
+                brand: item.brand,
+                color: item.color,
+                sort: item.sort,
+                pageNumber: item.pageNumber,
+                pageSize: 5,
+            },
+        });
     },
-    findProductByColor: (item: findProduct) => {
-        const url = `/products/search/color`;
-        const items = {
-            color: item.color,
-            sort: item.sort,
-            pageSize: item.pageSize,
-            pageNumber: item.pageNumber,
-        };
-        return axios.get(url, { data: { items } });
-    },
+
     getProductHotDeal: () => {
         const url = '/products/search/hotDeal';
         return axios.get(url);

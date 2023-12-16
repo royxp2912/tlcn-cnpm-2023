@@ -70,7 +70,7 @@ const ShoesWithTag = ({ listProduct }: Props) => {
                 listProduct.map((product) => (
                     <div
                         key={product._id}
-                        className="flex flex-col gap-5 mb-5"
+                        className="flex flex-col gap-5 mb-5 cursor-pointer"
                         onClick={() => handleDetail(product._id)}
                     >
                         <div className="flex gap-5">

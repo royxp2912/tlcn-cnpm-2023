@@ -1,7 +1,7 @@
 'use client';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
-import React, { MouseEvent, useEffect } from 'react';
+import React, { MouseEvent, useEffect, useState } from 'react';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
@@ -14,12 +14,14 @@ import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import axios from '@/utils/axios';
+import { findProductByKeyword } from '@/slices/productSlice';
 
 const Header = () => {
     const pathname = usePathname();
     const router = useRouter();
     const { cartItem }: { cartItem: Cart } = useSelector((state: any) => state.carts);
     const dispatch = useDispatch<AppDispatch>();
+    const [keyword, setKeyword] = useState<string>('');
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
@@ -38,21 +40,6 @@ const Header = () => {
         }
     }
     const id = user?._id as string;
-
-    const handleUser = () => {
-        if (!userString) {
-            toast.error('Please login before see profile', {
-                onClose: () => {
-                    setTimeout(() => {
-                        router.push('/sign-in');
-                    }, 3000);
-                },
-            });
-            return;
-        } else {
-            router.push('/user');
-        }
-    };
 
     const handleClick = (event: MouseEvent<any>) => {
         if (!userString) {
@@ -91,6 +78,9 @@ const Header = () => {
             toast.error('Logout fail');
         }
     };
+    const handleSubmit = () => {
+        router.push(`/search/${keyword}`);
+    };
     useEffect(() => {
         dispatch(getCartByUserId(id));
     }, [dispatch]);
@@ -109,12 +99,27 @@ const Header = () => {
                         <span className="font-birsmark">P</span>
                     </div>
                     <div>
-                        <Image
-                            src={pathname === '/' ? '/search.png' : '/search2.png'}
-                            alt="Search"
-                            width={24}
-                            height={24}
-                        />
+                        <form onSubmit={handleSubmit} className="relative mx-auto w-max">
+                            <input
+                                type="search"
+                                className="peer relative z-10 h-12 w-12 cursor-pointer rounded-full focus:border bg-transparent pl-12 outline-none focus:w-full focus:cursor-text focus:border-blue focus:pl-16 focus:pr-4"
+                                onChange={(e) => setKeyword(e.target.value)}
+                            />
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="absolute inset-y-0 my-auto h-16 w-16 border-transparent stroke-blue px-3.5 peer-focus:border-blue peer-focus:stroke-blue"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                />
+                            </svg>
+                        </form>
                     </div>
                 </div>
 

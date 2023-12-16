@@ -111,7 +111,11 @@ const SingleSellShoe = ({
                     <span>Sản phẩm đã hiển thị hết</span>
                 ) : (
                     products.map((product: Product, index: number) => (
-                        <div key={product._id} className="flex gap-2" onClick={() => handleDetail(product._id)}>
+                        <div
+                            key={product._id}
+                            className="flex gap-2 cursor-pointer"
+                            onClick={() => handleDetail(product._id)}
+                        >
                             <div className="border-2 border-gray2 rounded-md p-1 w-[304px]">
                                 {/* Single Product */}
                                 <div className="bg-bg_sell relative overflow-hidden hover:scale-110">
@@ -169,7 +173,11 @@ const SingleSellShoe = ({
                     <span>Sản phẩm đã hiển thị hết</span>
                 ) : (
                     products.slice(back, next).map((product: Product, index: number) => (
-                        <div key={product._id} className="flex gap-2" onClick={() => handleDetail(product._id)}>
+                        <div
+                            key={product._id}
+                            className="flex gap-2 cursor-pointer"
+                            onClick={() => handleDetail(product._id)}
+                        >
                             <div className="border-2 border-gray2 rounded-md p-1 w-[304px]">
                                 {/* Single Product */}
                                 <div className="bg-bg_sell relative overflow-hidden hover:scale-110">

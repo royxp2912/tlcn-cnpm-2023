@@ -73,6 +73,7 @@ const ShoesSinglePage = () => {
         quantity: 0,
     });
     const [quantity, setQuantity] = useState<number>(1);
+    const [var1, setVar1] = useState<variantColor[]>();
 
     const [isNext, setIsNext] = useState<boolean>(false);
     const [isBack, setIsBack] = useState<boolean>(false);
@@ -97,6 +98,13 @@ const ShoesSinglePage = () => {
             if (quantity === 1) return;
             setQuantity((prev) => prev - 1);
         }
+    };
+
+    const handleSizeQty = (size: variantColor) => {
+        setSizeQty({
+            size: size.size,
+            quantity: size.quantity,
+        });
     };
 
     const handleAddToCart = async () => {
@@ -136,29 +144,20 @@ const ShoesSinglePage = () => {
             toast.success('Add item to cart success');
         }
     };
-    const [init, setInit] = useState<boolean>(false);
+
+    useEffect(() => {
+        const item: getSizeOfColor = {
+            id: id,
+            color: color as string,
+        };
+        dispatch(getColorOfSize(item));
+    }, [color]);
 
     useEffect(() => {
         dispatch(getProductHotDeal()).unwrap();
         dispatch(getProductById(id));
     }, []);
 
-    console.log(variant);
-    useEffect(() => {
-        if (variants.listColor) {
-            setColor(variants.listColor[0]);
-        }
-    }, [variants]);
-    useEffect(() => {
-        const item: getSizeOfColor = {
-            id: id,
-            color: color as string,
-        };
-        console.log('Hi');
-        dispatch(getColorOfSize(item));
-        // setInit(true);
-    }, [color]);
-    console.log(variant);
     return (
         <div className="flex flex-col items-center">
             <div className="flex justify-between  gap-[100px] mt-[52px] mb-[116px] w-[1020px]">
@@ -171,7 +170,7 @@ const ShoesSinglePage = () => {
                             height={328}
                             className="h-[328px] w-[420px] rounded-lg"
                         />
-                        {productDetail.isStock === true && (
+                        {productDetail.isStock === false && (
                             <div className="absolute w-[420px] h-[328px] rounded-lg bg-deal bg-opacity-75 top-0 text-xl flex items-center justify-center">
                                 Out Of Stock
                             </div>
@@ -238,16 +237,16 @@ const ShoesSinglePage = () => {
                     <div className="flex items-center mt-[25px] mb-5">
                         <span className="font-medium flex-1">Size:</span>
                         <div className="font-bold text-white flex gap-1">
-                            {variants.listSize &&
-                                variants.listSize.map((size, i: number) => (
+                            {variant &&
+                                variant.map((size: variantColor, i: number) => (
                                     <div
                                         key={i}
                                         className={`text-sm w-9 h-7  rounded-md flex items-center justify-center cursor-pointer ${
-                                            size === sizeQty.size ? 'bg-blue' : 'bg-size2'
+                                            size.size === sizeQty.size ? 'bg-blue' : 'bg-size2'
                                         }`}
-                                        // onClick={() => handleSizeQty(size)}
+                                        onClick={() => handleSizeQty(size)}
                                     >
-                                        {size}
+                                        {size.size}
                                     </div>
                                 ))}
                         </div>

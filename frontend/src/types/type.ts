@@ -147,14 +147,6 @@ export type updateOrder = {
     status: string;
 };
 
-export type findProduct = {
-    color?: string;
-    keyword?: string;
-    sort: string;
-    pageSize: number;
-    pageNumber: number;
-};
-
 export type upAvatar = {
     img: string;
     user: string;
@@ -184,6 +176,14 @@ export type itemCartRandomVari = {
 
 export type productByCate = {
     category: string;
+    sort: string;
+    brand: string;
+    color: string;
+    pageNumber: number;
+};
+
+export type findProduct = {
+    keyword: string;
     sort: string;
     brand: string;
     color: string;

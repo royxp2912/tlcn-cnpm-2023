@@ -27,7 +27,6 @@ export const getAllProductByCateId = createAsyncThunk(
     async (category: productByCate, { rejectWithValue }) => {
         try {
             const res = await productsApi.getAllProductByCateId(category);
-            console.log(res);
             return res;
         } catch (err: any) {
             return rejectWithValue(err);
@@ -37,18 +36,6 @@ export const getAllProductByCateId = createAsyncThunk(
 
 export const findProductByKeyword = createAsyncThunk(
     'products/findProductByKeyword',
-    async (item: findProduct, { rejectWithValue }) => {
-        try {
-            const res = await productsApi.findProductByKeyword(item);
-            return res;
-        } catch (err: any) {
-            return rejectWithValue(err);
-        }
-    },
-);
-
-export const findProductByColor = createAsyncThunk(
-    'products/findProductByColor',
     async (item: findProduct, { rejectWithValue }) => {
         try {
             const res = await productsApi.findProductByKeyword(item);
@@ -149,18 +136,8 @@ export const productSlice = createSlice({
         });
         builder.addCase(findProductByKeyword.fulfilled, (state, action) => {
             state.loading = false;
-            state.products = action.payload.data;
-        });
-        builder.addCase(findProductByColor.pending, (state) => {
-            state.loading = true;
-        });
-        builder.addCase(findProductByColor.rejected, (state, action) => {
-            state.loading = false;
-            state.error = action.error.message || null;
-        });
-        builder.addCase(findProductByColor.fulfilled, (state, action) => {
-            state.loading = false;
-            state.products = action.payload.data;
+            state.products = action.payload.data.data;
+            state.pages = action.payload.data.pages;
         });
 
         builder.addCase(getProductHotDeal.pending, (state) => {
