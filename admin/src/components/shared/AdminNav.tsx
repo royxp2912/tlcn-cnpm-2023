@@ -24,7 +24,7 @@ const AdminNav = () => {
     };
 
     return (
-        <div className="flex flex-col gap-[355px] items-center justify-between shadow-nav w-[260px] h-screen">
+        <div className="flex flex-col items-center justify-between shadow-nav w-[260px] h-screen">
             <div className="p-5">
                 <div className="flex items-center gap-[10px] mb-5">
                     <div className="w-[90px] h-[90px] rounded-full relative">
@@ -56,7 +56,10 @@ const AdminNav = () => {
                     })}
                 </div>
             </div>
-            <div className="font-bold flex items-center gap-[14px] px-[60px] mb-[30px]" onClick={handleLogout}>
+            <div
+                className="font-bold flex items-center gap-[14px] px-[60px] mb-[30px] cursor-pointer hover:opacity-60"
+                onClick={handleLogout}
+            >
                 <LogoutRoundedIcon />
                 <span>Logout</span>
             </div>

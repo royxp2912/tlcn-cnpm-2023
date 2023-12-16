@@ -16,6 +16,9 @@ const Navbar = () => {
     }, [dispatch]);
 
     const pathname = usePathname();
+    if (pathname.startsWith('/user')) {
+        return;
+    }
     return (
         <div className={` flex justify-center ${pathname === '/' ? 'text-white bg-bg' : 'text-bg bg-white'} font-bold`}>
             <Link

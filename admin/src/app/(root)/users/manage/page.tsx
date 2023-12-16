@@ -61,12 +61,8 @@ const UserManage = () => {
 
     //Check
     const [checkedAll, setCheckedAll] = useState(false);
-    const initialCheckedItems = (users ?? []).reduce((acc, item) => {
-        acc[item._id] = false;
-        return acc;
-    }, {} as { [key: string]: boolean });
 
-    const [checkedItems, setCheckedItems] = React.useState<{ [key: string]: boolean }>(initialCheckedItems);
+    const [checkedItems, setCheckedItems] = useState<{ [key: string]: boolean }>({});
 
     const handleCheckedAll = async () => {
         setCheckedAll((prev) => !prev);
@@ -133,6 +129,14 @@ const UserManage = () => {
     }, [checkedItems]);
 
     useEffect(() => {
+        const initialCheckedItems = (users ?? []).reduce((acc, item) => {
+            acc[item._id] = false;
+            return acc;
+        }, {} as { [key: string]: boolean });
+        setCheckedItems(initialCheckedItems);
+    }, [users]);
+
+    useEffect(() => {
         dispatch(getAllUser());
         localStorage.setItem('tickUser', '');
     }, [dispatch, load]);
@@ -157,7 +161,7 @@ const UserManage = () => {
                     type="checkbox"
                     checked={checkedAll}
                     onChange={handleCheckedAll}
-                    className="w-[26px] h-[26px] border-[#D9D9D9]"
+                    className="w-[26px] h-[26px] border-[#D9D9D9] cursor-pointer"
                 />
                 <button className="h-[40px] w-[100px] font-medium text-sm bg-blue bg-opacity-60 text-white rounded-lg">
                     Select All
@@ -177,7 +181,7 @@ const UserManage = () => {
                                 <TableCell align="left">
                                     <input
                                         type="checkbox"
-                                        className="w-[26px] h-[26px] "
+                                        className="w-[26px] h-[26px] cursor-pointer"
                                         checked={checkedAll}
                                         onChange={handleCheckedAll}
                                     />
@@ -198,7 +202,7 @@ const UserManage = () => {
                                     <TableCell align="left">
                                         <input
                                             type="checkbox"
-                                            className="w-[26px] h-[26px] "
+                                            className="w-[26px] h-[26px] cursor-pointer"
                                             checked={checkedAll ? checkedAll : checkedItems[item._id]}
                                             onChange={() => handleChecked(item._id)}
                                         />

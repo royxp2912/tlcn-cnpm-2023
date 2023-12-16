@@ -21,10 +21,16 @@ const CategoriesList = ({ categories, setItem }: Props) => {
                 categories.map((item) => (
                     <div
                         key={item._id}
-                        className="flex gap-[10px] p-[10px] shadow-revenue w-[280px] bg-white"
+                        className="flex gap-[10px] p-[10px] shadow-revenue w-[280px] bg-white cursor-pointer hover:border-2 hover:border-blue"
                         onClick={() => handleSet(item)}
                     >
-                        <Image src={item.image} alt="Cate" width={100} height={100} className="shadow-cate" />
+                        <Image
+                            src={item.image}
+                            alt="Cate"
+                            width={100}
+                            height={100}
+                            className="w-[100px] h-[100px] shadow-cate"
+                        />
                         <div className="flex flex-col w-[150px] items-center">
                             <div className="text-right w-full">
                                 <input type="checkbox" className="w-5 h-5" />

@@ -242,11 +242,13 @@ const AddNewProduct = () => {
             setAddVariants(Array.from({ length: newVars.length }, () => ({})));
         }
     }, [mount]);
-    console.log(upImage);
     return (
         <div className="flex flex-col gap-[10px]">
             <div className="font-bold">
-                <div className="flex items-center cursor-pointer" onClick={() => router.push('/warehouse/manage')}>
+                <div
+                    className="flex items-center cursor-pointer hover:opacity-60"
+                    onClick={() => router.push('/warehouse/manage')}
+                >
                     <ChevronLeftRoundedIcon />
                     <span>Back</span>
                 </div>
@@ -306,7 +308,7 @@ const AddNewProduct = () => {
                         </div>
                     )}
                     <button
-                        className="w-[100px] h-[50px] bg-blue opacity-50 text-white font-bold text-sm"
+                        className="w-[100px] h-[50px] bg-blue opacity-50 text-white font-bold text-sm hover:opacity-100"
                         onClick={handleUpdateImage}
                     >
                         Update Image
@@ -385,7 +387,7 @@ const AddNewProduct = () => {
                 <div className="flex items-center justify-between">
                     <span className="font-bold text-lg">Variants Of Product</span>
                     <button
-                        className="w-[150px] h-10 text-sm font-medium bg-blue bg-opacity-60 text-white"
+                        className="w-[150px] h-10 text-sm font-medium bg-blue bg-opacity-60 text-white hover:bg-opacity-100"
                         onClick={addVariant}
                     >
                         Add New Variant
@@ -424,25 +426,28 @@ const AddNewProduct = () => {
                                 />
                             </div>
                             <button
-                                className="w-[100px] h-[50px] bg-blue opacity-50 text-white font-bold text-sm"
+                                className="w-[100px] h-[50px] bg-blue opacity-50 text-white font-bold text-sm hover:opacity-100"
                                 onClick={() => handleUpdateVariant(vars[index].variant, index)}
                             >
                                 Update
                             </button>
-                            <CloseOutlinedIcon className="text-red " onClick={() => handleDeleteVariant(index)} />
+                            <CloseOutlinedIcon
+                                className="text-red cursor-pointer hover:opacity-60"
+                                onClick={() => handleDeleteVariant(index)}
+                            />
                         </div>
                     ))}
                 </div>
             </div>
             <div className="flex gap-[26px] justify-end">
                 <button
-                    className="w-[200px] h-[50px] bg-red opacity-50 text-white font-bold text-sm"
+                    className="w-[200px] h-[50px] bg-red opacity-50 text-white font-bold text-sm hover:opacity-100"
                     onClick={() => router.push('/warehouse/manage')}
                 >
                     CANCEL
                 </button>
                 <button
-                    className="w-[200px] h-[50px] bg-blue opacity-50 text-white font-bold text-sm"
+                    className="w-[200px] h-[50px] bg-blue opacity-50 text-white font-bold text-sm hover:opacity-100"
                     onClick={handleSubmit}
                 >
                     Update Info Product

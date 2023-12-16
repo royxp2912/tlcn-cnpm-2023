@@ -14,7 +14,7 @@ export const adminNav = [
     {
         icon: AccountCircleRoundedIcon,
         route: '/users',
-        label: 'User',
+        label: 'Users',
     },
     {
         icon: ArticleRoundedIcon,

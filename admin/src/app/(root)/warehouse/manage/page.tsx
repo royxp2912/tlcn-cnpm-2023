@@ -49,6 +49,39 @@ const WareHouseManage = () => {
     const handleChangePage = (i: number) => {
         setPageNumber(i);
     };
+
+    //Checked
+    const [checkedAll, setCheckedAll] = useState(false);
+
+    const [checkedItems, setCheckedItems] = useState<{ [key: string]: boolean }>({});
+
+    const handleCheckedAll = () => {
+        setCheckedAll((prev) => !prev);
+
+        if (!checkedAll) {
+            const updatedCheckedItems: { [key: string]: boolean } = {};
+            for (const item of products) {
+                updatedCheckedItems[item._id] = true;
+            }
+            localStorage.setItem('tickProduct', JSON.stringify(products));
+            setCheckedItems(updatedCheckedItems);
+        } else {
+            const updatedCheckedItems: { [key: string]: boolean } = {};
+            for (const item of products) {
+                updatedCheckedItems[item._id] = false;
+            }
+            localStorage.setItem('tickProduct', '');
+            setCheckedItems(updatedCheckedItems);
+        }
+    };
+    useEffect(() => {
+        const initialCheckedItems = (products ?? []).reduce((acc, item) => {
+            acc[item._id] = false;
+            return acc;
+        }, {} as { [key: string]: boolean });
+        setCheckedItems(initialCheckedItems);
+    }, [products]);
+
     useEffect(() => {
         const item = {
             status: status[active],
@@ -59,6 +92,7 @@ const WareHouseManage = () => {
         } else {
             dispatch(getAllProductByStatus(item));
         }
+        localStorage.setItem('tickProduct', '');
     }, [dispatch, active, pageNumber, load]);
 
     return (
@@ -92,11 +126,16 @@ const WareHouseManage = () => {
             </div>
             <div className="flex justify-between">
                 <div className="ml-[15px] flex items-center gap-5">
-                    <input type="checkbox" className="w-[26px] h-[26px]" />
+                    <input
+                        type="checkbox"
+                        className="w-[26px] h-[26px] cursor-pointer"
+                        checked={checkedAll}
+                        onChange={handleCheckedAll}
+                    />
                     {buttons.map((item) => (
                         <button
                             key={item}
-                            className="bg-blue bg-opacity-60 h-10 px-4 text-sm font-medium text-white rounded-lg"
+                            className="bg-blue bg-opacity-60 h-10 px-4 text-sm font-medium text-white rounded-lg hover:bg-opacity-100"
                         >
                             {item}
                         </button>
@@ -109,7 +148,16 @@ const WareHouseManage = () => {
                     Add Product
                 </button>
             </div>
-            <TableProduct products={products} setOpen={setOpen} setAction={setAction} setId={setId} />
+            <TableProduct
+                products={products}
+                setOpen={setOpen}
+                setAction={setAction}
+                setId={setId}
+                checkedItems={checkedItems}
+                setCheckedItems={setCheckedItems}
+                checkedAll={checkedAll}
+                setCheckedAll={setCheckedAll}
+            />
             {pages !== 0 && (
                 <div className="flex justify-center shadow-product2 bg-white">
                     <ThemeProvider theme={theme}>

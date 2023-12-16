@@ -67,61 +67,102 @@ const OrderManage = () => {
         setOrderId(id);
         setOpen(true);
         setCurrent('Accepted');
-
-        // const { data } = await axios.patch('/orders', {
-        //     order: id,
-        //     status: 'Accepted',
-        // });
-        // if (data.success) {
-        //     toast.success('Comfirm Success');
-        //     setLoad((prev) => !prev);
-        // }
     };
     const handleDelivery = async (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>, id: string) => {
         e.stopPropagation();
         setOrderId(id);
         setOpen(true);
         setCurrent('Delivering');
-
-        // const { data } = await axios.patch('/orders', {
-        //     order: id,
-        //     status: 'Delivering',
-        // });
-        // if (data.success) {
-        //     toast.success('Delivery Success');
-        //     setLoad((prev) => !prev);
-        // }
     };
     const handleCancel = async (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>, id: string) => {
         e.stopPropagation();
         setOrderId(id);
         setOpen(true);
         setCurrent('Cancel');
-
-        // const { data } = await axios.patch('/orders', {
-        //     order: id,
-        //     status: 'Cancel',
-        // });
-        // if (data.success) {
-        //     toast.success('Cancel Success');
-        //     setLoad((prev) => !prev);
-        // }
     };
     const handleSuccess = async (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>, id: string) => {
         e.stopPropagation();
         setOrderId(id);
         setOpen(true);
         setCurrent('Successful');
-
-        // const { data } = await axios.patch('/orders', {
-        //     order: id,
-        //     status: 'Successful',
-        // });
-        // if (data.success) {
-        //     toast.success('Success Success');
-        //     setLoad((prev) => !prev);
-        // }
     };
+
+    //Check
+    const [checkedAll, setCheckedAll] = useState(false);
+
+    const [checkedItems, setCheckedItems] = useState<{ [key: string]: boolean }>({});
+
+    const handleCheckedAll = async () => {
+        setCheckedAll((prev) => !prev);
+
+        if (!checkedAll) {
+            const updatedCheckedItems: { [key: string]: boolean } = {};
+            for (const item of orders) {
+                updatedCheckedItems[item._id] = true;
+            }
+            localStorage.setItem('tickOrder', JSON.stringify(orders));
+            setCheckedItems(updatedCheckedItems);
+        } else {
+            const updatedCheckedItems: { [key: string]: boolean } = {};
+            for (const item of orders) {
+                updatedCheckedItems[item._id] = false;
+            }
+            localStorage.setItem('tickOrder', '');
+            setCheckedItems(updatedCheckedItems);
+        }
+    };
+
+    const handleChecked = (orderId: string) => {
+        setCheckedItems((prevState) => {
+            const newState = {
+                ...prevState,
+                [orderId]: !prevState[orderId],
+            };
+
+            if (newState[orderId]) {
+                const storedItems = localStorage.getItem('tickOrder');
+                let storedItemsArray: Order[] = [];
+
+                if (storedItems) {
+                    storedItemsArray = JSON.parse(storedItems);
+                }
+
+                const selectedItem = orders.find((item) => item._id === orderId);
+
+                if (selectedItem) {
+                    storedItemsArray = storedItemsArray.filter((item) => item._id !== orderId);
+                    storedItemsArray.push(selectedItem);
+                    localStorage.setItem('tickOrder', JSON.stringify(storedItemsArray));
+                }
+            } else {
+                const storedItems = localStorage.getItem('tickOrder');
+                let storedItemsArray: Order[] = [];
+
+                if (storedItems) {
+                    storedItemsArray = JSON.parse(storedItems);
+                    storedItemsArray = storedItemsArray.filter((item) => item._id !== orderId);
+                    localStorage.setItem('tickOrder', JSON.stringify(storedItemsArray));
+                }
+            }
+            return newState;
+        });
+    };
+
+    useEffect(() => {
+        let allChecked = false;
+        if (Object.keys(checkedItems).length !== 0) {
+            allChecked = Object.values(checkedItems).every((value) => value === true);
+        }
+        setCheckedAll(allChecked);
+    }, [checkedItems]);
+
+    useEffect(() => {
+        const initialCheckedItems = (orders ?? []).reduce((acc, item) => {
+            acc[item._id] = false;
+            return acc;
+        }, {} as { [key: string]: boolean });
+        setCheckedItems(initialCheckedItems);
+    }, [orders]);
 
     useEffect(() => {
         const item = {
@@ -132,8 +173,6 @@ const OrderManage = () => {
             dispatch(getAllOrders(pageNumber));
         } else dispatch(getAllOrderByOrderStatus(item));
     }, [dispatch, status, load, pageNumber]);
-
-    console.log(pageNumber);
 
     return (
         <div className="flex flex-col gap-[10px]">
@@ -158,7 +197,7 @@ const OrderManage = () => {
                         const isActive = status === item;
                         return (
                             <span
-                                className={`w-[140px] h-max block pt-[10px] pb-[12px] text-center uppercase cursor-pointer hover:text-blue ${
+                                className={`w-[140px] h-max block pt-[10px] pb-[12px] text-center uppercase font-semibold cursor-pointer hover:text-blue ${
                                     isActive && 'text-blue border-b-2 border-b-blue'
                                 }`}
                                 onClick={() => handleStatus(item)}
@@ -170,7 +209,7 @@ const OrderManage = () => {
                     })}
             </div>
             <div className="ml-[15px] flex items-center gap-5">
-                <input type="checkbox" className="w-[26px] h-[26px]" />
+                <input type="checkbox" checked={checkedAll} onChange={handleCheckedAll} className="w-[26px] h-[26px]" />
                 {buttons.map((item) => (
                     <button
                         key={item}
@@ -188,12 +227,20 @@ const OrderManage = () => {
                     orders.map((order) => (
                         <div
                             key={order._id}
-                            className="px-[15px] pt-[15px] pb-[10px] shadow-order bg-white"
+                            className="px-[15px] pt-[15px] pb-[10px] shadow-order bg-white cursor-pointer hover:border-2 hover:border-blue"
                             onClick={() => router.push(`/order/manage/${order._id}`)}
                         >
                             <div className="flex justify-between mb-[15px] font-bold">
                                 <div className="flex items-center gap-[14px]">
-                                    <input type="checkbox" className="w-[26px] h-[26px]" />
+                                    <input
+                                        type="checkbox"
+                                        checked={checkedAll ? checkedAll : checkedItems[order._id]}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleChecked(order._id);
+                                        }}
+                                        className="w-[26px] h-[26px]"
+                                    />
                                     <h1>ID: {order._id}</h1>
                                 </div>
                                 <span>Buyer: {order.user}</span>

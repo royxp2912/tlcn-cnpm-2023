@@ -99,7 +99,10 @@ const Header = () => {
             <div className=" flex items-center justify-between px-20 pt-6 pb-5 w-full">
                 <div className="flex items-center gap-5">
                     <div
-                        className={`text-5xl flex items-center gap-1 ${pathname === '/' ? 'text-orange' : 'text-blue'}`}
+                        className={`text-5xl flex items-center gap-1 cursor-pointer ${
+                            pathname === '/' ? 'text-orange' : 'text-blue'
+                        }`}
+                        onClick={() => router.push('/')}
                     >
                         <span className="font-birsmark scale-x-[-1]">P</span>
                         <span className="font-fb">&</span>

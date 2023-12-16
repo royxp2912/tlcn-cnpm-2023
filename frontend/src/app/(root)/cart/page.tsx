@@ -30,13 +30,7 @@ const Cart = () => {
     });
     const [load, setLoad] = useState<boolean>(false);
 
-    const initialCheckedItems = (cartItem.items ?? []).reduce((acc, item) => {
-        acc[item.product] = false;
-        return acc;
-    }, {} as { [key: string]: boolean });
-
-    const [checkedItems, setCheckedItems] = React.useState<{ [key: string]: boolean }>(initialCheckedItems);
-
+    const [checkedItems, setCheckedItems] = React.useState<{ [key: string]: boolean }>({});
     const userString = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
 
     let user: User | null = null;
@@ -90,6 +84,14 @@ const Cart = () => {
             setCheckedItems(updatedCheckedItems);
         }
     };
+
+    useEffect(() => {
+        const initialCheckedItems = (cartItem.items ?? []).reduce((acc, item) => {
+            acc[item.product] = false;
+            return acc;
+        }, {} as { [key: string]: boolean });
+        setCheckedItems(initialCheckedItems);
+    }, [cartItem.items]);
 
     return (
         <div className="flex flex-col items-center px-10">

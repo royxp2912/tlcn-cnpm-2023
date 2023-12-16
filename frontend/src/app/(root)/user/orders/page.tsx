@@ -104,7 +104,7 @@ const Orders = () => {
                             const isActive = status === item;
                             return (
                                 <span
-                                    className={`w-[140px] h-max block pt-[10px] pb-[12px] text-center uppercase hover:text-blue cursor-pointer ${
+                                    className={`w-[140px] h-max block pt-[10px] pb-[12px] font-semibold text-center uppercase hover:text-blue cursor-pointer ${
                                         isActive && 'text-blue border-b-2 border-b-blue'
                                     }`}
                                     onClick={() => setStatus(item)}
@@ -122,7 +122,7 @@ const Orders = () => {
                         orders.map((order) => (
                             <div
                                 key={order._id}
-                                className="px-[15px] pt-[15px] pb-[10px] shadow-lg"
+                                className="px-[15px] pt-[15px] pb-[10px] shadow-lg cursor-pointer hover:border-2 hover:border-blue"
                                 onClick={() => router.push(`orders/${order._id}`)}
                             >
                                 <div className="flex justify-between mb-[8px]">

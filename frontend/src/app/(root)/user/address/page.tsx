@@ -87,7 +87,7 @@ const Address = () => {
                     </div>
                     <div
                         onClick={() => setOpen(true)}
-                        className="w-[186px] h-10 cursor-pointer bg-blue bg-opacity-20 text-blue flex gap-1 items-center justify-center rounded-full font-medium"
+                        className="w-[186px] h-10 cursor-pointer bg-blue bg-opacity-20 text-blue flex gap-1 items-center justify-center rounded-full font-medium hover:bg-opacity-100 hover:text-white"
                     >
                         <AddLocationAltOutlinedIcon />
                         <span>New Address</span>

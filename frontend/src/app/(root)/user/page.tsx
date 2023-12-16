@@ -223,7 +223,7 @@ const Profile = () => {
                         <div className="h-full w-[1px] border border-blue">{/* <Border /> */}</div>
                         <div className="w-full flex flex-col gap-[50px] ml-[100px] font-medium ">
                             <div className="flex items-center gap-[50px]">
-                                <span className="block w-[100px]">Full name</span>
+                                <span className="block w-[110px]">Full name</span>
 
                                 <TextField
                                     className="w-full"
@@ -237,13 +237,13 @@ const Profile = () => {
                                 />
                             </div>
                             <div className="flex items-center gap-[50px]">
-                                <span className="block w-[74px]">Email</span>
+                                <span className="block w-[82px]">Email</span>
                                 <span className="font-semibold">{user?.email}</span>
                                 <div className="flex-grow"></div>
                                 <EditOutlinedIcon className="cursor-pointer" onClick={handleChangeEmail} />
                             </div>
                             <div className="flex items-center gap-[50px]">
-                                <span className="block w-[100px]">Phone</span>
+                                <span className="block w-[110px]">Phone</span>
                                 <TextField
                                     className="w-full"
                                     id="phone"
@@ -256,7 +256,7 @@ const Profile = () => {
                                 />
                             </div>
                             <div className="flex items-center gap-[50px]">
-                                <span className="block w-[100px]">Gender</span>
+                                <span className="block w-[80px]">Gender</span>
                                 <div className="flex gap-[58px]">
                                     <div className="flex items-center gap-[6px]">
                                         <input
@@ -297,7 +297,7 @@ const Profile = () => {
                                 </div>
                             </div>
                             <div className="flex items-center gap-[50px]">
-                                <span className="block w-[100px]">BirthDay</span>
+                                <span className="block w-[82px]">BirthDay</span>
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <DatePicker
                                         format="DD/MM/YYYY"
