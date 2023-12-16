@@ -270,7 +270,7 @@ export const {
         }
     },
 
-    findByKeywordAndSort: async (keyword, pageSize, pageNumber, sort) => {
+    findByKeywordAndSort: async (keyword, pageSize, pageNumber, brand, color, sort) => {
         try {
             let result = [];
             if (isNaN(keyword)) {
@@ -283,7 +283,7 @@ export const {
                             { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
                         ],
                     })
-                        .select('_id')
+                        .select('_id brand')
                         .sort({ price: -1 });
                 }
 
@@ -296,7 +296,7 @@ export const {
                             { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
                         ],
                     })
-                        .select('_id')
+                        .select('_id brand')
                         .sort({ price: 1 });
                 }
 
@@ -309,7 +309,7 @@ export const {
                             { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
                         ],
                     })
-                        .select('_id')
+                        .select('_id brand')
                         .sort({ rating: -1 });
                 }
 
@@ -322,7 +322,7 @@ export const {
                             { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
                         ],
                     })
-                        .select('_id')
+                        .select('_id brand')
                         .sort({ rating: 1 });
                 }
 
@@ -335,7 +335,7 @@ export const {
                             { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
                         ],
                     })
-                        .select('_id')
+                        .select('_id brand')
                         .sort({ sold: -1 });
                 }
             } else {
@@ -350,7 +350,7 @@ export const {
                             { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
                         ],
                     })
-                        .select('_id')
+                        .select('_id brand')
                         .sort({ price: -1 });
                 }
 
@@ -365,7 +365,7 @@ export const {
                             { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
                         ],
                     })
-                        .select('_id')
+                        .select('_id brand')
                         .sort({ price: 1 });
                 }
 
@@ -380,7 +380,7 @@ export const {
                             { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
                         ],
                     })
-                        .select('_id')
+                        .select('_id brand')
                         .sort({ rating: -1 });
                 }
 
@@ -395,7 +395,7 @@ export const {
                             { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
                         ],
                     })
-                        .select('_id')
+                        .select('_id brand')
                         .sort({ rating: 1 });
                 }
 
@@ -410,13 +410,25 @@ export const {
                             { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
                         ],
                     })
-                        .select('_id')
+                        .select('_id brand')
                         .sort({ sold: -1 });
                 }
             }
 
             if (!result) return false;
-            const final = result.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+
+            let firstResult = result;
+            if (brand) {
+                firstResult = result.filter((product) => product.brand === brand);
+            }
+
+            let semiFinal = firstResult;
+            if (color) {
+                const maped = await Promise.all(firstResult.map((product) => isColorInProduct(product._id, color)));
+                semiFinal = maped.filter((item) => item._id);
+            }
+
+            const final = semiFinal.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
             const finalResult = await Promise.all(final.map(item => isStock(item._id)));
 
             return {
@@ -435,7 +447,71 @@ export const {
         }
     },
 
-    findByKeyword: async (keyword, pageSize, pageNumber) => {
+    getAllByCateID: async (cateID, color, brand, sort, pageSize, pageNumber) => {
+        try {
+            if (sort === "hot") {
+                const listProduct = await Product.find({ category: cateID })
+                    .populate({ path: 'category', select: 'name' })
+                    .select("-createdAt -updatedAt -__v -status")
+                    .sort({ sold: -1 });
+
+                let result = listProduct;
+                if (brand) {
+                    result = listProduct.filter((product) => product.brand === brand);
+                }
+                let semiFinal = result;
+                if (color) {
+                    const maped = await Promise.all(result.map((product) => isColorInProduct(product._id, color)));
+                    semiFinal = maped.filter((item) => item._id);
+                }
+
+                const final = semiFinal.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+                const finalResult = await Promise.all(final.map(item => isStock(item._id)));
+
+                return {
+                    success: true,
+                    status: 200,
+                    message: 'Get All Product Of Category Successful!!!',
+                    pages: Math.ceil(semiFinal.length / pageSize),
+                    data: finalResult,
+                };
+            }
+
+            const listProduct = await Product.find({ category: cateID })
+                .populate({ path: 'category', select: 'name' })
+                .select("-createdAt -updatedAt -__v -status")
+                .sort({ createdAt: -1 });
+
+            let result = listProduct;
+            if (brand) {
+                result = listProduct.filter((product) => product.brand === brand);
+            }
+            let semiFinal = result;
+            if (color) {
+                const maped = await Promise.all(result.map((product) => isColorInProduct(product._id, color)));
+                semiFinal = maped.filter((item) => item._id);
+            }
+
+            const final = semiFinal.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+            const finalResult = await Promise.all(final.map(item => isStock(item._id)));
+
+            return {
+                success: true,
+                status: 200,
+                message: 'Get All Product Of Category Successful!!!',
+                pages: Math.ceil(semiFinal.length / pageSize),
+                data: finalResult,
+            };
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message,
+            };
+        }
+    },
+
+    findByKeyword: async (keyword, pageSize, pageNumber, brand, color) => {
         try {
             let result = [];
             if (isNaN(keyword)) {
@@ -447,8 +523,7 @@ export const {
                         { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
                     ],
                 })
-                    .populate({ path: 'category', select: 'name' })
-                    .select('_id');
+                    .select('_id brand');
             } else {
                 result = await Product.find({
                     $or: [
@@ -460,12 +535,23 @@ export const {
                         { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
                     ],
                 })
-                    .populate({ path: 'category', select: 'name' })
-                    .select('_id');
+                    .select('_id brand');
             }
 
             if (!result) return false;
-            const final = result.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+
+            let firstResult = result;
+            if (brand) {
+                firstResult = result.filter((product) => product.brand === brand);
+            }
+
+            let semiFinal = firstResult;
+            if (color) {
+                const maped = await Promise.all(firstResult.map((product) => isColorInProduct(product._id, color)));
+                semiFinal = maped.filter((item) => item._id);
+            }
+
+            const final = semiFinal.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
             const finalResult = await Promise.all(final.map(item => isStock(item._id)));
             return {
                 success: true,
@@ -750,70 +836,6 @@ export const {
                 message: 'Get All Product By Status Successful!!!',
                 pages: Math.ceil(all.length / pageSize),
                 data: result,
-            };
-        } catch (err) {
-            return {
-                success: false,
-                status: err.status || 500,
-                message: err.message,
-            };
-        }
-    },
-
-    getAllByCateID: async (cateID, color, brand, sort, pageSize, pageNumber) => {
-        try {
-            if (sort === "hot") {
-                const listProduct = await Product.find({ category: cateID })
-                    .populate({ path: 'category', select: 'name' })
-                    .select("-createdAt -updatedAt -__v -status")
-                    .sort({ sold: -1 });
-
-                let result = listProduct;
-                if (brand) {
-                    result = listProduct.filter((product) => product.brand === brand);
-                }
-                let semiFinal = result;
-                if (color) {
-                    const maped = await Promise.all(result.map((product) => isColorInProduct(product._id, color)));
-                    semiFinal = maped.filter((item) => item._id);
-                }
-
-                const final = semiFinal.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
-                const finalResult = await Promise.all(final.map(item => isStock(item._id)));
-
-                return {
-                    success: true,
-                    status: 200,
-                    message: 'Get All Product Of Category Successful!!!',
-                    pages: Math.ceil(semiFinal.length / pageSize),
-                    data: finalResult,
-                };
-            }
-
-            const listProduct = await Product.find({ category: cateID })
-                .populate({ path: 'category', select: 'name' })
-                .select("-createdAt -updatedAt -__v -status")
-                .sort({ createdAt: -1 });
-
-            let result = listProduct;
-            if (brand) {
-                result = listProduct.filter((product) => product.brand === brand);
-            }
-            let semiFinal = result;
-            if (color) {
-                const maped = await Promise.all(result.map((product) => isColorInProduct(product._id, color)));
-                semiFinal = maped.filter((item) => item._id);
-            }
-
-            const final = semiFinal.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
-            const finalResult = await Promise.all(final.map(item => isStock(item._id)));
-
-            return {
-                success: true,
-                status: 200,
-                message: 'Get All Product Of Category Successful!!!',
-                pages: Math.ceil(semiFinal.length / pageSize),
-                data: finalResult,
             };
         } catch (err) {
             return {
