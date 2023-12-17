@@ -86,7 +86,7 @@ const HomeShoe = () => {
     };
     return (
         <div className="bg-bg">
-            <HomeShoeCard />
+            <HomeShoeCard id={id} />
 
             <div className="flex items-center justify-between py-10 px-14 gap-16">
                 <div>
@@ -95,7 +95,11 @@ const HomeShoe = () => {
                 <div className="flex gap-20">
                     {productHots &&
                         productHots.map((productHot) => (
-                            <div key={productHot._id} className="flex items-center rounded-xl h-40 ">
+                            <div
+                                key={productHot._id}
+                                onClick={() => router.push(`/shoes/${productHot._id}`)}
+                                className="flex items-center rounded-xl h-40 "
+                            >
                                 <div className="w-[100px] bg-pink h-full flex items-center relative rounded-tl-lg rounded-bl-lg">
                                     <Image
                                         src={productHot.images[0]}
@@ -118,14 +122,15 @@ const HomeShoe = () => {
                                     </div>
                                     <button
                                         className="mt-3 px-2 py-2 border-2 border-orange text-[12px] font-bold text-orange rounded-lg w-full hover:opacity-60"
-                                        onClick={() =>
+                                        onClick={(e) => {
+                                            e.stopPropagation();
                                             handleAddtoCart({
                                                 product: productHot._id,
                                                 image: productHot.images[0],
                                                 name: productHot.name,
                                                 price: productHot.price,
-                                            })
-                                        }
+                                            });
+                                        }}
                                     >
                                         ADD TO CART!
                                     </button>

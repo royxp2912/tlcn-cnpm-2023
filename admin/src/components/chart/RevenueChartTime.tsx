@@ -63,6 +63,7 @@ const RevenueChartTime = ({ path }: Props) => {
     const { detailMonth }: { detailMonth: detailMonth } = useSelector((state: any) => state.revenue);
 
     const divRef = useRef<HTMLDivElement>(null);
+    console.log(divRef);
     useEffect(() => {
         const item: day = {
             month: month,
@@ -85,8 +86,8 @@ const RevenueChartTime = ({ path }: Props) => {
     }, [dispath, month, year]);
     return (
         <div>
-            <div className="flex justify-between items-center">
-                <span className="font-bold">{path}</span>
+            <div className=" flex justify-between items-center">
+                <span className="font-bold ml-[60px]">{path}</span>
                 <div>
                     <Select
                         className="font-medium text-sm text-black"
@@ -99,7 +100,7 @@ const RevenueChartTime = ({ path }: Props) => {
                         <MenuItem value="Area Chart">Area Chart</MenuItem>
                     </Select>
                 </div>
-                <div className='flex gap-4'>
+                <div className="mr-[30px] flex gap-4">
                     <div>
                         <Select
                             className="font-medium text-sm text-black"

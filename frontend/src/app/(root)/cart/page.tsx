@@ -50,9 +50,8 @@ const Cart = () => {
         localStorage.setItem('totalPrice', '');
     }, [length, load]);
 
-    const handleCheckout = async () => {
-        const itemOrder = localStorage.getItem('itemOrders');
-        if (itemOrder) {
+    const handleCheckout = () => {
+        if (qty !== 0) {
             router.push('/order');
         } else {
             toast.error('Please choose shoes to checkout');

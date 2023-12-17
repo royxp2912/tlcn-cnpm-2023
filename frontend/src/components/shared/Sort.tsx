@@ -45,14 +45,17 @@ const Sort = ({ setActive, active, sort, setSort, view, setView }: Props) => {
         if (pathname.startsWith('/search')) {
             setView('');
         } else {
-            setView('hot');
+            setView('new');
         }
     };
+    console.log(view);
     return (
         <div className="flex items-center justify-between mt-3 mb-5 bg-deal rounded-lg p-5">
             <div className="flex gap-5 items-center">
                 <button
-                    className={`${view === 'new' ? 'bg-blue' : 'bg-[#ADD6FA]'} w-[120px] h-9 font-bold rounded-md`}
+                    className={`${
+                        view === 'new' || view === '' ? 'bg-blue' : 'bg-[#ADD6FA]'
+                    } w-[120px] h-9 font-bold rounded-md`}
                     onClick={handleSet}
                 >
                     New

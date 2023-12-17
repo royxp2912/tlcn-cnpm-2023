@@ -188,7 +188,7 @@ const Profile = () => {
     return (
         <div>
             {!loading ? (
-                <div className="flex px-20 mt-10 gap-5">
+                <div className="flex justify-center px-20 mt-10 gap-5">
                     <UserNav />
                     <div className="shadow-lg py-[40px] pl-[90px] pr-[120px] flex rounded-lg items-center w-[1100px]">
                         <div className="flex flex-col items-center gap-5 mr-[100px]">

@@ -88,10 +88,10 @@ const Header = () => {
     }, [dispatch]);
     return (
         <div className={`${pathname === '/' ? 'bg-bg' : 'bg-white'} flex flex-col items-center`}>
-            <div className=" flex items-center justify-between px-20 pt-6 pb-5 w-full">
+            <div className=" flex items-center justify-between px-20 pt-[10px] pb-[10px] w-full">
                 <div className="flex items-center gap-5">
                     <div
-                        className={`text-5xl flex items-center gap-1 cursor-pointer ${
+                        className={`text-4xl flex items-center gap-1 cursor-pointer ${
                             pathname === '/' ? 'text-orange' : 'text-blue'
                         }`}
                         onClick={() => router.push('/')}
@@ -101,15 +101,24 @@ const Header = () => {
                         <span className="font-birsmark">P</span>
                     </div>
                     <div>
-                        <div onKeyUp={(e) => handleSubmit(e)} className="relative mx-auto w-max">
+                        <div
+                            onKeyUp={(e) => handleSubmit(e)}
+                            className={`${pathname === '/' ? 'text-white' : 'text-black'} relative mx-auto w-max`}
+                        >
                             <input
                                 type="search"
-                                className="peer relative z-10 h-12 w-12 cursor-pointer rounded-full focus:border bg-transparent pl-12 outline-none focus:w-full focus:cursor-text focus:border-blue focus:pl-16 focus:pr-4"
+                                className={`peer relative z-10 h-10 w-10 cursor-pointer rounded-full focus:border bg-transparent pl-12 outline-none focus:w-full focus:cursor-text ${
+                                    pathname === '/' ? 'focus:border-orange' : 'focus:border-blue'
+                                } focus:pl-16 focus:pr-4`}
                                 onChange={(e) => setKeyword(e.target.value)}
                             />
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
-                                className="absolute inset-y-0 my-auto h-16 w-16 border-transparent stroke-blue px-3.5 peer-focus:border-blue peer-focus:stroke-blue"
+                                className={`absolute inset-y-0 my-auto h-8 w-12 border-r border-transparent px-3.5 ${
+                                    pathname === '/'
+                                        ? 'stroke-orange peer-focus:border-orange peer-focus:stroke-orange'
+                                        : 'stroke-blue peer-focus:border-blue peer-focus:stroke-blue'
+                                }`}
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"
@@ -145,7 +154,7 @@ const Header = () => {
                     </div> */}
                     <div className="relative cursor-pointer" onClick={handelCart}>
                         <ShoppingCartOutlinedIcon
-                            className={`w-7 h-7 ${
+                            className={`w-6 h-6 ${
                                 pathname === '/' ? 'text-orange hover:text-blue' : 'text-blue hover:text-orange'
                             }`}
                         />
@@ -155,7 +164,7 @@ const Header = () => {
                                     pathname === '/' ? 'bg-orange' : 'bg-blue'
                                 }`}
                             >
-                                <span className="text-white text-xs ml-[5px] absolute">
+                                <span className="text-white text-xs ml-[4px] absolute">
                                     {cartItem.items && cartItem.items.length}
                                 </span>
                             </div>
@@ -163,7 +172,7 @@ const Header = () => {
                     </div>
 
                     <PersonOutlineOutlinedIcon
-                        className={`${
+                        className={`w-7 h-7 ${
                             pathname === '/' ? 'text-orange hover:text-blue' : 'text-blue hover:text-orange'
                         } cursor-pointer`}
                         fontSize="large"
