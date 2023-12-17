@@ -92,7 +92,7 @@ const ManShoes = () => {
         };
         fetchData();
     }, [dispatch]);
-    console.log(pages);
+    console.log(active);
 
     return (
         <div className="flex px-[100px] gap-10 mt-5">
@@ -114,12 +114,12 @@ const ManShoes = () => {
                     view={view}
                     setView={setView}
                 />
-                {!active ? (
+                {active ? (
                     <ShoesWithTag listProduct={products.length !== 0 ? listProduct : products} />
                 ) : (
                     <SingleSellShoe products={products.length !== 0 ? listProduct : products} {...unProp} />
                 )}
-                <Pagetination setPageNum={setPageNum} pages={pages} />
+                {products.length !== 0 ? <Pagetination setPageNum={setPageNum} pages={pages} /> : ''}
             </div>
         </div>
     );

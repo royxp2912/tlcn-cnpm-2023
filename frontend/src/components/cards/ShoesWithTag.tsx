@@ -65,7 +65,9 @@ const ShoesWithTag = ({ listProduct }: Props) => {
     return (
         <div>
             {listProduct && listProduct.length === 0 ? (
-                <span>No Data</span>
+                <div className="flex justify-center">
+                    <span className="text-2xl font-semibold">No Data</span>
+                </div>
             ) : (
                 listProduct.map((product) => (
                     <div

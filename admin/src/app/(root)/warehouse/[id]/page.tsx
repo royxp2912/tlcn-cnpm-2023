@@ -48,6 +48,7 @@ const AddNewProduct = () => {
     });
     const [mount, setMount] = useState(false);
     const [load, setLoad] = useState(false);
+    const [action, setAction] = useState<string>('');
     const [del, setDel] = useState<boolean[]>([]);
     const router = useRouter();
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -78,6 +79,7 @@ const AddNewProduct = () => {
             [e.target.id]: e.target.value,
         }));
     };
+    const [add, setAdd] = useState(false);
     const addVariant = () => {
         setAddVariants((prevVariants) => [...prevVariants, {}]);
     };
@@ -92,17 +94,13 @@ const AddNewProduct = () => {
             return updatedVariants;
         });
     };
-    const handleDeleteVariant = (index: number) => {
-        setVars((prevVariants) => {
-            const updatedVariants = [...prevVariants];
-            updatedVariants.splice(index, 1);
-            return updatedVariants;
-        });
-        setAddVariants((prevVariants) => {
-            const updatedVariants = [...prevVariants];
-            updatedVariants.splice(index, 1);
-            return updatedVariants;
-        });
+
+    const [variant, setVariant] = useState<string>('');
+    const handleDeleteVariant = (variant: string, index: number) => {
+        setAction('Variant');
+        setOpen(true);
+        setVariant(variant);
+        setIndex(index);
     };
 
     const handleChangeCate = (event: SelectChangeEvent) => {
@@ -151,16 +149,33 @@ const AddNewProduct = () => {
         }
     };
     const handleUpdateVariant = async (variant: string, index: number) => {
-        const { data } = await axios.put('/variants/update', {
-            variant: variant,
-            color: vars[index].color,
-            size: vars[index].size,
-            quantity: vars[index].quantity,
-        });
-        if (data.success) {
-            toast.success('Update Variant Success');
-            setLoad((prev) => !prev);
-            setMount(false);
+        if (!add) {
+            const { data } = await axios.put('/variants/update', {
+                variant: variant,
+                color: vars[index].color,
+                size: vars[index].size,
+                quantity: vars[index].quantity,
+            });
+            if (data.success) {
+                toast.success('Update Variant Success');
+                setLoad((prev) => !prev);
+                setMount(false);
+            }
+        } else {
+            const { data } = await axios.put('/variants/create', {
+                proID: id,
+                variant: {
+                    color: vars[index].color,
+                    size: vars[index].size,
+                    quantity: vars[index].quantity,
+                },
+            });
+            if (data.success) {
+                toast.success('Update Variant Success');
+                setLoad((prev) => !prev);
+                setMount(false);
+                setAdd(false);
+            }
         }
     };
 
@@ -189,6 +204,7 @@ const AddNewProduct = () => {
         //         setImage(newImage);
         //     }
         // }
+        setAction('Image');
         setIndex(i);
         setImgName(name);
         setOpen(true);
@@ -433,7 +449,7 @@ const AddNewProduct = () => {
                             </button>
                             <CloseOutlinedIcon
                                 className="text-red cursor-pointer hover:opacity-60"
-                                onClick={() => handleDeleteVariant(index)}
+                                onClick={() => handleDeleteVariant(vars[index].variant, index)}
                             />
                         </div>
                     ))}
@@ -465,6 +481,12 @@ const AddNewProduct = () => {
                     id={id}
                     upImage={upImage}
                     setUpImage={setUpImage}
+                    action={action}
+                    setAction={setAction}
+                    variant={variant}
+                    setVariant={setVariant}
+                    setVars={setVars}
+                    setAddVariants={setAddVariants}
                 />
             )}
         </div>

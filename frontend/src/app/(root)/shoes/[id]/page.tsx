@@ -73,7 +73,6 @@ const ShoesSinglePage = () => {
         quantity: 0,
     });
     const [quantity, setQuantity] = useState<number>(1);
-    const [var1, setVar1] = useState<variantColor[]>();
 
     const [isNext, setIsNext] = useState<boolean>(false);
     const [isBack, setIsBack] = useState<boolean>(false);

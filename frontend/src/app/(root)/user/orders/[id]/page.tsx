@@ -25,7 +25,7 @@ const DetailOrder = () => {
     }, []);
     console.log(detail);
     return (
-        <div className="flex px-20 mt-10 gap-5">
+        <div className="flex justify-center px-20 mt-10 gap-5">
             <UserNav />
             <div className="w-[1100px]">
                 <span className="w-full block text-center font-bold text-lg">Order Details</span>

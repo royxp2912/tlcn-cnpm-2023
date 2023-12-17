@@ -110,12 +110,12 @@ const ManShoes = () => {
                     view={view}
                     setView={setView}
                 />
-                {!active ? (
+                {active ? (
                     <ShoesWithTag listProduct={products.length !== 0 ? listProduct : products} />
                 ) : (
                     <SingleSellShoe products={products.length !== 0 ? listProduct : products} {...unProp} />
                 )}
-                <Pagetination setPageNum={setPageNum} pages={pages} />
+                {products.length !== 0 ? <Pagetination setPageNum={setPageNum} pages={pages} /> : ''}
             </div>
         </div>
     );

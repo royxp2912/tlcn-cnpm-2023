@@ -1,4 +1,4 @@
-import { createError } from "../utils/createError.js";
+import { createError } from '../utils/createError.js';
 import {
     createOne,
     getVarByID,
@@ -10,7 +10,7 @@ import {
     getColorBySizeAndProID,
     getDetailListVarByProID,
     getVarByColorAndSize,
-} from "../services/variant.service.js";
+} from '../services/variant.service.js';
 
 export const getVariantByColorAndSize = async (req, res, next) => {
     try {
@@ -23,12 +23,12 @@ export const getVariantByColorAndSize = async (req, res, next) => {
         res.status(status).send({
             success,
             message,
-            data
+            data,
         });
     } catch (err) {
         next(err);
     }
-}
+};
 
 export const getAllDetailVarByProID = async (req, res, next) => {
     try {
@@ -39,12 +39,12 @@ export const getAllDetailVarByProID = async (req, res, next) => {
             success,
             message,
             total: data.length,
-            data
+            data,
         });
     } catch (err) {
         next(err);
     }
-}
+};
 
 export const getOneVarByProID = async (req, res, next) => {
     try {
@@ -55,12 +55,12 @@ export const getOneVarByProID = async (req, res, next) => {
             success,
             message,
             total: data.length,
-            data
+            data,
         });
     } catch (err) {
         next(err);
     }
-}
+};
 
 export const getColorOfProductBySizeAndProID = async (req, res, next) => {
     try {
@@ -71,12 +71,12 @@ export const getColorOfProductBySizeAndProID = async (req, res, next) => {
             success,
             message,
             total: data.length,
-            data
+            data,
         });
     } catch (err) {
         next(err);
     }
-}
+};
 
 export const getSizeOfProductByColorAndProID = async (req, res, next) => {
     try {
@@ -87,12 +87,12 @@ export const getSizeOfProductByColorAndProID = async (req, res, next) => {
             success,
             message,
             total: data.length,
-            data
+            data,
         });
     } catch (err) {
         next(err);
     }
-}
+};
 
 export const getAllVarByProID = async (req, res, next) => {
     try {
@@ -103,12 +103,12 @@ export const getAllVarByProID = async (req, res, next) => {
             success,
             message,
             total: data.length,
-            data
+            data,
         });
     } catch (err) {
         next(err);
     }
-}
+};
 
 export const getVariantByID = async (req, res, next) => {
     try {
@@ -118,12 +118,12 @@ export const getVariantByID = async (req, res, next) => {
         res.status(status).send({
             success,
             message,
-            data
+            data,
         });
     } catch (err) {
         next(err);
     }
-}
+};
 
 export const deleteVariantByID = async (req, res, next) => {
     try {
@@ -137,7 +137,7 @@ export const deleteVariantByID = async (req, res, next) => {
     } catch (err) {
         next(err);
     }
-}
+};
 
 export const updateVariantByID = async (req, res, next) => {
     try {
@@ -155,7 +155,7 @@ export const updateVariantByID = async (req, res, next) => {
     } catch (err) {
         next(err);
     }
-}
+};
 
 export const createOneVariant = async (req, res, next) => {
     try {
@@ -170,4 +170,4 @@ export const createOneVariant = async (req, res, next) => {
     } catch (err) {
         next(err);
     }
-}
+};

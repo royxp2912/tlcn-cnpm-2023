@@ -19,8 +19,9 @@ const AdminNav = () => {
     }
 
     const handleLogout = async () => {
-        await axios.delete(`/logout/${user?._id}`);
+        await axios.delete(`/auth/logout/${user?._id}`);
         localStorage.removeItem('admin');
+        router.push('/sign-in');
     };
 
     return (

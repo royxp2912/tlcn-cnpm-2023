@@ -94,7 +94,7 @@ const Orders = () => {
         setCurrent('Cancel');
     };
     return (
-        <div className="flex px-20 mt-10 gap-5">
+        <div className="flex justify-center px-20 mt-10 gap-5">
             <UserNav />
 
             <div className="w-max flex flex-col">

@@ -15,7 +15,6 @@ type Props = {
     top: top[];
 };
 const Top = ({ path, top }: Props) => {
-    console.log(top);
     return (
         <div className="w-full shadow-revenue bg-white py-20 pt-10 pb-[35px] flex gap-20 justify-center">
             <div className="flex flex-col items-center">
