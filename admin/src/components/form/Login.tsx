@@ -84,7 +84,6 @@ const Login = () => {
                         </FormItem>
                     )}
                 />
-                <span className="font-semibold text-right cursor-pointer hover:opacity-80">Forgotten password?</span>
                 <Button type="submit" className="w-full">
                     Sign In
                 </Button>

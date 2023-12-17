@@ -27,12 +27,12 @@ const AdminNav = () => {
         <div className="flex flex-col items-center justify-between shadow-nav w-[260px] h-screen">
             <div className="p-5">
                 <div className="flex items-center gap-[10px] mb-5">
-                    <div className="w-[90px] h-[90px] rounded-full relative">
+                    <div className="w-[60px] h-[60px] rounded-full relative">
                         <Image src={user?.avatar ?? ''} alt="AVT" fill />
                     </div>
                     <div className="flex flex-col items-center">
-                        <span className="font-bold">{user?.fullName}</span>
-                        <span className="text-sm">Admin</span>
+                        <span className="font-bold text-[14px]">{user?.fullName}</span>
+                        <span className="text-[12px]">Admin</span>
                     </div>
                 </div>
                 <div className="mt-[10px] flex flex-col gap-5">
@@ -45,9 +45,8 @@ const AdminNav = () => {
                             <div
                                 key={item.label}
                                 onClick={() => router.push(item.route)}
-                                className={`font-semibold w-[200px] h-10 pl-[18px] py-[10px] text-sm flex items-center gap-[12px] text-black rounded-xl cursor-pointer hover:text-blue ${
-                                    isActive && 'bg-blue text-white'
-                                }`}
+                                className={`font-semibold w-[200px] h-10 pl-[18px] py-[10px] text-sm flex items-center gap-[12px] text-black rounded-xl cursor-pointer hover:text-blue ${isActive && 'bg-blue text-white'
+                                    }`}
                             >
                                 <item.icon />
                                 <span>{item.label}</span>

@@ -127,7 +127,7 @@ export const getVariantByID = async (req, res, next) => {
 
 export const deleteVariantByID = async (req, res, next) => {
     try {
-        const { success, status, message, data } = await deleteVarByID(req.body.variant);
+        const { success, status, message, data } = await deleteVarByID(req.query.variant);
         if (!success) return next(createError(status, message));
 
         res.status(status).send({
