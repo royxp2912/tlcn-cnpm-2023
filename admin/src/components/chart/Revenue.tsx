@@ -48,7 +48,7 @@ const Revenue = ({ path }: Props) => {
         }
     }, [dispath]);
     return (
-        <div className="flex gap-5 ">
+        <div className="flex justify-between ">
             <div className="p-5 w-[400px] flex flex-col items-center shadow-revenue bg-white ">
                 <div className="flex items-center justify-between w-full">
                     <span className="font-bold">{path}</span>

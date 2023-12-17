@@ -26,7 +26,7 @@ const RevenueChart = ({ path }: Props) => {
     console.log(detailWeek);
 
     return (
-        <div className="flex gap-10">
+        <div className="flex justify-between">
             <div className="px-10 py-5 shadow-revenue bg-white w-[600px]">
                 <div className="flex justify-between items-center mb-[50px]">
                     <span className="font-bold">Revenue - Bar Chart</span>
