@@ -73,6 +73,7 @@ const Register = () => {
         const { data } = await axios.post('/auth/sendCode', {
             email: values.email,
         });
+        console.log(data);
         if (data.success) {
             setEmail(values.email);
             setCode(data.code);

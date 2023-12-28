@@ -50,8 +50,8 @@ const ManShoes = () => {
     const [sort, setSort] = useState<boolean>(false);
     const [view, setView] = useState<string>('');
     const [listProduct, setListProduct] = useState<Product[]>([]);
-    const [color, setColor] = useState<string>('Blue');
-    const [brand, setBrand] = useState<string>('Nike');
+    const [color, setColor] = useState<string>('');
+    const [brand, setBrand] = useState<string>('');
     const [pageNum, setPageNum] = useState<number>(1);
     const [minPrice, setMinPrice] = useState(0);
     const [maxPrice, setMaxPrice] = useState(2000);
@@ -81,6 +81,7 @@ const ManShoes = () => {
         setListProduct(sorted);
     }, [products, sort, minPrice, maxPrice]);
 
+    console.log(products);
     useEffect(() => {
         const fetchData = async () => {
             await dispatch(getProductHotDeal());

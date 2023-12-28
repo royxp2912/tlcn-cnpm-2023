@@ -81,6 +81,7 @@ const AddNewProduct = () => {
     };
     const [add, setAdd] = useState(false);
     const addVariant = () => {
+        setAdd(true);
         setAddVariants((prevVariants) => [...prevVariants, {}]);
     };
 
@@ -162,7 +163,7 @@ const AddNewProduct = () => {
                 setMount(false);
             }
         } else {
-            const { data } = await axios.put('/variants/create', {
+            const { data } = await axios.post('/variants/create', {
                 proID: id,
                 variant: {
                     color: vars[index].color,
@@ -178,6 +179,7 @@ const AddNewProduct = () => {
             }
         }
     };
+    console.log(add);
 
     //Delete image
     const [index, setIndex] = useState<number>(0);
