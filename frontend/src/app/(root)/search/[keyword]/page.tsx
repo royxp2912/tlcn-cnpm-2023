@@ -29,10 +29,10 @@ const unProp = {
     isNext: false,
     next: 0,
     back: 0,
-    setBack: () => {},
-    setNext: () => {},
-    setIsBack: () => {},
-    setIsNext: () => {},
+    setBack: () => { },
+    setNext: () => { },
+    setIsBack: () => { },
+    setIsNext: () => { },
 };
 
 const ManShoes = () => {
@@ -76,12 +76,15 @@ const ManShoes = () => {
     }, [dispatch, keyword, pageNum, view, brand, color]);
 
     useEffect(() => {
-        const filtered = products.filter((product) => product.price >= minPrice && product.price <= maxPrice);
-        const sorted = filtered.sort((a, b) => (sort ? b.price - a.price : a.price - b.price));
-        setListProduct(sorted);
+        if (sort) {
+            const filtered = products.filter((product) => product.price >= minPrice && product.price <= maxPrice);
+            const sorted = filtered.sort((a, b) => (sort ? b.price - a.price : a.price - b.price));
+            setListProduct(sorted);
+        } else {
+            setListProduct(products);
+        }
     }, [products, sort, minPrice, maxPrice]);
 
-    console.log(products);
     useEffect(() => {
         const fetchData = async () => {
             await dispatch(getProductHotDeal());
