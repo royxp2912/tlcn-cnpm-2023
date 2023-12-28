@@ -15,11 +15,19 @@ export type SignUp = {
 export type User = {
     _id: string;
     fullName: string;
-    email?: string;
+    email: string;
     gender: string;
     birthDay: string;
     phone: string;
     avatar: string;
+};
+
+export type upUser = {
+    user: string;
+    fullName: string;
+    gender: string;
+    birthDay: string;
+    phone: string;
 };
 
 export type updatePassword = {
@@ -33,6 +41,7 @@ export type updateEmail = {
 };
 
 export type Category = {
+    _id?: string;
     name: string;
     img: string;
 };
@@ -49,6 +58,7 @@ export type Product = {
     sold?: number;
     status?: string;
     variant: Variant;
+    isStock?: boolean;
 };
 
 export type Variant = {
@@ -59,6 +69,28 @@ export type Variant = {
 
 export type Address = {
     _id: string;
+    user: string;
+    receiver: string;
+    phone: string;
+    province: string;
+    districts: string;
+    wards: string;
+    specific: string;
+    default: boolean;
+};
+
+export type AddressLess = {
+    user: string;
+    receiver: string;
+    phone: string;
+    province: string;
+    districts: string;
+    wards: string;
+    specific: string;
+};
+
+export type UpdateAddress = {
+    address: string;
     user: string;
     receiver: string;
     phone: string;
@@ -80,21 +112,29 @@ export type ItemCart = {
 };
 
 export type Cart = {
-    _id: string;
+    _id?: string;
     user: string;
     total: number;
     items: ItemCart[];
 };
 
 export type Order = {
-    _id?: string;
+    _id: string;
     items: ItemCart[];
-    userId: string;
-    deliveryAddress: string;
+    userID: string;
+    deliveryAddress: Address;
     paymentMethod: string;
     total: number;
     status?: string;
     isPaid?: boolean;
+    isDelivered?: boolean;
+};
+export type checkoutOrder = {
+    items: ItemCart[];
+    userID: string;
+    deliveryAddress: string;
+    paymentMethod: string;
+    total: number;
 };
 
 export type RemoveItemCart = {
@@ -103,17 +143,8 @@ export type RemoveItemCart = {
 };
 
 export type updateOrder = {
-    orderId: string;
-    userId: string;
+    order: string;
     status: string;
-};
-
-export type findProduct = {
-    color?: string;
-    keyword?: string;
-    sort: string;
-    pageSize: number;
-    pageNumber: number;
 };
 
 export type upAvatar = {
@@ -124,4 +155,42 @@ export type upAvatar = {
 export type getSizeOfColor = {
     id: string;
     color: string;
+};
+
+export type variantColor = {
+    size: string;
+    quantity: number;
+};
+
+export type Brand = {
+    brand: string;
+    quantity: number;
+};
+
+export type itemCartRandomVari = {
+    product: string;
+    image: string;
+    name: string;
+    price: number;
+};
+
+export type productByCate = {
+    category: string;
+    sort: string;
+    brand: string;
+    color: string;
+    pageNumber: number;
+};
+
+export type findProduct = {
+    keyword: string;
+    sort: string;
+    brand: string;
+    color: string;
+    pageNumber: number;
+};
+
+export type orderStatus = {
+    status: string;
+    user: string;
 };

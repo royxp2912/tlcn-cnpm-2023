@@ -9,6 +9,7 @@ import categoryReducer from '../slices/categorySlice';
 import cartReducer from '../slices/cartSlice';
 import userReducer from '../slices/userSlice';
 import orderReducer from '../slices/orderSlice';
+import variantReducer from '../slices/variantSlice';
 
 const store = configureStore({
     reducer: {
@@ -19,6 +20,7 @@ const store = configureStore({
         categories: categoryReducer,
         users: userReducer,
         orders: orderReducer,
+        variants: variantReducer,
     },
 
     middleware: (getDefaultMiddleware) =>

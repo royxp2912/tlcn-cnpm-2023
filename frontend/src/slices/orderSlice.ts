@@ -1,8 +1,8 @@
 import ordersApi from '@/apis/orders';
-import { Order, updateOrder } from '@/types/type';
+import { Order, checkoutOrder, orderStatus, updateOrder } from '@/types/type';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-export const getAllOrder = createAsyncThunk('orders/getAllCategory', async (_, { rejectWithValue }) => {
+export const getAllOrder = createAsyncThunk('orders/getAllOrder', async (_, { rejectWithValue }) => {
     try {
         const res = await ordersApi.getAllOrder();
         return res;
@@ -12,7 +12,7 @@ export const getAllOrder = createAsyncThunk('orders/getAllCategory', async (_, {
 });
 
 export const getAllOrderByUserId = createAsyncThunk(
-    'orders/getCategoryById',
+    'orders/getAllOrderByUserId',
     async (userId: string, { rejectWithValue }) => {
         try {
             const res = await ordersApi.getAllOrderByUserId(userId);
@@ -23,11 +23,11 @@ export const getAllOrderByUserId = createAsyncThunk(
     },
 );
 
-export const getAllOrderByOrderStatus = createAsyncThunk(
-    'orders/getAllOrderByOrderStatus',
-    async (status: string, { rejectWithValue }) => {
+export const getAllOrderByUserAndStatus = createAsyncThunk(
+    'orders/getAllOrderByUserAndStatus',
+    async (item: orderStatus, { rejectWithValue }) => {
         try {
-            const res = await ordersApi.getAllOrderByOrderStatus(status);
+            const res = await ordersApi.getAllOrderByUserAndStatus(item);
             return res;
         } catch (err: any) {
             return rejectWithValue(err.res.data);
@@ -48,24 +48,10 @@ export const getOrderByOrderId = createAsyncThunk(
 );
 export const createOrder = createAsyncThunk(
     'orders/createOrder',
-    async (item: Order, { dispatch, rejectWithValue }) => {
+    async (item: checkoutOrder, { dispatch, rejectWithValue }) => {
         try {
             const res = await ordersApi.createOrder(item);
-            await dispatch(getAllOrderByUserId(item.userId));
-            return res;
-        } catch (err: any) {
-            return rejectWithValue(err.res.data);
-        }
-    },
-);
-
-export const updateOrderStatusByOrderId = createAsyncThunk(
-    'orders/updateOrderStatusByOrderId',
-    async (order: updateOrder, { dispatch, rejectWithValue }) => {
-        try {
-            const res = await ordersApi.updateOrderStatusByOrderId(order);
-            await dispatch(getAllOrderByUserId(order.userId));
-            await dispatch(getOrderByOrderId(order.orderId));
+            await dispatch(getAllOrderByUserId(item.userID));
             return res;
         } catch (err: any) {
             return rejectWithValue(err.res.data);
@@ -75,11 +61,9 @@ export const updateOrderStatusByOrderId = createAsyncThunk(
 
 export const cancelOrderByOrderId = createAsyncThunk(
     'orders/cancelOrderByOrderId',
-    async (order: updateOrder, { dispatch, rejectWithValue }) => {
+    async (order: string, { rejectWithValue }) => {
         try {
             const res = await ordersApi.cancelOrderByOrderId(order);
-            await dispatch(getAllOrderByUserId(order.userId));
-            await dispatch(getOrderByOrderId(order.orderId));
             return res;
         } catch (err: any) {
             return rejectWithValue(err.res.data);
@@ -102,6 +86,24 @@ export const comfirmPaymentOrderByOrderId = createAsyncThunk(
     },
 );
 
+export const returnOrder = createAsyncThunk('orders/returnOrder', async (order: string, { rejectWithValue }) => {
+    try {
+        const res = await ordersApi.returnOrder(order);
+        return res;
+    } catch (err: any) {
+        return rejectWithValue(err.res.data);
+    }
+});
+
+export const receivedOrder = createAsyncThunk('orders/receivedOrder', async (order: string, { rejectWithValue }) => {
+    try {
+        const res = await ordersApi.receivedOrder(order);
+        return res;
+    } catch (err: any) {
+        return rejectWithValue(err.res.data);
+    }
+});
+
 export const orderSlice = createSlice({
     name: 'orders',
     initialState: {
@@ -123,15 +125,15 @@ export const orderSlice = createSlice({
             state.loading = false;
             state.orders = action.payload.data.data;
         });
-        builder.addCase(getAllOrderByOrderStatus.pending, (state) => {
+        builder.addCase(getAllOrderByUserAndStatus.pending, (state) => {
             state.loading = true;
         });
-        builder.addCase(getAllOrderByOrderStatus.rejected, (state, action) => {
+        builder.addCase(getAllOrderByUserAndStatus.rejected, (state, action) => {
             state.loading = false;
             state.error = action.error.message || null;
             state.orders = [];
         });
-        builder.addCase(getAllOrderByOrderStatus.fulfilled, (state, action) => {
+        builder.addCase(getAllOrderByUserAndStatus.fulfilled, (state, action) => {
             state.loading = false;
             state.orders = action.payload.data.data;
         });
@@ -156,16 +158,6 @@ export const orderSlice = createSlice({
         builder.addCase(createOrder.fulfilled, (state, action) => {
             state.loading = false;
         });
-        builder.addCase(updateOrderStatusByOrderId.pending, (state) => {
-            state.loading = true;
-        });
-        builder.addCase(updateOrderStatusByOrderId.rejected, (state, action) => {
-            state.loading = false;
-            state.error = action.error.message || null;
-        });
-        builder.addCase(updateOrderStatusByOrderId.fulfilled, (state, action) => {
-            state.loading = false;
-        });
         builder.addCase(cancelOrderByOrderId.pending, (state) => {
             state.loading = true;
         });
@@ -184,6 +176,26 @@ export const orderSlice = createSlice({
             state.error = action.error.message || null;
         });
         builder.addCase(comfirmPaymentOrderByOrderId.fulfilled, (state, action) => {
+            state.loading = false;
+        });
+        builder.addCase(returnOrder.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(returnOrder.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.error.message || null;
+        });
+        builder.addCase(returnOrder.fulfilled, (state, action) => {
+            state.loading = false;
+        });
+        builder.addCase(receivedOrder.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(receivedOrder.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.error.message || null;
+        });
+        builder.addCase(receivedOrder.fulfilled, (state, action) => {
             state.loading = false;
         });
     },

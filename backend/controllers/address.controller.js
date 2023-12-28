@@ -15,7 +15,7 @@ import {
 
 export const deleteAddressByID = async (req, res, next) => {
     try {
-        const { success, status, message } = await deleteByID(req.body.address);
+        const { success, status, message } = await deleteByID(req.query.address);
         if (!success) return next(createError(status, message));
 
         res.status(status).send({
@@ -29,7 +29,7 @@ export const deleteAddressByID = async (req, res, next) => {
 
 export const deleteAllAddressByUerID = async (req, res, next) => {
     try {
-        const { success, status, message, total } = await deleteAllByUserID(req.body.user);
+        const { success, status, message, total } = await deleteAllByUserID(req.query.user);
         if (!success) return next(createError(status, message));
 
         res.status(status).send({

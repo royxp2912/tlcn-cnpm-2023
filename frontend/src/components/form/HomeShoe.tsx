@@ -5,11 +5,12 @@ import Image from 'next/image';
 import { Rating } from '@mui/material';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import { useDispatch, useSelector } from 'react-redux';
-import { ItemCart, Product, User } from '@/types/type';
+import { ItemCart, Product, User, itemCartRandomVari } from '@/types/type';
 import { AppDispatch } from '@/utils/store';
 import { getProductById } from '@/slices/productSlice';
-import { addItemToCartByUserId } from '@/slices/cartSlice';
+import { addItemToCartByUserId, addItemToCartRandomVariant } from '@/slices/cartSlice';
 import { toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
 
 const HomeShoe = () => {
     const { productHots, productDetail }: { productHots: Product[]; productDetail: Product } = useSelector(
@@ -18,8 +19,10 @@ const HomeShoe = () => {
     const dispatch = useDispatch<AppDispatch>();
     const [id, setId] = useState<string>('');
     const [count, setCount] = useState(0);
+    const router = useRouter();
 
-    const userString = localStorage.getItem('user');
+    const userString = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
+
     let user: User | null = null;
 
     if (userString !== null) {
@@ -58,31 +61,32 @@ const HomeShoe = () => {
         return () => clearTimeout(timeout);
     }, [id, productHots, count]);
 
-    const handleAddtoCart = async ({ product, image, name, color, size, quantity, price }: ItemCart) => {
-        try {
-            const cart = {
-                user: idUser,
-                product,
-                image,
-                name,
-                color,
-                size,
-                quantity,
-                price,
-            };
-
-            const res = await dispatch(addItemToCartByUserId(cart));
-            console.log(res);
-            // if((res.payload as { status: number }).status === 201){
-            //     toast.success((res.payload as { status: string }).data.message)
-            // }
-        } catch (error) {
-            console.log(error);
+    const handleAddtoCart = async ({ product, image, name, price }: itemCartRandomVari) => {
+        if (!user) {
+            toast.error('Please login before add to cart', {
+                onClose: () => {
+                    router.push('/sign-in');
+                },
+            });
+            return;
         }
+        const cart = {
+            user: idUser,
+            product,
+            image,
+            name,
+            price,
+        };
+
+        await dispatch(addItemToCartRandomVariant(cart));
+        toast.success('Add to cart success');
+        // if((res.payload as { status: number }).status === 201){
+        //     toast.success((res.payload as { status: string }).data.message)
+        // }
     };
     return (
         <div className="bg-bg">
-            <HomeShoeCard />
+            <HomeShoeCard id={id} />
 
             <div className="flex items-center justify-between py-10 px-14 gap-16">
                 <div>
@@ -91,40 +95,42 @@ const HomeShoe = () => {
                 <div className="flex gap-20">
                     {productHots &&
                         productHots.map((productHot) => (
-                            <div key={productHot._id} className="flex items-center rounded-xl h-40 ">
+                            <div
+                                key={productHot._id}
+                                onClick={() => router.push(`/shoes/${productHot._id}`)}
+                                className="flex items-center rounded-xl h-40 "
+                            >
                                 <div className="w-[100px] bg-pink h-full flex items-center relative rounded-tl-lg rounded-bl-lg">
                                     <Image
-                                        src="/nike.png"
+                                        src={productHot.images[0]}
                                         alt="Nike"
                                         height={120}
                                         width={120}
-                                        style={{ width: '120px', height: '120px' }}
-                                        className="absolute left-[-42px] rotate-[-16deg] "
+                                        className="w-[120px] h-[120px] absolute left-[-42px] rotate-[-16deg] rounded-xl"
                                     />
                                 </div>
-                                <div className="x-4 p-4 pb-2 bg-white rounded-tr-lg rounded-br-lg h-40">
-                                    <h1 className="font-bold mb-[10px]">{productHot.name}</h1>
+                                <div className="x-4 p-4 pb-2 bg-white rounded-tr-lg rounded-br-lg h-40 w-[200px]">
+                                    <h1 className="text-[14px] font-bold mb-[10px] truncate w-full">
+                                        {productHot.name}
+                                    </h1>
                                     <div className="flex items-center justify-between">
                                         <div className="flex flex-col">
                                             <Rating size="small" name="read-only" value={productHot.rating} readOnly />
-                                            <span className="text-money font-semibold">$ {productHot.price}</span>
+                                            <span className="text-money font-bak">$ {productHot.price}</span>
                                         </div>
                                         <FavoriteBorderOutlinedIcon className="w-5 h-5 text-orange" />
                                     </div>
                                     <button
-                                        className="mt-3 px-2 py-2 border-2 border-orange font-bold text-orange rounded-lg"
-                                        onClick={() =>
+                                        className="mt-3 px-2 py-2 border-2 border-orange text-[12px] font-bold text-orange rounded-lg w-full hover:opacity-60"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
                                             handleAddtoCart({
-                                                user: idUser,
                                                 product: productHot._id,
-                                                image: 'abc',
+                                                image: productHot.images[0],
                                                 name: productHot.name,
-                                                color: 'Red',
-                                                size: 'M',
-                                                quantity: 1,
                                                 price: productHot.price,
-                                            })
-                                        }
+                                            });
+                                        }}
                                     >
                                         ADD TO CART!
                                     </button>

@@ -1,5 +1,5 @@
 import addressApi from '@/apis/address';
-import { Address } from '@/types/type';
+import { Address, AddressLess, UpdateAddress } from '@/types/type';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 export const getAllAddressByUserId = createAsyncThunk(
@@ -27,7 +27,7 @@ export const getAddressByAddressId = createAsyncThunk(
 
 export const createAddress = createAsyncThunk(
     'address/createAddress',
-    async (address: Address, { dispatch, rejectWithValue }) => {
+    async (address: AddressLess, { dispatch, rejectWithValue }) => {
         try {
             const res = await addressApi.createAddress(address);
             await dispatch(getAllAddressByUserId(address.user));
@@ -40,11 +40,11 @@ export const createAddress = createAsyncThunk(
 
 export const updateAddressByAddressId = createAsyncThunk(
     'address/updateAddressByAddressId',
-    async (address: Address, { dispatch, rejectWithValue }) => {
+    async (address: UpdateAddress, { dispatch, rejectWithValue }) => {
         try {
             const res = await addressApi.updateAddressByAddressId(address);
-            await dispatch(getAllAddressByUserId(address.user));
-            await dispatch(getAddressByAddressId(address._id));
+            // await dispatch(getAllAddressByUserId(address.user));
+            // await dispatch(getAddressByAddressId(address._id as string));
             return res;
         } catch (err: any) {
             return rejectWithValue(err.res.data);
@@ -58,7 +58,7 @@ export const setDefaultAddressByAddressId = createAsyncThunk(
         try {
             const res = await addressApi.setDefaultAddressByAddressId(address);
             await dispatch(getAllAddressByUserId(address.user));
-            await dispatch(getAddressByAddressId(address._id));
+            await dispatch(getAddressByAddressId(address._id as string));
             return res;
         } catch (err: any) {
             return rejectWithValue(err.res.data);
@@ -71,7 +71,7 @@ export const unsetDefaultAddressByAddressId = createAsyncThunk(
         try {
             const res = await addressApi.unsetDefaultAddressByAddressId(address);
             await dispatch(getAllAddressByUserId(address.user));
-            await dispatch(getAddressByAddressId(address._id));
+            await dispatch(getAddressByAddressId(address._id as string));
             return res;
         } catch (err: any) {
             return rejectWithValue(err.res.data);
@@ -134,7 +134,7 @@ export const addressSlice = createSlice({
         });
         builder.addCase(getAddressByAddressId.fulfilled, (state, action) => {
             state.loading = false;
-            state.addressDetail = action.payload.data;
+            state.addressDetail = action.payload.data.data;
         });
         builder.addCase(createAddress.pending, (state) => {
             state.loading = true;

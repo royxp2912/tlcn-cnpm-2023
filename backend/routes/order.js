@@ -1,14 +1,17 @@
-import express from "express";
+import express from 'express';
 import {
     createOrder,
     getAllOrder,
     getOrderByID,
     cancelOrderByID,
+    returnOrderByID,
     updateOrderStatus,
+    receivedOrderByID,
     getAllOrderByUserID,
     paymentConfirmOrder,
     deliveryConfirmOrder,
     searchOrderByKeyword,
+    getAllOrderByStatusAndUserID,
 } from "../controllers/order.controller.js";
 import createPaymentUrl from "../utils/createPaymentUrl.js";
 
@@ -18,18 +21,21 @@ const router = express.Router();
 router.get("/", getAllOrder);
 router.get("/detail", getOrderByID);
 router.get("/user", getAllOrderByUserID);
+router.get("/user/status", getAllOrderByStatusAndUserID);
 
 // search by keyword
-router.get("/search/keyword", searchOrderByKeyword);
+router.get('/search/keyword', searchOrderByKeyword);
 
 // create
-router.post("/", createOrder);
+router.post('/', createOrder);
 
 // patch
-router.patch("/", updateOrderStatus);
-router.patch("/cancel", cancelOrderByID);
-router.patch("/paid", paymentConfirmOrder);
-router.patch("/delivered", deliveryConfirmOrder);
+router.patch('/', updateOrderStatus);
+router.patch('/cancel', cancelOrderByID);
+router.patch('/return', returnOrderByID);
+router.patch('/paid', paymentConfirmOrder);
+router.patch('/received', receivedOrderByID);
+router.patch('/delivered', deliveryConfirmOrder);
 
 // create vnpay url
 router.post('/create_payment_url', function (req, res, next) {
@@ -38,4 +44,4 @@ router.post('/create_payment_url', function (req, res, next) {
     res.status(200).json({ vnpUrl });
 });
 
-export default router
+export default router;

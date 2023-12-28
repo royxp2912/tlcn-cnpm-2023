@@ -1,18 +1,38 @@
 'use client';
+import AddAddress from '@/components/form/AddAddress';
+import ListAddress from '@/components/form/ListAddress';
 import Border from '@/components/shared/Border';
 import { getAllAddressByUserId } from '@/slices/addressSlice';
 import { getCartByUserId } from '@/slices/cartSlice';
 import { createOrder } from '@/slices/orderSlice';
-import { Address, Cart, Order, User } from '@/types/type';
+import type { Address, Cart, ItemCart, Order, User, checkoutOrder } from '@/types/type';
 import axios from '@/utils/axios';
 import { AppDispatch } from '@/utils/store';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+
+const unProps = {
+    update: false,
+    setUpdate: () => { },
+    addressDetail: {
+        _id: '',
+        user: '',
+        receiver: '',
+        phone: '',
+        province: '',
+        districts: '',
+        wards: '',
+        specific: '',
+        default: false,
+    },
+    addressId: '',
+};
 
 const Order = () => {
-    const userString = localStorage.getItem('user');
+    const userString = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
     let user: User | null = null;
 
     if (userString !== null) {
@@ -29,50 +49,81 @@ const Order = () => {
     const [datas, setDatas] = useState<Address>();
     const router = useRouter();
 
+    const itemOrders = typeof window !== 'undefined' ? localStorage.getItem('itemOrders') : null;
+    const items: ItemCart[] = itemOrders ? JSON.parse(itemOrders) : [];
+    const total = typeof window !== 'undefined' ? localStorage.getItem('totalPrice') : null;
+    const totalPrice: number = total ? parseFloat(total) : 0;
+    const [load, setLoad] = useState<boolean>(false);
+    const [change, setChange] = useState<boolean>(false);
+    const [open, setOpen] = useState<boolean>(false);
+
     const [pay, setPay] = useState<string>('');
     useEffect(() => {
-        try {
+        dispatch(getCartByUserId(id));
+        dispatch(getAllAddressByUserId(id));
+    }, [id, load]);
+
+    useEffect(() => {
+        if (address.length !== 0) {
             const fetchData = async () => {
                 const { data } = await axios.get(`/address/user/default?user=${id}`);
-                setDatas(data.data);
+                if (data.success) {
+                    setDatas(data.data);
+                }
             };
             fetchData();
-            dispatch(getCartByUserId(id));
-        } catch (error) {
-            console.log(error);
         }
-    }, [id]);
+    }, [address.length]);
 
     const idAddress = datas?._id as string;
 
     const handleOrder = async () => {
+        if (!pay) {
+            toast.error('Please choose method payment');
+            return;
+        }
+        if (idAddress === '') {
+            toast.error('Please create address for order');
+            return;
+        }
+
         if (pay === 'VNPAY') {
-            const item: Order = {
-                items: cartItem.items,
-                userId: id,
+            const item: checkoutOrder = {
+                items: items,
+                userID: id,
                 deliveryAddress: idAddress,
                 paymentMethod: pay,
-                total: cartItem.total,
+                total: totalPrice,
             };
+            console.log(item);
+
             await dispatch(createOrder(item));
+            localStorage.removeItem('itemOrders');
+            localStorage.removeItem('totalPrice');
             const { data } = await axios.post('/orders/create_payment_url', {
-                amount: 50000,
+                amount: totalPrice,
                 bankCode: 'VNBANK',
             });
             window.open(data.vnpUrl);
+            window.close();
         } else {
-            const item: Order = {
-                items: cartItem.items,
-                userId: id,
+            const item: checkoutOrder = {
+                items: items,
+                userID: id,
                 deliveryAddress: idAddress,
                 paymentMethod: 'COD',
-                total: cartItem.total,
+                total: totalPrice,
             };
             dispatch(createOrder(item));
-            // router.push('/user/orders');
+            localStorage.removeItem('itemOrders');
+            localStorage.removeItem('totalPrice');
+            router.push('/user/orders');
         }
     };
-    console.log(cartItem.items);
+
+    const handleCancel = () => {
+        router.push('/cart');
+    };
 
     return (
         <div className="flex flex-col items-center mt-[26px] px-[100px] gap-[10px]">
@@ -80,7 +131,21 @@ const Order = () => {
             <div className="w-full mt-10 p-5 shadow-xl rounded-lg">
                 <div className="flex justify-between">
                     <span className="font-bold text-lg">Delivery Details</span>
-                    <button className="w-[120px] h-10 bg-blue opacity-50 font-bold text-sm text-white">Change</button>
+                    {address.length === 0 ? (
+                        <button
+                            className="w-[120px] h-10 bg-blue bg-opacity-50 font-bold text-sm text-white hover:bg-opacity-100"
+                            onClick={() => setOpen(true)}
+                        >
+                            Add New
+                        </button>
+                    ) : (
+                        <button
+                            className="w-[120px] h-10 bg-blue bg-opacity-50 font-bold text-sm text-white hover:bg-opacity-100"
+                            onClick={() => setChange(true)}
+                        >
+                            Change
+                        </button>
+                    )}
                 </div>
                 <div className="px-5 flex flex-col gap-[15px]">
                     <div className="flex gap-[320px]">
@@ -117,11 +182,11 @@ const Order = () => {
                 <span className="font-bold mb-[15px] block">Detail</span>
                 <Border />
                 <div>
-                    {cartItem.items &&
-                        cartItem.items.map((item) => (
-                            <div className="flex items-center gap-5 my-[10px]">
+                    {items &&
+                        items.map((item) => (
+                            <div key={item.product} className="flex items-center gap-5 my-[10px]">
                                 <Image
-                                    src="/nike.png"
+                                    src={item.image}
                                     alt="Ảnh"
                                     width={100}
                                     height={100}
@@ -145,24 +210,22 @@ const Order = () => {
                 <Border />
                 <div className="flex items-center justify-end mt-5 gap-5 font-bold">
                     <span>Total Price:</span>
-                    <span className="text-lg text-blue">${cartItem.total}</span>
+                    <span className="text-lg text-blue">${totalPrice}</span>
                 </div>
             </div>
             <div className="w-full p-5 shadow-xl rounded-lg flex gap-[50px] items-center font-bold">
                 <span className="text-lg">Payment Method</span>
                 <button
                     onClick={() => setPay('VNPAY')}
-                    className={`w-[200px] h-10 text-white text-sm bg-blue ${
-                        pay === 'VNPAY' ? 'opacity-100' : 'opacity-50'
-                    }  hover:opacity-100`}
+                    className={`w-[200px] h-10 text-white text-sm bg-blue ${pay === 'VNPAY' ? 'opacity-100' : 'opacity-50'
+                        }  hover:opacity-100`}
                 >
                     VNPAY
                 </button>
                 <button
                     onClick={() => setPay('COD')}
-                    className={`w-[200px] h-10 text-white text-sm bg-blue ${
-                        pay === 'COD' ? 'opacity-100' : 'opacity-50'
-                    } hover:opacity-100`}
+                    className={`w-[200px] h-10 text-white text-sm bg-blue ${pay === 'COD' ? 'opacity-100' : 'opacity-50'
+                        } hover:opacity-100`}
                 >
                     COD
                 </button>
@@ -170,11 +233,15 @@ const Order = () => {
                 <span className="opacity-50">Shipping fee: Free</span>
             </div>
             <div className="flex items-center justify-end w-full font-bold gap-5 text-white">
-                <button className="w-[270px] h-[60px] bg-[#FF4747] opacity-60 hover:opacity-100">Cancel</button>
+                <button className="w-[270px] h-[60px] bg-[#FF4747] opacity-60 hover:opacity-100" onClick={handleCancel}>
+                    Cancel
+                </button>
                 <button className="w-[270px] h-[60px] bg-blue opacity-70 hover:opacity-100" onClick={handleOrder}>
                     Confirm
                 </button>
             </div>
+            {change && <ListAddress setLoad={setLoad} address={address} setChange={setChange} />}
+            {open && <AddAddress setLoad={setLoad} setOpen={setOpen} {...unProps} />}
         </div>
     );
 };

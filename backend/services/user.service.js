@@ -3,6 +3,7 @@ import User from '../models/User.js';
 import { checkedNull } from '../utils/handel_null.js';
 import { deleteAllByUserID } from './address.service.js';
 import { checkedObjectId } from '../utils/checkedOthers.js';
+import { deleteCartByUserID } from './cart.service.js';
 
 export const {
     lockUser,
@@ -16,8 +17,30 @@ export const {
     updateUserByID,
     getAllUserByStatus,
     updateEmailByUserID,
+    updateSpentByUserID,
     updatePasswordByUserID,
 } = {
+
+    updateSpentByUserID: async (userID, spent) => {
+        try {
+            checkedObjectId(userID, 'User ID');
+            const result = await User.findByIdAndUpdate(userID, { $inc: { spent: spent } }, { new: true });
+            checkedNull(result, "User don't exist !!!");
+
+            return {
+                success: true,
+                status: 200,
+                message: 'Update User Spent Successful !!!',
+            };
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || 'Something went wrong in User Service !!!',
+            };
+        }
+    },
+
     updateEmailByUserID: async (userID, newEmail) => {
         try {
             checkedObjectId(userID, 'User ID');
@@ -83,16 +106,16 @@ export const {
                     { role: { $regex: keyword, $options: 'i' } },
                 ],
             })
-                .limit(pageSize)
-                .skip(pageSize * (pageNumber - 1))
                 .select('-password -createdAt -updatedAt -__v');
 
             if (!result) return false;
+            const final = result.slice((pageNumber - 1) * pageSize, pageNumber * pageSize)
             return {
                 success: true,
                 status: 200,
                 message: 'Find Successful !!!',
-                data: result,
+                pages: Math.ceil(result.length / pageSize),
+                data: final,
             };
         } catch (err) {
             return {
@@ -111,6 +134,9 @@ export const {
 
             // delete Address of User
             await deleteAllByUserID(userID);
+
+            // delete Cart of User
+            await deleteCartByUserID(userID);
 
             return {
                 success: true,
@@ -235,15 +261,16 @@ export const {
     getAllUserByStatus: async (status, pageSize, pageNumber) => {
         try {
             const listUser = await User.find({ status: status })
-                .limit(pageSize)
-                .skip(pageSize * (pageNumber - 1))
                 .select('-password -createdAt -updatedAt -__v');
+
+            const final = listUser.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
 
             return {
                 success: true,
                 status: 200,
                 message: 'Find All User By Status Successful !!!',
-                data: checkedNull(listUser, "Users doesn't exist !!!"),
+                pages: Math.ceil(listUser.length / pageSize),
+                data: final,
             };
         } catch (err) {
             return {
@@ -257,15 +284,15 @@ export const {
     getAllUser: async (pageSize, pageNumber) => {
         try {
             const listUser = await User.find()
-                .limit(pageSize)
-                .skip(pageSize * (pageNumber - 1))
                 .select('-password -createdAt -updatedAt -__v');
+            const final = listUser.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
 
             return {
                 success: true,
                 status: 200,
                 message: 'Find All User Successful !!!',
-                data: checkedNull(listUser, "Users doesn't exist !!!"),
+                pages: Math.ceil(listUser.length / pageSize),
+                data: final,
             };
         } catch (err) {
             return {

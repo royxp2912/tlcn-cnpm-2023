@@ -11,10 +11,12 @@ import Image from 'next/image';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { useDispatch, useSelector } from 'react-redux';
-import { Cart, RemoveItemCart, User } from '@/types/type';
+import { Cart, ItemCart, RemoveItemCart, User, Variant, variantColor } from '@/types/type';
 import { AppDispatch } from '@/utils/store';
 import { removeItemFromCartByUserId } from '@/slices/cartSlice';
 import { toast } from 'react-toastify';
+import { getProductById } from '@/slices/productSlice';
+import { useRouter } from 'next/navigation';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -27,20 +29,67 @@ const MenuProps = {
     },
 };
 
-const CartShoe = () => {
-    // const handleChange = (event: SelectChangeEvent<typeof sort>) => {
-    //     const {
-    //         target: { value },
-    //     } = event;
-    //     setSort(
-    //         // On autofill we get a stringified value.
-    //         typeof value === 'string' ? value.split(',') : value,
-    //     );
-    // };
-    const dispatch = useDispatch<AppDispatch>();
-    const { cartItem }: { cartItem: Cart } = useSelector((state: any) => state.carts);
+type QuantityMap = {
+    [product: string]: number;
+};
 
-    const userString = localStorage.getItem('user');
+type PriceMap = {
+    [product: string]: number;
+};
+
+const colors: { [key: string]: string } = {
+    Blue: 'bg-[#006CFF]',
+    Red: 'bg-[#FC3E39]',
+    Black: 'bg-[#171717]',
+    Pink: 'bg-[#FF00B4]',
+    Yellow: 'bg-[#FFF600]',
+    Wheat: 'bg-[#EFDFDF]',
+};
+
+type Props = {
+    cartItem: Cart;
+    checkedItems: { [key: string]: boolean };
+    setCheckedItems: React.Dispatch<React.SetStateAction<{ [key: string]: boolean }>>;
+    checkedAll: boolean;
+    setCheckedAll: React.Dispatch<React.SetStateAction<boolean>>;
+    quantity: { [product: string]: number };
+    setQuantity: React.Dispatch<React.SetStateAction<{ [product: string]: number }>>;
+    price: { [product: string]: number };
+    setPrice: React.Dispatch<React.SetStateAction<{ [product: string]: number }>>;
+    setQty: React.Dispatch<React.SetStateAction<number>>;
+    setTotal: React.Dispatch<React.SetStateAction<number>>;
+    setActive: React.Dispatch<React.SetStateAction<boolean>>;
+    setProductId: React.Dispatch<React.SetStateAction<string>>;
+    setColor: React.Dispatch<React.SetStateAction<string>>;
+    setItemQty: React.Dispatch<React.SetStateAction<number>>;
+    setSizeQty: React.Dispatch<React.SetStateAction<variantColor>>;
+};
+const CartShoe = ({
+    cartItem,
+    checkedItems,
+    setCheckedItems,
+    checkedAll,
+    setCheckedAll,
+    quantity,
+    setQuantity,
+    price,
+    setPrice,
+    setQty,
+    setTotal,
+    setActive,
+    setProductId,
+    setColor,
+    setItemQty,
+    setSizeQty,
+}: Props) => {
+    const dispatch = useDispatch<AppDispatch>();
+    const { variants } = useSelector((state: any) => state.products) as {
+        variants: Variant[];
+    };
+
+    const router = useRouter();
+
+    const userString = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
     let user: User | null = null;
     if (userString !== null) {
         try {
@@ -50,10 +99,15 @@ const CartShoe = () => {
         }
     }
     const id = user?._id as string;
-
     const handleDelete = async (product: string) => {
         {
-            console.log(product);
+            const storedItems = localStorage.getItem('itemOrders');
+            let storedItemsArray: ItemCart[] = [];
+
+            if (storedItems) {
+                storedItemsArray = JSON.parse(storedItems);
+            }
+
             try {
                 const item: RemoveItemCart = {
                     user: id,
@@ -62,6 +116,8 @@ const CartShoe = () => {
 
                 console.log(item);
                 const res = await dispatch(removeItemFromCartByUserId(item));
+                storedItemsArray = storedItemsArray.filter((item) => item.product !== product);
+                localStorage.setItem('itemOrders', JSON.stringify(storedItemsArray));
                 // if ((res.payload as { status: number }).status === 200) {
                 //     toast.success('Success');
                 // } else {
@@ -73,6 +129,92 @@ const CartShoe = () => {
             }
         }
     };
+
+    const handleChecked = (product: string) => {
+        setCheckedItems((prevState) => {
+            const newState = {
+                ...prevState,
+                [product]: !prevState[product],
+            };
+
+            if (newState[product]) {
+                const storedItems = localStorage.getItem('itemOrders');
+                let storedItemsArray: ItemCart[] = [];
+
+                if (storedItems) {
+                    storedItemsArray = JSON.parse(storedItems);
+                }
+
+                const selectedItem = cartItem.items.find((item) => item.product === product);
+
+                if (selectedItem) {
+                    storedItemsArray = storedItemsArray.filter((item) => item.product !== product);
+                    storedItemsArray.push(selectedItem);
+                    localStorage.setItem('itemOrders', JSON.stringify(storedItemsArray));
+                }
+            } else {
+                const storedItems = localStorage.getItem('itemOrders');
+                let storedItemsArray: ItemCart[] = [];
+
+                if (storedItems) {
+                    storedItemsArray = JSON.parse(storedItems);
+                    storedItemsArray = storedItemsArray.filter((item) => item.product !== product);
+                    localStorage.setItem('itemOrders', JSON.stringify(storedItemsArray));
+                }
+            }
+
+            const updatedQuantity: QuantityMap = {};
+            const updatedPrice: PriceMap = {};
+
+            for (const [key, value] of Object.entries(newState)) {
+                if (value) {
+                    updatedQuantity[key] = cartItem.items.find((item) => item.product === key)?.quantity!;
+                    updatedPrice[key] = cartItem.items.find((item) => item.product === key)?.price!;
+                }
+            }
+
+            setQuantity(updatedQuantity);
+            setPrice(updatedPrice);
+            return newState;
+        });
+    };
+
+    React.useEffect(() => {
+        let allChecked = false;
+        if (Object.keys(checkedItems).length !== 0) {
+            allChecked = Object.values(checkedItems).every((value) => value === true);
+        }
+        console.log('checkedItems in effect: ', checkedItems);
+
+        setCheckedAll(allChecked);
+    }, [checkedItems]);
+
+    React.useEffect(() => {
+        const totalQuantity = Object.values(quantity).reduce((acc, curr) => acc + curr, 0) as number;
+
+        const totalPrice = Object.entries(price).reduce((acc, [product, productPrice]) => {
+            const productQuantity = quantity[product] || 0;
+            return acc + productPrice * productQuantity;
+        }, 0) as number;
+        localStorage.setItem('totalPrice', JSON.stringify(totalPrice));
+        setTotal(totalPrice);
+        setQty(totalQuantity);
+    }, [quantity, price]);
+
+    // console.log(totalQuantity);
+    // console.log(totalPrice);
+
+    const handleChange = (p: string, c: string, s: string, q: number) => {
+        setActive(true);
+        setProductId(p);
+        setColor(c);
+        setItemQty(q);
+        setSizeQty((prev) => ({
+            ...prev,
+            size: s,
+        }));
+    };
+
     return (
         <TableContainer component={Paper} className="shadow-xl h-max">
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -85,6 +227,7 @@ const CartShoe = () => {
                         <TableCell align="center">UNIT PRICE</TableCell>
                         <TableCell align="center">TOTAL</TableCell>
                         <TableCell align="center"></TableCell>
+                        <TableCell align="center"></TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -92,13 +235,19 @@ const CartShoe = () => {
                         cartItem.items.map((item) => (
                             <TableRow key={item.product} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                                 <TableCell component="th" scope="row" className="flex items-center gap-[10px]">
-                                    <input type="checkbox" className="w-5 h-5 " />
+                                    <input
+                                        type="checkbox"
+                                        className="w-5 h-5 cursor-pointer"
+                                        checked={checkedAll ? checkedAll : checkedItems[item.product]}
+                                        onChange={() => handleChecked(item.product)}
+                                    />
                                     <Image
-                                        src="/nike.png"
+                                        src={item.image}
                                         alt=" Ảnh"
                                         width={120}
                                         height={120}
-                                        className="bg-bg_sell rounded-lg"
+                                        className="bg-bg_sell rounded-lg cursor-pointer"
+                                        onClick={() => router.push(`/shoes/${item.product}`)}
                                     />
                                     {item.name}
                                 </TableCell>
@@ -116,13 +265,20 @@ const CartShoe = () => {
                                     ))}
                                 </Select> */}
                                     <div className="flex justify-center items-center">
-                                        <div className={`w-6 h-6 rounded-full ${item.color}`}></div>
+                                        <div className={`w-6 h-6 rounded-full ${colors[item.color]}`}></div>
                                     </div>
                                 </TableCell>
                                 <TableCell align="center">{item.size}</TableCell>
                                 <TableCell align="center">{item.quantity}</TableCell>
                                 <TableCell align="center">${item.price}</TableCell>
-                                <TableCell align="center">${cartItem.total}</TableCell>
+                                <TableCell align="center">${item.quantity * item.price}</TableCell>
+                                <TableCell
+                                    align="center"
+                                    onClick={() => handleChange(item.product, item.color, item.size, item.quantity)}
+                                    className="cursor-pointer hover:text-blue"
+                                >
+                                    Change
+                                </TableCell>
                                 <TableCell
                                     align="center"
                                     className="text-orange text-2xl cursor-pointer"

@@ -2,7 +2,7 @@ import Cart from "../models/Cart.js";
 import { checkedObjectId } from "../utils/checkedOthers.js";
 import { checkedNull } from "../utils/handel_null.js";
 import { getUserByID } from "./user.service.js";
-import { checkedQuantity } from "./variant.service.js";
+import { checkedQuantity, getOneByProID } from "./variant.service.js";
 
 export const {
     create,
@@ -10,10 +10,81 @@ export const {
     calcTotal,
     getByUserID,
     removeFromCart,
-    updateQuantityInCart,
+    deleteCartByUserID,
+    addToCartWithoutVar,
+    updateVariantInCart,
 } = {
 
-    updateQuantityInCart: async (userID, proID, color, size, quantity) => {
+    deleteCartByUserID: async (userID) => {
+        try {
+            const deleted = await Cart.findOneAndDelete({ user: userID });
+            checkedNull(deleted, "Cart doesn't exist !!!");
+
+            return {
+                success: true,
+                status: 201,
+                message: "Add Item To Cart Successful!!!",
+            }
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong in Cart !!!",
+            }
+        }
+    },
+
+    addToCartWithoutVar: async (body) => {
+        try {
+            const { user, ...others } = body;
+            const existCart = await Cart.findOne({ user: user });
+            checkedNull(existCart, "Cart don't exist !!!");
+
+            const isExist = existCart.items.filter((item) => item.product.toString() === others.product);
+            const randomVariant = await getOneByProID(others.product);
+            others.color = randomVariant.data.color;
+            others.size = randomVariant.data.size;
+            others.quantity = 1;
+
+            if (isExist.length !== 0) {
+                await Cart.findOneAndUpdate(
+                    {
+                        user: user,
+                        items: { $elemMatch: { product: others.product } },
+                    },
+                    {
+                        $set: { "items.$": others },
+                    },
+                    { new: true },
+                )
+            } else {
+                await Cart.findByIdAndUpdate(
+                    existCart._id,
+                    {
+                        $push: { items: others },
+                    },
+                    { new: true },
+                )
+            }
+
+            // tinh toan lai total xog khi add item to cart
+            await calcTotal(existCart._id);
+
+            return {
+                success: true,
+                status: 201,
+                message: "Add Item To Cart Successful!!!",
+            }
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong in Cart !!!",
+            }
+        }
+    },
+
+    updateVariantInCart: async (userID, proID, color, size, quantity) => {
         try {
             checkedObjectId(userID, "User ID");
             checkedObjectId(proID, "Product ID");
@@ -30,7 +101,12 @@ export const {
             const result = await Cart.findOneAndUpdate(
                 { user: userID, "items.product": proID },
                 {
-                    $set: { "items.$.quantity": quantity }
+                    $set:
+                    {
+                        "items.$.size": size,
+                        "items.$.color": color,
+                        "items.$.quantity": quantity,
+                    }
                 },
                 { new: true }
             );

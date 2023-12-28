@@ -109,6 +109,7 @@ const sendCodeEmail = async (email) => {
             message: err.message,
         }
     });
+    console.log("OTP: ", verifyCode);
 
     return {
         success: true,

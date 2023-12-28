@@ -1,4 +1,4 @@
-import { Order, updateOrder } from '@/types/type';
+import { Order, checkoutOrder, orderStatus, updateOrder } from '@/types/type';
 import axios from '../utils/axios';
 
 const ordersApi = {
@@ -11,22 +11,28 @@ const ordersApi = {
         return axios.get(url, {
             params: {
                 user: userId,
+                pageSize: 10,
             },
         });
     },
-    getAllOrderByOrderStatus: (status: string) => {
-        const url = `/orders?status=${status}`;
-        return axios.get(url);
+    getAllOrderByUserAndStatus: (item: orderStatus) => {
+        const url = `/orders/user/status`;
+        return axios.get(url, {
+            params: {
+                status: item.status,
+                user: item.user,
+            },
+        });
     },
     getOrderByOrderId: (order: string) => {
         const url = '/orders/detail';
         return axios.get(url, { data: { order } });
     },
-    createOrder: (item: Order) => {
+    createOrder: (item: checkoutOrder) => {
         const url = '/orders';
         const data = {
             items: item.items,
-            userId: item.userId,
+            userID: item.userID,
             deliveryAddress: item.deliveryAddress,
             paymentMethod: item.paymentMethod,
             total: item.total,
@@ -34,17 +40,20 @@ const ordersApi = {
         console.log(data);
         return axios.post(url, data);
     },
-    updateOrderStatusByOrderId: (order: updateOrder) => {
-        const url = `/orders/${order.orderId}`;
+    cancelOrderByOrderId: (order: string) => {
+        const url = '/orders/cancel';
         return axios.patch(url, order);
     },
-    cancelOrderByOrderId: (order: updateOrder) => {
-        const url = `/orders/cancel`;
-        const id = order.orderId;
-        return axios.patch(url, id);
-    },
     comfirmPaymentOrderByOrderId: (order: string) => {
-        const url = `/orders/paid`;
+        const url = '/orders/paid';
+        return axios.patch(url, order);
+    },
+    returnOrder: (order: string) => {
+        const url = '/orders/return';
+        return axios.patch(url, order);
+    },
+    receivedOrder: (order: string) => {
+        const url = '/orders/received';
         return axios.patch(url, order);
     },
 };

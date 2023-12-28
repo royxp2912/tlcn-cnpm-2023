@@ -1,5 +1,5 @@
 import productsApi from '@/apis/products';
-import { findProduct } from '@/types/type';
+import { findProduct, productByCate } from '@/types/type';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 export const getAllProduct = createAsyncThunk('products/getAllProduct', async (_, { rejectWithValue }) => {
@@ -10,6 +10,7 @@ export const getAllProduct = createAsyncThunk('products/getAllProduct', async (_
         return rejectWithValue(err);
     }
 });
+
 export const getProductById = createAsyncThunk(
     'products/getProductById',
     async (product: string, { rejectWithValue }) => {
@@ -23,7 +24,7 @@ export const getProductById = createAsyncThunk(
 );
 export const getAllProductByCateId = createAsyncThunk(
     'products/getAllProductByCateId',
-    async (category: string, { rejectWithValue }) => {
+    async (category: productByCate, { rejectWithValue }) => {
         try {
             const res = await productsApi.getAllProductByCateId(category);
             return res;
@@ -45,18 +46,6 @@ export const findProductByKeyword = createAsyncThunk(
     },
 );
 
-export const findProductByColor = createAsyncThunk(
-    'products/findProductByColor',
-    async (item: findProduct, { rejectWithValue }) => {
-        try {
-            const res = await productsApi.findProductByKeyword(item);
-            return res;
-        } catch (err: any) {
-            return rejectWithValue(err);
-        }
-    },
-);
-
 export const getProductHotDeal = createAsyncThunk('products/getProductHotDeal', async (_, { rejectWithValue }) => {
     try {
         const res = await productsApi.getProductHotDeal();
@@ -66,6 +55,27 @@ export const getProductHotDeal = createAsyncThunk('products/getProductHotDeal', 
     }
 });
 
+export const getQtyOfBrand = createAsyncThunk('products/getQtyOfBrand', async (_, { rejectWithValue }) => {
+    try {
+        const res = await productsApi.getQtyOfBrand();
+        return res;
+    } catch (err: any) {
+        return rejectWithValue(err);
+    }
+});
+
+export const getQtyHotDealOfBrand = createAsyncThunk(
+    'products/getQtyHotDealOfBrand',
+    async (_, { rejectWithValue }) => {
+        try {
+            const res = await productsApi.getQtyHotDealOfBrand();
+            return res;
+        } catch (err: any) {
+            return rejectWithValue(err);
+        }
+    },
+);
+
 export const productSlice = createSlice({
     name: 'products',
     initialState: {
@@ -73,6 +83,9 @@ export const productSlice = createSlice({
         productHots: [],
         productDetail: {},
         variants: {},
+        brands: [],
+        hotdeals: [],
+        pages: {},
         loading: false,
         error: null as string | null,
     },
@@ -88,6 +101,7 @@ export const productSlice = createSlice({
         builder.addCase(getAllProduct.fulfilled, (state, action) => {
             state.loading = false;
             state.products = action.payload.data.data;
+            state.pages = action.payload.data.pages;
         });
         builder.addCase(getProductById.pending, (state) => {
             state.loading = true;
@@ -110,7 +124,8 @@ export const productSlice = createSlice({
         });
         builder.addCase(getAllProductByCateId.fulfilled, (state, action) => {
             state.loading = false;
-            state.products = action.payload.data;
+            state.products = action.payload.data.data;
+            state.pages = action.payload.data.pages;
         });
         builder.addCase(findProductByKeyword.pending, (state) => {
             state.loading = true;
@@ -121,18 +136,8 @@ export const productSlice = createSlice({
         });
         builder.addCase(findProductByKeyword.fulfilled, (state, action) => {
             state.loading = false;
-            state.products = action.payload.data;
-        });
-        builder.addCase(findProductByColor.pending, (state) => {
-            state.loading = true;
-        });
-        builder.addCase(findProductByColor.rejected, (state, action) => {
-            state.loading = false;
-            state.error = action.error.message || null;
-        });
-        builder.addCase(findProductByColor.fulfilled, (state, action) => {
-            state.loading = false;
-            state.products = action.payload.data;
+            state.products = action.payload.data.data;
+            state.pages = action.payload.data.pages;
         });
 
         builder.addCase(getProductHotDeal.pending, (state) => {
@@ -145,6 +150,29 @@ export const productSlice = createSlice({
         builder.addCase(getProductHotDeal.fulfilled, (state, action) => {
             state.loading = false;
             state.productHots = action.payload.data.data;
+            state.pages = action.payload.data.pages;
+        });
+        builder.addCase(getQtyOfBrand.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(getQtyOfBrand.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.error.message || null;
+        });
+        builder.addCase(getQtyOfBrand.fulfilled, (state, action) => {
+            state.loading = false;
+            state.brands = action.payload.data.data;
+        });
+        builder.addCase(getQtyHotDealOfBrand.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(getQtyHotDealOfBrand.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.error.message || null;
+        });
+        builder.addCase(getQtyHotDealOfBrand.fulfilled, (state, action) => {
+            state.loading = false;
+            state.hotdeals = action.payload.data.data;
         });
     },
 });

@@ -1,14 +1,31 @@
-import React from 'react';
+'use client';
+import type { Brand } from '@/types/type';
+import React, { Dispatch, SetStateAction } from 'react';
 
-const Brand = () => {
+type Props = {
+    brands: Brand[];
+    brand: string;
+    setBrand: Dispatch<SetStateAction<string>>;
+};
+
+const Brand = ({ brands, brand, setBrand }: Props) => {
     return (
         <div className="bg-deal p-5 rounded-lg">
-            <span className="font-bold text-lg">Hot Deals</span>
+            <span className="font-bold text-lg">Brands</span>
             <div>
-                <div className="flex justify-between mt-5">
-                    <span>nike</span>
-                    <span>2</span>
-                </div>
+                {brands &&
+                    brands.map((b) => (
+                        <div
+                            key={b.brand}
+                            className={`flex justify-between mt-5 ${
+                                b.brand === brand ? 'text-blue' : ''
+                            } cursor-pointer`}
+                            onClick={() => setBrand(() => b.brand)}
+                        >
+                            <span>{b.brand}</span>
+                            <span>{b.quantity}</span>
+                        </div>
+                    ))}
             </div>
         </div>
     );

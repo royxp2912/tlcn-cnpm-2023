@@ -4,17 +4,33 @@ import {
     addToCart,
     getByUserID,
     removeFromCart,
-    updateQuantityInCart,
+    updateVariantInCart,
+    addToCartWithoutVar,
 } from '../services/cart.service.js';
 
-export const updateQuantityProInCart = async (req, res, next) => {
+
+export const addItemToCartWithoutVariant = async (req, res, next) => {
+    try {
+        const { success, status, message } = await addToCartWithoutVar(req.body);
+        if (!success) return next(createError(status, message));
+
+        res.status(status).send({
+            success,
+            message,
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const updateVariantProInCart = async (req, res, next) => {
     try {
         const user = req.body.user;
-        const product = req.body.product;
-        const color = req.body.color;
         const size = req.body.size;
+        const color = req.body.color;
+        const product = req.body.product;
         const quantity = req.body.quantity;
-        const { success, status, message } = await updateQuantityInCart(user, product, color, size, quantity);
+        const { success, status, message } = await updateVariantInCart(user, product, color, size, quantity);
         if (!success) return next(createError(status, message));
 
         res.status(status).send({

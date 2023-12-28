@@ -41,7 +41,7 @@ export const categorySlice = createSlice({
         });
         builder.addCase(getAllCategory.fulfilled, (state, action) => {
             state.loading = false;
-            state.categories = action.payload.data;
+            state.categories = action.payload.data.data;
         });
         builder.addCase(getCategoryById.pending, (state) => {
             state.loading = true;
@@ -52,7 +52,7 @@ export const categorySlice = createSlice({
         });
         builder.addCase(getCategoryById.fulfilled, (state, action) => {
             state.loading = false;
-            state.category = action.payload.data;
+            state.category = action.payload.data.data;
         });
     },
 });

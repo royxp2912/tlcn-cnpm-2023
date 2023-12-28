@@ -3,20 +3,11 @@ import cloudinary from "../utils/cloudinary_config.js";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 
 // product
-// const storage = new CloudinaryStorage({
-//     cloudinary,
-//     allowedFormats: ['jpg', 'png'],
-//     params: {
-//         folder: 'shoeshop'
-//     }
-// });
-
-// test
 const storage = new CloudinaryStorage({
     cloudinary,
-    allowedFormats: ['jpg', 'png', 'jpeg'],
+    allowedFormats: ['jpg', 'png'],
     params: {
-        folder: 'test'
+        folder: 'shoeshop'
     }
 });
 

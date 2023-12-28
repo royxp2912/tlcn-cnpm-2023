@@ -1,10 +1,11 @@
 import express from "express";
 import {
     addItemToCart,
+    addItemToCartWithoutVariant,
     createCart,
     getCartByUserID,
     removeItemFromCart,
-    updateQuantityProInCart,
+    updateVariantProInCart,
 } from "../controllers/cart.controller.js";
 
 const router = express.Router();
@@ -15,7 +16,8 @@ router.get("/", getCartByUserID);
 // create
 router.post("/", createCart);
 router.post("/addToCart", addItemToCart);
-router.patch("/update/quantity", updateQuantityProInCart);
+router.post("/addToCart/randomVar", addItemToCartWithoutVariant);
+router.patch("/update/variants", updateVariantProInCart);
 
 // remove
 router.delete("/remove", removeItemFromCart);

@@ -1,18 +1,28 @@
 'use client';
 import Border from '@/components/shared/Border';
+import Sure from '@/components/shared/Sure';
 import UserNav from '@/components/shared/UserNav';
-import { getAllOrderByOrderStatus, getAllOrderByUserId } from '@/slices/orderSlice';
-import { Order, User } from '@/types/type';
+import {
+    cancelOrderByOrderId,
+    getAllOrderByUserAndStatus,
+    getAllOrderByUserId,
+    receivedOrder,
+} from '@/slices/orderSlice';
+import { Order, User, orderStatus } from '@/types/type';
+import axios from '@/utils/axios';
 import { AppDispatch } from '@/utils/store';
 import Image from 'next/image';
-import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import React, { MouseEvent, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 
-const statuses = ['All', 'Confirming', 'Waiting', 'Delivering', 'Successful', 'Cancel', 'Return'];
+const statuses = ['All', 'Confirming', 'Accepted', 'Delivering', 'Successful', 'Cancel', 'Return'];
 
 const Orders = () => {
     const [status, setStatus] = useState('All');
-    const userString = localStorage.getItem('user');
+    const userString = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
+
     let user: User | null = null;
     if (userString !== null) {
         try {
@@ -25,13 +35,66 @@ const Orders = () => {
 
     const { orders }: { orders: Order[] } = useSelector((state: any) => state.orders);
     const dispatch = useDispatch<AppDispatch>();
+    const [load, setLoad] = useState<boolean>(false);
+    const [open, setOpen] = useState<boolean>(false);
+    const [current, setCurrent] = useState<string>('');
+    const [orderId, setOrderId] = useState<string>('');
+    const router = useRouter();
 
     useEffect(() => {
+        const item: orderStatus = {
+            status: status,
+            user: id,
+        };
         if (status === 'All') dispatch(getAllOrderByUserId(id));
-        else dispatch(getAllOrderByOrderStatus(status));
-    }, [status]);
+        else dispatch(getAllOrderByUserAndStatus(item));
+    }, [status, load]);
+
+    const handleReceived = async (e: MouseEvent<HTMLButtonElement>, id: string) => {
+        e.stopPropagation();
+
+        setOrderId(id);
+        setOpen(true);
+        setCurrent('Received');
+
+        // const { data } = await axios.patch('/orders/received', {
+        //     order: id,
+        // });
+        // if (data.success) {
+        //     toast.success('Received order success');
+        //     setLoad((prev) => !prev);
+        // } else {
+        //     toast.error('Received order fail');
+        // }
+    };
+    const handleReturn = async (e: MouseEvent<HTMLButtonElement>, id: string) => {
+        e.stopPropagation();
+
+        setOrderId(id);
+        setOpen(true);
+        setCurrent('Return');
+
+        // const { data } = await axios.patch('/orders/return', {
+        //     order: id,
+        // });
+        // console.log(data);
+
+        // if (data.success) {
+        //     toast.success('Return order success');
+        //     setLoad((prev) => !prev);
+        // } else {
+        //     toast.error('Return order fail');
+        // }
+    };
+    const handleCancel = async (e: MouseEvent<HTMLButtonElement>, id: string) => {
+        e.stopPropagation();
+
+        setOrderId(id);
+        setOpen(true);
+        setCurrent('Cancel');
+    };
     return (
-        <div className="flex px-20 mt-10 gap-5">
+        <div className="flex justify-center px-20 mt-10 gap-5">
             <UserNav />
 
             <div className="w-max flex flex-col">
@@ -41,7 +104,7 @@ const Orders = () => {
                             const isActive = status === item;
                             return (
                                 <span
-                                    className={`w-[140px] h-max block pt-[10px] pb-[12px] text-center uppercase ${
+                                    className={`w-[140px] h-max block pt-[10px] pb-[12px] font-semibold text-center uppercase hover:text-blue cursor-pointer ${
                                         isActive && 'text-blue border-b-2 border-b-blue'
                                     }`}
                                     onClick={() => setStatus(item)}
@@ -57,18 +120,22 @@ const Orders = () => {
                         <span className="text-xl font-bold text-center block mt-[10px]">Nothing</span>
                     ) : (
                         orders.map((order) => (
-                            <div key={order._id} className="px-[15px] pt-[15px] pb-[10px] shadow-lg">
-                                <div className="flex justify-between mb-[15px]">
-                                    <h1>ID: abcscs</h1>
-                                    <h1 className="uppercase">{order.status}</h1>
+                            <div
+                                key={order._id}
+                                className="px-[15px] pt-[15px] pb-[10px] shadow-lg cursor-pointer hover:border-2 hover:border-blue"
+                                onClick={() => router.push(`orders/${order._id}`)}
+                            >
+                                <div className="flex justify-between mb-[8px]">
+                                    <h1 className="ml-[12px] font-bold text-[14px]">ID: {order._id}</h1>
+                                    <h1 className="mr-[12px] font-bold text-[14px] uppercase">{order.status}</h1>
                                 </div>
                                 <Border />
                                 <div>
                                     {order.items.map((product) => (
-                                        <div key={product.productID}>
+                                        <div key={product.product}>
                                             <div className="flex items-center gap-5 my-[10px]">
                                                 <Image
-                                                    src="/nike.png"
+                                                    src={product.image}
                                                     alt="Ảnh"
                                                     width={100}
                                                     height={100}
@@ -78,7 +145,9 @@ const Orders = () => {
                                                 <div className="w-full font-medium text-lg">
                                                     <div className="flex justify-between">
                                                         <span>{product.name}</span>
-                                                        <span className="text-blue opacity-60">Submit a review</span>
+                                                        <span className="text-blue text-[14px] opacity-60">
+                                                            Submit a review
+                                                        </span>
                                                     </div>
                                                     <div className="flex gap-[100px] mt-[18px] mb-[14px] text-sm opacity-70">
                                                         <span>Color: {product.color}</span>
@@ -97,12 +166,39 @@ const Orders = () => {
                                     ))}
                                 </div>
                                 <div className="flex gap-5 mt-[10px] items-center">
-                                    <button className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm">
-                                        RECEIVED
-                                    </button>
-                                    <button className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm">
-                                        RETURN
-                                    </button>
+                                    {order.status === 'Cancel' ? (
+                                        ''
+                                    ) : (
+                                        <div className="flex gap-5">
+                                            {order.status === 'Successful' || order.status === 'Delivering' ? (
+                                                <button
+                                                    className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm hover:bg-opacity-100 hover:text-white"
+                                                    onClick={(e) => handleReceived(e, order._id)}
+                                                >
+                                                    RECEIVED
+                                                </button>
+                                            ) : (
+                                                ''
+                                            )}
+                                            {order.status === 'Successful' ? (
+                                                <button
+                                                    className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm hover:bg-opacity-100 hover:text-white"
+                                                    onClick={(e) => handleReturn(e, order._id)}
+                                                >
+                                                    RETURN
+                                                </button>
+                                            ) : order.status === 'Accepted' || order.status === 'Delivering' ? (
+                                                ''
+                                            ) : (
+                                                <button
+                                                    className="w-[120px] h-10 bg-blue bg-opacity-50 text-white rounded-md font-bold text-sm hover:bg-opacity-100 hover:text-white"
+                                                    onClick={(e) => handleCancel(e, order._id)}
+                                                >
+                                                    Cancel
+                                                </button>
+                                            )}
+                                        </div>
+                                    )}
                                     <div className="flex-grow"></div>
                                     <div className="flex items-center font-bold gap-2">
                                         <span>Total Price:</span>
@@ -114,6 +210,16 @@ const Orders = () => {
                     )}
                 </div>
             </div>
+            {open && (
+                <Sure
+                    setOpen={setOpen}
+                    setLoad={setLoad}
+                    orderId={orderId}
+                    setOrderId={setOrderId}
+                    setCurrent={setCurrent}
+                    current={current}
+                />
+            )}
         </div>
     );
 };

@@ -34,14 +34,15 @@ const Login = () => {
                 password: values.password,
             };
             const res = await dispatch(signIn(user));
+            console.log(res);
             if ((res.payload as { status: number }).status === 200) {
                 toast.success('Login Success');
                 router.push('/');
             } else {
-                toast.error((res.payload as { response: any }).response.data.message);
+                toast.error('Wrong infomation');
             }
         } catch (error: any) {
-            toast.error(error);
+            // toast.error(error);
         }
     };
 

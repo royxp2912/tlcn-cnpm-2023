@@ -8,10 +8,11 @@ const categoriesApi = {
     },
     getCategoryById: (category: string) => {
         const url = `/categories/detail`;
-        return axios.get(url, { data: { category } });
+        return axios.get(url, { params: { category } });
     },
     createCategory: (category: Category) => {
         const url = '/categories';
+        const item = {}; //TODO add category
         return axios.post(url, category);
     },
     updateCateName: (categoryId: string, name: string) => {

@@ -8,6 +8,8 @@ import {
     getSizeOfProductByColorAndProID,
     getColorOfProductBySizeAndProID,
     getOneVarByProID,
+    getAllDetailVarByProID,
+    getVariantByColorAndSize,
 } from "../controllers/variant.controller.js";
 
 const router = express.Router();
@@ -16,8 +18,10 @@ const router = express.Router();
 router.get("/", getVariantByID);
 router.get("/product", getAllVarByProID);
 router.get("/product/one", getOneVarByProID);
+router.get("/product/detail", getAllDetailVarByProID);
 router.get("/product/size", getSizeOfProductByColorAndProID);
 router.get("/product/color", getColorOfProductBySizeAndProID);
+router.get("/product/color/size", getVariantByColorAndSize);
 
 // create one
 router.post("/create", createOneVariant);

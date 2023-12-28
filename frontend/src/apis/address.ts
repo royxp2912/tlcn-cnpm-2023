@@ -1,4 +1,4 @@
-import { Address } from '@/types/type';
+import { Address, AddressLess, UpdateAddress } from '@/types/type';
 import axios from '../utils/axios';
 
 const addressApi = {
@@ -12,13 +12,13 @@ const addressApi = {
         const url = '/address/detail';
         const pageSize = 5;
         const pageNumber = 5;
-        return axios.get(url, { data: { address } });
+        return axios.get(url, { params: { address } });
     },
-    createAddress: (address: Address) => {
+    createAddress: (address: AddressLess) => {
         const url = '/address';
         return axios.post(url, address);
     },
-    updateAddressByAddressId: (address: Address) => {
+    updateAddressByAddressId: (address: UpdateAddress) => {
         const url = '/address';
         return axios.put(url, address);
     },
@@ -34,12 +34,12 @@ const addressApi = {
     },
     deleteAllAddressByUserId: (user: string) => {
         const url = '/address/user';
-        return axios.delete(url, { data: { user } });
+        return axios.delete(url, { params: { user } });
     },
     deleteAddressByAddressId: (address: Address) => {
         const url = '/address';
         const id = address._id;
-        return axios.delete(url, { data: { id } });
+        return axios.delete(url, { params: { id } });
     },
 };
 

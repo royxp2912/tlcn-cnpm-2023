@@ -1,14 +1,44 @@
-import React from 'react';
+'use client';
+import React, { Dispatch, SetStateAction } from 'react';
 
-const colors = ['bg-[#006CFF]', 'bg-[#FC3E39]', 'bg-[#171717]', 'bg-[#FFF600]', 'bg-[#FF00B4]', 'bg-[#EFDFDF]'];
-
-const Color = () => {
+const colors: { [key: string]: string } = {
+    Blue: 'bg-[#006CFF]',
+    Red: 'bg-[#FC3E39]',
+    Black: 'bg-[#171717]',
+    White: 'bg-white',
+    Pink: 'bg-[#FF00B4]',
+    Yellow: 'bg-[#FFF600]',
+    Gray: 'bg-[#808080]',
+};
+const borders: { [key: string]: string } = {
+    Blue: 'border-[#006CFF]',
+    Red: 'border-[#FC3E39]',
+    Black: 'border-[#171717]',
+    White: 'border-black',
+    Pink: 'border-[#FF00B4]',
+    Yellow: 'border-[#FFF600]',
+    Gray: 'border-[#808080]',
+};
+type Props = {
+    color: string;
+    setColor: Dispatch<SetStateAction<string>>;
+};
+const Color = ({ color, setColor }: Props) => {
     return (
         <div className="p-5 bg-deal rounded-lg">
             <span className="font-bold text-lg">Color</span>
             <div className="flex justify-between mt-5">
-                {colors &&
-                    colors.map((color, index) => <div key={index} className={`${color} h-5 w-5 rounded-full `}></div>)}
+                {Object.keys(colors).map((c, index) => (
+                    <div
+                        key={index}
+                        className={`${colors[c]} relative  h-5 w-5 rounded-full cursor-pointer`}
+                        onClick={() => setColor(c)}
+                    >
+                        {color === c && (
+                            <div className={`absolute inset-[-4px] p-3 rounded-full border-2 ${borders[c]}`}></div>
+                        )}
+                    </div>
+                ))}
             </div>
         </div>
     );

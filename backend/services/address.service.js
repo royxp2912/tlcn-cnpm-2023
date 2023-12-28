@@ -38,7 +38,7 @@ export const {
 
     deleteByID: async (addID) => {
         try {
-            const deletedAddress = await Address.findOneAndDelete(addID)
+            const deletedAddress = await Address.findByIdAndDelete(addID)
             checkedNull(deletedAddress, "Address don't exist !!!");
 
             return {
@@ -79,11 +79,19 @@ export const {
 
     setDefault: async (addID) => {
         try {
-            const updatedAddress = await Address.findByIdAndUpdate(
-                addID,
-                { $set: { default: true } }
-            );
-            checkedNull(updatedAddress, "Address don't exist !!!");
+            const result = await Address.findById(addID);
+            checkedNull(result, "Address don't exist !!!");
+
+            await Address.findOneAndUpdate(
+                {
+                    user: result.user,
+                    default: true,
+                },
+                { $set: { default: false } }
+            )
+
+            result.default = true;
+            await result.save();
 
             return {
                 success: true,
@@ -199,7 +207,10 @@ export const {
             if (!existUser.success) return existUser;
 
             const newAddress = new Address(body);
-            await newAddress.save();
+            const createdAddress = await newAddress.save();
+
+            const reuslt = await Address.find({ user: body.user });
+            if (reuslt.length === 1) await setDefault(createdAddress._id);
 
             return {
                 success: true,

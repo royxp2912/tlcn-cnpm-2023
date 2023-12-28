@@ -1,5 +1,5 @@
 import cartsApi from '@/apis/carts';
-import { Cart, ItemCart, RemoveItemCart } from '@/types/type';
+import { Cart, ItemCart, RemoveItemCart, itemCartRandomVari } from '@/types/type';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 export const getCartByUserId = createAsyncThunk(
@@ -28,7 +28,7 @@ export const addItemToCartByUserId = createAsyncThunk(
     async (item: ItemCart, { dispatch, rejectWithValue }) => {
         try {
             const res = await cartsApi.addItemToCartByUserId(item);
-            await dispatch(getCartByUserId(item.user));
+            await dispatch(getCartByUserId(item.user as string));
             return res;
         } catch (err: any) {
             return rejectWithValue(err.res.data);
@@ -42,6 +42,18 @@ export const removeItemFromCartByUserId = createAsyncThunk(
         try {
             const res = await cartsApi.removeItemFromCartByUserId(item);
             await dispatch(getCartByUserId(item.user));
+            return res;
+        } catch (err: any) {
+            return rejectWithValue(err.res.data);
+        }
+    },
+);
+
+export const addItemToCartRandomVariant = createAsyncThunk(
+    'carts/addItemToCartRandomVariant',
+    async (item: itemCartRandomVari, { dispatch, rejectWithValue }) => {
+        try {
+            const res = await cartsApi.addItemToCartRandomVariant(item);
             return res;
         } catch (err: any) {
             return rejectWithValue(err.res.data);
@@ -100,6 +112,16 @@ export const cartSlice = createSlice({
         builder.addCase(removeItemFromCartByUserId.fulfilled, (state, action) => {
             state.loading = false;
             state.cartItem = action.payload.data;
+        });
+        builder.addCase(addItemToCartRandomVariant.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(addItemToCartRandomVariant.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.error.message || null;
+        });
+        builder.addCase(addItemToCartRandomVariant.fulfilled, (state, action) => {
+            state.loading = false;
         });
     },
 });

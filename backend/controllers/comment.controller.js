@@ -44,12 +44,13 @@ export const getAllCommentByUserID = async (req, res, next) => {
     try {
         const pageSize = req.query.pageSize || 5;
         const pageNumber = req.query.pageNumber || 1;
-        const { success, status, message, data } = await getAllByUserID(req.query.user, pageSize, pageNumber);
+        const { success, status, message, pages, data } = await getAllByUserID(req.query.user, pageSize, pageNumber);
         if (!success) return next(createError(status, message));
 
         res.status(status).json({
             success,
             message,
+            pages,
             total: data.length,
             data,
         });
@@ -62,12 +63,13 @@ export const getAllCommentByProID = async (req, res, next) => {
     try {
         const pageSize = req.query.pageSize || 5;
         const pageNumber = req.query.pageNumber || 1;
-        const { success, status, message, data } = await getAllByProID(req.query.product, pageSize, pageNumber);
+        const { success, status, message, pages, data } = await getAllByProID(req.query.product, pageSize, pageNumber);
         if (!success) return next(createError(status, message));
 
         res.status(status).json({
             success,
             message,
+            pages,
             total: data.length,
             data,
         });
@@ -93,7 +95,7 @@ export const getCommentByID = async (req, res, next) => {
 
 export const deleteCommentByID = async (req, res, next) => {
     try {
-        const { success, status, message } = await deleteByID(req.body.comment);
+        const { success, status, message } = await deleteByID(req.query.comment);
         if (!success) return next(createError(status, message));
 
         res.status(status).json({
@@ -137,7 +139,7 @@ export const deleteAllComment = async (req, res, next) => {
 
 export const deleteAllCommentByUserID = async (req, res, next) => {
     try {
-        const { success, status, message, total } = await deleteAllByUserID(req.body.user);
+        const { success, status, message, total } = await deleteAllByUserID(req.query.user);
         if (!success) return next(createError(status, message));
 
         res.status(status).json({
@@ -152,7 +154,7 @@ export const deleteAllCommentByUserID = async (req, res, next) => {
 
 export const deleteAllCommentByProID = async (req, res, next) => {
     try {
-        const { success, status, message, total } = await deleteAllByProID(req.body.product);
+        const { success, status, message, total } = await deleteAllByProID(req.query.product);
         if (!success) return next(createError(status, message));
 
         res.status(status).json({

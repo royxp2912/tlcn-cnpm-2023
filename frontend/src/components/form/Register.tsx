@@ -13,14 +13,26 @@ import axios from '@/utils/axios';
 import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/utils/store';
-import { signUp } from '@/slices/authSlice';
+import { sendCode, signUp } from '@/slices/authSlice';
 import { toast } from 'react-toastify';
+import { useState, useEffect } from 'react';
+import Form1 from './email/Form1';
+import Form2 from './email/Form2';
+import * as React from 'react';
 
 type data = {
     data: {
         success: boolean;
         message: string;
     };
+};
+
+const unProp = {
+    setOpen2: () => {},
+    setLoad: () => {},
+    setChange: () => {},
+    change: false,
+    setUpdate: () => {},
 };
 
 const Register = () => {
@@ -38,22 +50,56 @@ const Register = () => {
             birthDay: '',
         },
     });
+    const [open, setOpen] = useState(false);
+    const [open1, setOpen1] = useState(false);
+    const [regis, setRegis] = useState(false);
+    const [code, setCode] = useState<string>('');
+    const [email, setEmail] = useState('');
 
-    // 2. Define a submit handler.
-    const onSubmit = async (values: z.infer<typeof RegisterValidation>) => {
-        try {
-            const res = await dispatch(signUp(values));
+    const onSubmit = async (values: z.infer<typeof RegisterValidation>) => {};
 
-            if ((res.payload as { status: number }).status === 201) {
-                toast.success('Register Success');
-                router.push('/sign-in');
-            } else {
-                toast.error((res.payload as { response: any }).response.data.message);
-            }
-        } catch (error: any) {
-            toast.error(error);
+    const handleOpen = async () => {
+        const values = form.getValues();
+        if (
+            !values.email ||
+            !values.fullName ||
+            !values.password ||
+            !values.rePassword ||
+            !values.gender ||
+            !values.birthDay
+        ) {
+            return;
+        }
+        const { data } = await axios.post('/auth/sendCode', {
+            email: values.email,
+        });
+        if (data.success) {
+            setEmail(values.email);
+            setCode(data.code);
+            setOpen(true);
         }
     };
+
+    useEffect(() => {
+        const submitForm = async () => {
+            try {
+                if (!regis) return;
+
+                const res = await dispatch(signUp(form.getValues()));
+
+                if ((res.payload as { status: number }).status === 201) {
+                    toast.success('Register Success');
+                    router.push('/sign-in');
+                } else {
+                    toast.error((res.payload as { response: any }).response.data.message);
+                }
+            } catch (error: any) {
+                toast.error(error);
+            }
+        };
+
+        submitForm();
+    }, [regis]);
 
     return (
         <Form {...form}>
@@ -187,10 +233,22 @@ const Register = () => {
                     )}
                 />
 
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full" onClick={handleOpen}>
                     Sign Up
                 </Button>
             </form>
+            {!regis && open && <Form1 setOpen={setOpen} email={email} setOpen1={setOpen1} {...unProp} />}
+            {open1 && (
+                <Form2
+                    setOpen={setOpen}
+                    setOpen1={setOpen1}
+                    email={email}
+                    code={code}
+                    setCode={setCode}
+                    setRegis={setRegis}
+                    {...unProp}
+                />
+            )}
         </Form>
     );
 };

@@ -5,6 +5,7 @@ import { checkedNull, checkedNullAndFormatData } from "../utils/handel_null.js";
 import { getById } from "./product.service.js";
 
 export const {
+    isStock,
     createOne,
     createList,
     getVarByID,
@@ -15,12 +16,58 @@ export const {
     reduceQuantity,
     checkedQuantity,
     findProIDByColor,
+    isColorInProduct,
     getListVarByProID,
     deleteListVarByProID,
     getVarByColorAndSize,
     getSizeByColorAndProID,
     getColorBySizeAndProID,
+    getDetailListVarByProID,
 } = {
+
+    isStock: async (proID) => {
+        try {
+            const geted = await Variant.find({ product: proID }).select("quantity");
+            const stock = geted.reduce((item, acc) => acc + item.quantity, 0);
+            const isStock = stock === 0 ? false : true;
+
+            const result = await Product.findById(proID)
+                .populate({ path: 'category', select: 'name' })
+                .select('-createdAt -updatedAt -__v')
+            const final = { ...result._doc, isStock };
+            return final;
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong on Variant !!!",
+            }
+        }
+    },
+
+    isColorInProduct: async (proID, color) => {
+        try {
+            const result = await Variant.findOne({
+                product: proID,
+                color: { $regex: new RegExp(`^${color}$`, 'i') },
+            });
+            if (!result) return {
+                failed: true,
+            };
+
+            const geted = await Product.findById(proID)
+                .populate({ path: 'category', select: 'name' })
+                .select("-createdAt -updatedAt -__v -status");
+
+            return geted;
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong on Variant !!!",
+            }
+        }
+    },
 
     checkedQuantity: async (proID, color, size, quantity) => {
         try {
@@ -325,6 +372,30 @@ export const {
                     listColor: [...new Set(listColor)],
                     listSize: [...new Set(listSize)],
                 },
+            }
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || "Something went wrong on Variant !!!",
+            }
+        }
+    },
+
+    getDetailListVarByProID: async (proID) => {
+        try {
+            const listVariant = await Variant.find({ product: proID }).select("-createdAt -updatedAt -__v -product");
+            if (listVariant.length === 0) return {
+                success: false,
+                status: 404,
+                message: "Product doesn't exist !!!"
+            }
+
+            return {
+                success: true,
+                status: 200,
+                message: "Get List Variant Successful !!!",
+                data: listVariant,
             }
         } catch (err) {
             return {

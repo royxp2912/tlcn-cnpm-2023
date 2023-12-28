@@ -1,32 +1,48 @@
 'use client';
+import { getAllCategory, getCategoryById } from '@/slices/categorySlice';
+import { Category } from '@/types/type';
+import { AppDispatch } from '@/utils/store';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 const Navbar = () => {
+    const { categories }: { categories: Category[] } = useSelector((state: any) => state.categories);
+    const dispatch = useDispatch<AppDispatch>();
+
+    useEffect(() => {
+        dispatch(getAllCategory());
+    }, [dispatch]);
+
     const pathname = usePathname();
+    if (pathname.startsWith('/user')) {
+        return;
+    }
     return (
         <div className={` flex justify-center ${pathname === '/' ? 'text-white bg-bg' : 'text-bg bg-white'} font-bold`}>
             <Link
                 href="/"
                 className={`w-[120px] h-10 text-center ${
-                    pathname === '/' ? 'text-orange border-orange' : 'text-blue border-blue'
-                } border-b-2 `}
+                    pathname === '/' ? 'text-orange border-orange border-b-2' : 'hover:text-blue '
+                }  `}
             >
                 <span>Home</span>
             </Link>
-            <Link href="/man" className="w-[120px] h-10 text-center">
-                <span>Man</span>
-            </Link>
-            <Link href="/women" className="w-[120px] h-10 text-center">
-                <span>Woman</span>
-            </Link>
-            <Link href="/kids" className="w-[120px] h-10 text-center">
-                <span>Kids</span>
-            </Link>
-            <Link href="/new" className="w-[120px] h-10 text-center">
-                <span>New</span>
-            </Link>
+            {categories &&
+                categories.map((category) => (
+                    <Link
+                        key={category._id}
+                        href={`/${category.name.toLowerCase().replace(/\s/g, '')}`}
+                        className={`w-[120px] h-10 text-center ${
+                            pathname === `/${category.name.toLowerCase().replace(/\s/g, '')}`
+                                ? 'text-blue border-blue border-b-2'
+                                : 'hover:text-blue'
+                        }  `}
+                    >
+                        <span>{category.name}</span>
+                    </Link>
+                ))}
         </div>
     );
 };
