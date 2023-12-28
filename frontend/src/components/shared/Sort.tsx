@@ -26,8 +26,8 @@ type Props = {
 };
 
 const Sort = ({ setActive, active, sort, setSort, view, setView }: Props) => {
-    const [sorts, setSorts] = useState<string[]>(['Low to High']);
-    const name = ['Low to High', 'High to Low'];
+    const [sorts, setSorts] = useState<string[]>(['']);
+    const name = ['High to Low', 'Low to High'];
     const pathname = usePathname();
     const handleChange = (event: SelectChangeEvent<typeof sorts>) => {
         const {
@@ -41,28 +41,26 @@ const Sort = ({ setActive, active, sort, setSort, view, setView }: Props) => {
             setSort((prev) => !prev);
         }
     };
-    const handleSet = () => {
-        if (pathname.startsWith('/search')) {
-            setView('');
-        } else {
-            setView('new');
-        }
-    };
-    console.log(view);
+    // const handleSet = () => {
+    //     if (pathname.startsWith('/search')) {
+    //         setView('');
+    //     } else {
+    //         setView('New');
+    //     }
+    // };
     return (
         <div className="flex items-center justify-between mt-3 mb-5 bg-deal rounded-lg p-5">
             <div className="flex gap-5 items-center">
                 <button
-                    className={`${
-                        view === 'new' || view === '' ? 'bg-blue' : 'bg-[#ADD6FA]'
-                    } w-[120px] h-9 font-bold rounded-md`}
-                    onClick={handleSet}
+                    className={`${view === '' ? 'bg-blue' : 'bg-[#ADD6FA]'
+                        } w-[120px] h-9 font-bold rounded-md`}
+                    onClick={() => setView('')}
                 >
                     New
                 </button>
                 <button
-                    className={`${view === 'hot' ? 'bg-blue' : 'bg-[#ADD6FA]'} w-[120px] h-9 font-bold rounded-md`}
-                    onClick={() => setView('hot')}
+                    className={`${view === 'HOT' ? 'bg-blue' : 'bg-[#ADD6FA]'} w-[120px] h-9 font-bold rounded-md`}
+                    onClick={() => setView('HOT')}
                 >
                     Hot
                 </button>

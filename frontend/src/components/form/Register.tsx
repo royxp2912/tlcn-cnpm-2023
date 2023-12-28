@@ -28,11 +28,11 @@ type data = {
 };
 
 const unProp = {
-    setOpen2: () => {},
-    setLoad: () => {},
-    setChange: () => {},
+    setOpen2: () => { },
+    setLoad: () => { },
+    setChange: () => { },
     change: false,
-    setUpdate: () => {},
+    setUpdate: () => { },
 };
 
 const Register = () => {
@@ -56,7 +56,7 @@ const Register = () => {
     const [code, setCode] = useState<string>('');
     const [email, setEmail] = useState('');
 
-    const onSubmit = async (values: z.infer<typeof RegisterValidation>) => {};
+    const onSubmit = async (values: z.infer<typeof RegisterValidation>) => { };
 
     const handleOpen = async () => {
         const values = form.getValues();
@@ -73,6 +73,7 @@ const Register = () => {
         const { data } = await axios.post('/auth/sendCode', {
             email: values.email,
         });
+        console.log(data);
         if (data.success) {
             setEmail(values.email);
             setCode(data.code);
@@ -109,7 +110,7 @@ const Register = () => {
                     name="email"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Email</FormLabel>
+                            {/* <FormLabel>Email</FormLabel> */}
                             <FormControl>
                                 <Input
                                     type="text"
@@ -127,7 +128,7 @@ const Register = () => {
                     name="fullName"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Fullname</FormLabel>
+                            {/* <FormLabel>Fullname</FormLabel> */}
                             <FormControl>
                                 <Input
                                     type="text"
@@ -145,7 +146,7 @@ const Register = () => {
                     name="password"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Password</FormLabel>
+                            {/* <FormLabel>Password</FormLabel> */}
                             <FormControl>
                                 <Input
                                     type="password"
@@ -163,7 +164,7 @@ const Register = () => {
                     name="rePassword"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Re-Password</FormLabel>
+                            {/* <FormLabel>Re-Password</FormLabel> */}
                             <FormControl>
                                 <Input
                                     type="password"
@@ -219,7 +220,7 @@ const Register = () => {
                     name="birthDay"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Birthday</FormLabel>
+                            {/* <FormLabel>Birthday</FormLabel> */}
                             <FormControl>
                                 <Input
                                     type="text"

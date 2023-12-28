@@ -16,7 +16,7 @@ type Props = {
 };
 const Top = ({ path, top }: Props) => {
     return (
-        <div className="shadow-revenue bg-white py-20 pt-10 pb-[35px] flex gap-20 justify-center">
+        <div className="w-full shadow-revenue bg-white py-20 pt-10 pb-[35px] flex gap-20 justify-center">
             <div className="flex flex-col items-center">
                 <span className="font-bold text-xl">
                     {path === 'user' ? 'TOP 3 USERS OF THE MONTH' : 'TOP 3 BEST SELLING PRODUCTS'}

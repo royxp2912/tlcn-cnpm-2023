@@ -116,7 +116,7 @@ const RevenueChartTime = ({ path }: Props) => {
                             ))}
                         </Select>
                     </div>
-                    <div>
+                    <div className='mr-[40px]'>
                         <Select
                             className="font-medium text-sm text-black"
                             variant="standard"

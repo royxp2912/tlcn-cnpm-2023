@@ -35,10 +35,10 @@ const Login = () => {
             };
             const res = await dispatch(signIn(user));
             if ((res.payload as { status: number }).status === 200) {
-                // toast.success('Login Success');
+                toast.success('Login Success');
                 router.push('/');
             } else {
-                // toast.error((res.payload as { response: any }).response.data.message);
+                toast.error('Wrong infomation');
             }
         } catch (error: any) {
             // toast.error(error);
@@ -84,7 +84,6 @@ const Login = () => {
                         </FormItem>
                     )}
                 />
-                <span className="font-semibold text-right cursor-pointer hover:opacity-80">Forgotten password?</span>
                 <Button type="submit" className="w-full">
                     Sign In
                 </Button>
