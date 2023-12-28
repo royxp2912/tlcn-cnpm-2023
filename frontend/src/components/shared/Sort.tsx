@@ -19,15 +19,15 @@ const MenuProps = {
 type Props = {
     setActive: Dispatch<SetStateAction<boolean>>;
     active: boolean;
-    sort: boolean;
-    setSort: Dispatch<SetStateAction<boolean>>;
+    sort: string;
+    setSort: Dispatch<SetStateAction<string>>;
     view: string;
     setView: Dispatch<SetStateAction<string>>;
 };
 
 const Sort = ({ setActive, active, sort, setSort, view, setView }: Props) => {
     const [sorts, setSorts] = useState<string[]>(['']);
-    const name = ['High to Low', 'Low to High'];
+    const name = ['Low to High', 'High to Low'];
     const pathname = usePathname();
     const handleChange = (event: SelectChangeEvent<typeof sorts>) => {
         const {
@@ -37,30 +37,29 @@ const Sort = ({ setActive, active, sort, setSort, view, setView }: Props) => {
             // On autofill we get a stringified value.
             typeof value === 'string' ? value.split(',') : value,
         );
-        if (value !== sorts.toString()) {
-            setSort((prev) => !prev);
+        setSort(value as string);
+    };
+    const handleSet = () => {
+        if (pathname.startsWith('/search')) {
+            setView('');
+        } else {
+            setView('New');
         }
     };
-    // const handleSet = () => {
-    //     if (pathname.startsWith('/search')) {
-    //         setView('');
-    //     } else {
-    //         setView('New');
-    //     }
-    // };
+    console.log(view);
     return (
         <div className="flex items-center justify-between mt-3 mb-5 bg-deal rounded-lg p-5">
             <div className="flex gap-5 items-center">
                 <button
-                    className={`${view === '' ? 'bg-blue' : 'bg-[#ADD6FA]'
+                    className={`${view === 'New' || view === '' ? 'bg-blue' : 'bg-[#ADD6FA]'
                         } w-[120px] h-9 font-bold rounded-md`}
-                    onClick={() => setView('')}
+                    onClick={handleSet}
                 >
                     New
                 </button>
                 <button
-                    className={`${view === 'HOT' ? 'bg-blue' : 'bg-[#ADD6FA]'} w-[120px] h-9 font-bold rounded-md`}
-                    onClick={() => setView('HOT')}
+                    className={`${view === 'Hot' ? 'bg-blue' : 'bg-[#ADD6FA]'} w-[120px] h-9 font-bold rounded-md`}
+                    onClick={() => setView('Hot')}
                 >
                     Hot
                 </button>
