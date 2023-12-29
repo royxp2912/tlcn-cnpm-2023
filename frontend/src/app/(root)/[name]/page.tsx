@@ -23,10 +23,10 @@ const unProp = {
     isNext: false,
     next: 0,
     back: 0,
-    setBack: () => {},
-    setNext: () => {},
-    setIsBack: () => {},
-    setIsNext: () => {},
+    setBack: () => { },
+    setNext: () => { },
+    setIsBack: () => { },
+    setIsNext: () => { },
 };
 
 const ManShoes = () => {

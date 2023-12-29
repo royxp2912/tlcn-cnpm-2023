@@ -51,7 +51,7 @@ export const {
             const listProduct = await listProductSoldThisMonth(firstDayOfMonth, firstDayOfNextMonth);
             const listSold = await Promise.all(listProduct.map((item) => soldProductByProIDThisMonth(item, firstDayOfMonth, firstDayOfNextMonth)));
 
-            listSold.sort((a, b) => b.total - a.total);
+            listSold.sort((a, b) => b.count - a.count);
             if (listSold.length < 5) {
                 for (let i = listSold.length; i < 5; i++) {
                     listSold.push({
@@ -89,7 +89,7 @@ export const {
             const listUser = await listUserThisMonth(firstDayOfMonth, firstDayOfNextMonth);
             const listTotal = await Promise.all(listUser.map((item) => totalSpentByUserIDThisMonth(item, firstDayOfMonth, firstDayOfNextMonth)));
 
-            listTotal.sort((a, b) => b.total - a.total);
+            listTotal.sort((a, b) => b.count - a.count);
             if (listTotal.length < 5) {
                 for (let i = listTotal.length; i < 5; i++) {
                     listTotal.push({
