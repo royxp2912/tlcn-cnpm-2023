@@ -13,7 +13,7 @@ export default function Home() {
             <div>
                 <RevenueChart path="Revenue" />
             </div>
-            <div className='w-[75vw]'>
+            <div className="w-[80vw]">
                 <RevenueChartTime path="Revenue" />
             </div>
         </div>

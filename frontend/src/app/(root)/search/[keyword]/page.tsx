@@ -47,7 +47,7 @@ const ManShoes = () => {
 
     const dispatch = useDispatch<AppDispatch>();
     const [active, setActive] = useState(false);
-    const [sort, setSort] = useState<boolean>(false);
+    const [sort, setSort] = useState<string>('');
     const [view, setView] = useState<string>('');
     const [listProduct, setListProduct] = useState<Product[]>([]);
     const [color, setColor] = useState<string>('');
@@ -76,12 +76,16 @@ const ManShoes = () => {
     }, [dispatch, keyword, pageNum, view, brand, color]);
 
     useEffect(() => {
-        if (sort) {
+        if (sort === '') {
+            setListProduct(products);
+        } else if (sort === 'Low to High') {
             const filtered = products.filter((product) => product.price >= minPrice && product.price <= maxPrice);
-            const sorted = filtered.sort((a, b) => (sort ? b.price - a.price : a.price - b.price));
+            const sorted = filtered.sort((a, b) => a.price - b.price);
             setListProduct(sorted);
         } else {
-            setListProduct(products);
+            const filtered = products.filter((product) => product.price >= minPrice && product.price <= maxPrice);
+            const sorted = filtered.sort((a, b) => b.price - a.price);
+            setListProduct(sorted);
         }
     }, [products, sort, minPrice, maxPrice]);
 

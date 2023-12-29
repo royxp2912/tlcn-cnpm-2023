@@ -23,10 +23,10 @@ const unProp = {
     isNext: false,
     next: 0,
     back: 0,
-    setBack: () => {},
-    setNext: () => {},
-    setIsBack: () => {},
-    setIsNext: () => {},
+    setBack: () => { },
+    setNext: () => { },
+    setIsBack: () => { },
+    setIsNext: () => { },
 };
 
 const ManShoes = () => {
@@ -42,7 +42,7 @@ const ManShoes = () => {
 
     const dispatch = useDispatch<AppDispatch>();
     const [active, setActive] = useState(false);
-    const [sort, setSort] = useState<boolean>(false);
+    const [sort, setSort] = useState<string>('');
     const [view, setView] = useState<string>('new');
     const [listProduct, setListProduct] = useState<Product[]>([]);
     const [color, setColor] = useState<string>('');
@@ -61,6 +61,8 @@ const ManShoes = () => {
     );
 
     const idCate = found?._id as string;
+    console.log(pages);
+    console.log(idCate);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -79,9 +81,17 @@ const ManShoes = () => {
     }, [dispatch, idCate, pageNum, view, brand, color]);
 
     useEffect(() => {
-        const filtered = products.filter((product) => product.price >= minPrice && product.price <= maxPrice);
-        const sorted = filtered.sort((a, b) => (sort ? b.price - a.price : a.price - b.price));
-        setListProduct(sorted);
+        if (sort === '') {
+            setListProduct(products);
+        } else if (sort === 'Low to High') {
+            const filtered = products.filter((product) => product.price >= minPrice && product.price <= maxPrice);
+            const sorted = filtered.sort((a, b) => a.price - b.price);
+            setListProduct(sorted);
+        } else {
+            const filtered = products.filter((product) => product.price >= minPrice && product.price <= maxPrice);
+            const sorted = filtered.sort((a, b) => b.price - a.price);
+            setListProduct(sorted);
+        }
     }, [products, sort, minPrice, maxPrice]);
 
     useEffect(() => {
