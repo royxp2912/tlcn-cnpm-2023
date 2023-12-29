@@ -84,10 +84,11 @@ const RevenueChartTime = ({ path }: Props) => {
             setWidth(width);
         }
     }, [dispath, month, year]);
+    console.log(width);
     return (
         <div>
             <div className=" flex justify-between items-center">
-                <span className="font-bold ml-[60px]">{path}</span>
+                <span className="font-bold ml-10">{path}</span>
                 <div>
                     <Select
                         className="font-medium text-sm text-black"
@@ -116,7 +117,7 @@ const RevenueChartTime = ({ path }: Props) => {
                             ))}
                         </Select>
                     </div>
-                    <div className='mr-[40px]'>
+                    <div className="mr-[40px]">
                         <Select
                             className="font-medium text-sm text-black"
                             variant="standard"

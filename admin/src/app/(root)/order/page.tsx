@@ -39,7 +39,7 @@ const OrderStatis = () => {
             <div>
                 <RevenueChart path="Total Orders" />
             </div>
-            <div className="w-[65vw]">
+            <div className="w-[80vw]">
                 <RevenueChartTime path="Total Orders" />
             </div>
         </div>
