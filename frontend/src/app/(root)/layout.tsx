@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="en">
-            <body className={`${inter.className} font-poppin`}>
+            <body className={`${inter.className} text-sm font-poppin`}>
                 <Providers>
                     <Header />
                     <Navbar />

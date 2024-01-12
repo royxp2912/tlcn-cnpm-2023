@@ -82,7 +82,7 @@ const Address = () => {
             <div className="flex flex-col w-[1100px] shadow-lg rounded-lg gap-[10px] py-10 px-[50px]">
                 <div className="flex items-center justify-between mb-10">
                     <div className="flex flex-col">
-                        <span className="font-bold text-xl">Delivery Address</span>
+                        <span className="font-bold text-base">Delivery Address</span>
                         <span className="font-bold">Where you can receive your orders!!!</span>
                     </div>
                     <div

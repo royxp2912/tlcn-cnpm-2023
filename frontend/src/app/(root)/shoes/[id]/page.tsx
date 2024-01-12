@@ -195,7 +195,7 @@ const ShoesSinglePage = () => {
                     </div>
                 </div>
                 <div>
-                    <h1 className="text-2xl font-bold">{productDetail.name}</h1>
+                    <h1 className="text-base font-bold">{productDetail.name}</h1>
                     <div className="flex items-center gap-10 mt-[23px] mb-[25px]">
                         <Rating value={4} readOnly emptyIcon={<StarIcon className="text-star" />} />
 
@@ -203,7 +203,7 @@ const ShoesSinglePage = () => {
                         <span className="text-blue cursor-pointer">Submit a review</span>
                     </div>
                     <BorderBlack />
-                    <span className="text-3xl text-money font-bak mt-[25px] mb-[25px] block">
+                    <span className="text-base text-money font-bak mt-[25px] mb-[25px] block">
                         ${productDetail.price}
                     </span>
                     <span className="font-medium mb-[25px] block">free shipping</span>
@@ -256,7 +256,7 @@ const ShoesSinglePage = () => {
                         <span>{sizeQty.quantity === 0 ? '' : sizeQty.quantity}</span>
                     </div>
                     <BorderBlack />
-                    <div className="flex justify-between mt-5">
+                    <div className="flex justify-between gap-[120px] mt-5">
                         <div className="flex h-[50px] text-xl font-bold">
                             <span
                                 className="w-11 flex items-center justify-center bg-[#F6F7F8] rounded-tl-md rounded-bl-md text-blue cursor-pointer hover:bg-blue hover:text-white"
@@ -264,9 +264,7 @@ const ShoesSinglePage = () => {
                             >
                                 -
                             </span>
-                            <span className="w-[62px] flex items-center justify-center bg-[#FAFBFB] rounded-md ">
-                                {quantity}
-                            </span>
+                            <span className="w-[62px] flex items-center justify-center bg-[#FAFBFB] ">{quantity}</span>
                             <span
                                 className="w-11 flex items-center justify-center bg-[#F6F7F8] rounded-tr-md rounded-br-md text-blue cursor-pointer hover:bg-blue hover:text-white"
                                 onClick={handleInsc}
@@ -290,8 +288,8 @@ const ShoesSinglePage = () => {
                 </div>
             </div>
             <div className="px-5 pt-[25px] pb-5 bg-bg_sell rounded-lg w-[1020px]">
-                <div className="text-lg font-medium flex mb-[25px]">
-                    <span className="w-[180px] border-b-2 border-blue flex items-center justify-center">
+                <div className="text-base font-medium flex mb-[25px]">
+                    <span className="w-[180px] border-b-2 text-blue border-blue flex items-center justify-center">
                         Shoe Information
                     </span>
                     <div className="w-[160px] flex items-center justify-center gap-3">
@@ -304,7 +302,7 @@ const ShoesSinglePage = () => {
                 {/* <Reviews /> */}
             </div>
             <div className="mt-24 flex flex-col items-center">
-                <span className="font-bold text-3xl text-blue">Hot Shoes</span>
+                <span className="font-bold text-base text-blue">Hot Shoes</span>
                 <div className="mt-5 w-full">
                     {/* Vỉew hot shoes (component singlesellshoe) */}
                     <SingleSellShoe

@@ -23,10 +23,10 @@ const unProp = {
     isNext: false,
     next: 0,
     back: 0,
-    setBack: () => { },
-    setNext: () => { },
-    setIsBack: () => { },
-    setIsNext: () => { },
+    setBack: () => {},
+    setNext: () => {},
+    setIsBack: () => {},
+    setIsNext: () => {},
 };
 
 const ManShoes = () => {
@@ -61,8 +61,6 @@ const ManShoes = () => {
     );
 
     const idCate = found?._id as string;
-    console.log(pages);
-    console.log(idCate);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -102,7 +100,6 @@ const ManShoes = () => {
         };
         fetchData();
     }, [dispatch]);
-    console.log(active);
 
     return (
         <div className="flex px-[100px] gap-10 mt-5">
@@ -112,7 +109,7 @@ const ManShoes = () => {
                 <Color color={color} setColor={setColor} />
                 <Brand brands={brands} brand={brand} setBrand={setBrand} />
             </div>
-            <div className="w-[1010px]">
+            <div className="w-[1010px] flex flex-col">
                 <div className="w-full h-[280px] relative ">
                     <Image src="/layout.png" alt="Ảnh" fill />
                 </div>
@@ -129,7 +126,8 @@ const ManShoes = () => {
                 ) : (
                     <SingleSellShoe products={products.length !== 0 ? listProduct : products} {...unProp} />
                 )}
-                {products.length !== 0 ? <Pagetination setPageNum={setPageNum} pages={pages} /> : ''}
+                <div className="flex-grow"></div>
+                {products.length !== 0 ? <Pagetination setPageNum={setPageNum} pages={pages - 1} /> : ''}
             </div>
         </div>
     );

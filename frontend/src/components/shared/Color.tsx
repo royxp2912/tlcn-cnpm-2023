@@ -26,7 +26,7 @@ type Props = {
 const Color = ({ color, setColor }: Props) => {
     return (
         <div className="p-5 bg-deal rounded-lg">
-            <span className="font-bold text-lg">Color</span>
+            <span className="font-bold text-base">Color</span>
             <div className="flex justify-between mt-5">
                 {Object.keys(colors).map((c, index) => (
                     <div

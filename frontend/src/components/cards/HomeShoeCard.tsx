@@ -110,7 +110,7 @@ const HomeShoeCard = ({ id }: Props) => {
     return (
         <div className="flex items-center pt-[60px] px-[212px] gap-14">
             <div className="w-5/12 flex flex-col">
-                <h1 className="font-black text-2xl text-white mb-2 uppercase">{productDetail.name}</h1>
+                <h1 className="font-black text-base text-white mb-2 uppercase">{productDetail.name}</h1>
                 <p className="text-gray text-[14px] text-justify">{productDetail.desc}</p>
 
                 <div className="flex items-center mt-8 mb-5">
@@ -167,10 +167,10 @@ const HomeShoeCard = ({ id }: Props) => {
                             ))}
                     </div>
                 </div>
-                <span className="text-4xl font-bak text-[#FFD6AE] mt-5 mb-2">$ {productDetail.price}</span>
+                <span className="font-bak text-[#FFD6AE] text-base mt-5 mb-2">$ {productDetail.price}</span>
                 <button
                     onClick={handleAddToCart}
-                    className="w-60 h-[50px] border-2 border-orange rounded-md text-lg font-bold text-orange cursor-pointer hover:opacity-60"
+                    className="w-60 h-[50px] border-2 border-orange rounded-md text-base font-bold text-orange cursor-pointer hover:opacity-60"
                 >
                     Buy Now
                 </button>

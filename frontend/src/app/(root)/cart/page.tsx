@@ -93,7 +93,7 @@ const Cart = () => {
     }, [cartItem.items]);
 
     return (
-        <div className="flex flex-col items-center px-10">
+        <div className="flex flex-col items-center px-10 mt-6">
             <span className="font-bold text-3xl text-blue">Cart</span>
             <div className="w-full flex gap-5 text-cart">
                 <input
@@ -141,7 +141,7 @@ const Cart = () => {
                         </div>
                     </div>
                     <Border />
-                    <div className="text-2xl font-semibold flex justify-between my-5">
+                    <div className="text-base font-semibold flex justify-between my-5">
                         <span>Total</span>
                         <span>${total}</span>
                     </div>

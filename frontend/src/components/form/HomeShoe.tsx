@@ -20,6 +20,10 @@ const HomeShoe = () => {
     const [id, setId] = useState<string>('');
     const [count, setCount] = useState(0);
     const router = useRouter();
+    const [isNext, setIsNext] = useState<boolean>(false);
+    const [isBack, setIsBack] = useState<boolean>(false);
+    const [back, setBack] = useState<number>(0);
+    const [next, setNext] = useState<number>(4);
 
     const userString = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
 
@@ -61,6 +65,14 @@ const HomeShoe = () => {
         return () => clearTimeout(timeout);
     }, [id, productHots, count]);
 
+    useEffect(() => {
+        if (productHots.length > 4) {
+            setIsNext(true);
+        } else {
+            setIsNext(false);
+        }
+    }, [productHots.length, setIsNext]);
+
     const handleAddtoCart = async ({ product, image, name, price }: itemCartRandomVari) => {
         if (!user) {
             toast.error('Please login before add to cart', {
@@ -84,17 +96,42 @@ const HomeShoe = () => {
         //     toast.success((res.payload as { status: string }).data.message)
         // }
     };
+    const handleNext = () => {
+        if (productHots.length === next) {
+            setIsNext(false);
+        } else {
+            setNext((prev) => prev + 1);
+            setBack((prev) => prev + 1);
+            setIsBack(true);
+        }
+    };
+
+    const handleBack = () => {
+        if (back === 0) {
+            setIsBack(false);
+            setIsNext(true);
+        } else {
+            setIsBack(true);
+            setBack((prev) => prev - 1);
+            setNext((prev) => prev - 1);
+        }
+    };
+    console.log(next);
+    console.log(back);
     return (
         <div className="bg-bg">
             <HomeShoeCard id={id} />
 
             <div className="flex items-center justify-between py-10 px-14 gap-16">
-                <div>
+                <div
+                    onClick={isBack ? handleBack : undefined}
+                    className={`${back === 0 ? 'opacity-70' : 'cursor-pointer'}`}
+                >
                     <Image src="/left.png" alt="Arrow" width={25} height={41} />
                 </div>
                 <div className="flex gap-20">
                     {productHots &&
-                        productHots.map((productHot) => (
+                        productHots.slice(back, next).map((productHot) => (
                             <div
                                 key={productHot._id}
                                 onClick={() => router.push(`/shoes/${productHot._id}`)}
@@ -138,7 +175,10 @@ const HomeShoe = () => {
                             </div>
                         ))}
                 </div>
-                <div>
+                <div
+                    onClick={isNext ? handleNext : undefined}
+                    className={`${next === productHots.length ? 'opacity-70' : 'cursor-pointer'}`}
+                >
                     <Image src="/right.png" alt="Arrow" width={25} height={41} />
                 </div>
             </div>

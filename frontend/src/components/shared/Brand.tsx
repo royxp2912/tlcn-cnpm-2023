@@ -11,7 +11,7 @@ type Props = {
 const Brand = ({ brands, brand, setBrand }: Props) => {
     return (
         <div className="bg-deal p-5 rounded-lg">
-            <span className="font-bold text-lg">Brands</span>
+            <span className="font-bold text-base">Brands</span>
             <div>
                 {brands &&
                     brands.map((b) => (

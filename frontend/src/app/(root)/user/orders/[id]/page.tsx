@@ -54,7 +54,7 @@ const DetailOrder = () => {
                 </div>
                 <div className="w-full p-5 shadow-2xl rounded-lg mb-[10px]">
                     <div className="flex justify-between">
-                        <span className="font-bold text-lg">Delivery Details</span>
+                        <span className="font-bold text-base">Delivery Details</span>
                     </div>
                     <div className="px-5 flex flex-col gap-[15px] mt-5">
                         <div className="flex gap-[350px]">
@@ -101,7 +101,7 @@ const DetailOrder = () => {
                                         height={100}
                                         className="rounded-lg bg-deal"
                                     />
-                                    <div className="w-full font-medium text-lg">
+                                    <div className="w-full font-medium text-base">
                                         <div className="flex justify-between">
                                             <span>{item.name}</span>
                                             <span className="text-blue opacity-60">Submit a review</span>

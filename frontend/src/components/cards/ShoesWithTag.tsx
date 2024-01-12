@@ -65,8 +65,8 @@ const ShoesWithTag = ({ listProduct }: Props) => {
     return (
         <div>
             {listProduct && listProduct.length === 0 ? (
-                <div className="flex justify-center">
-                    <span className="text-2xl font-semibold">No Data</span>
+                <div className="flex justify-center items-center">
+                    <span className="text-base font-semibold">No Data</span>
                 </div>
             ) : (
                 listProduct.map((product) => (
@@ -90,8 +90,8 @@ const ShoesWithTag = ({ listProduct }: Props) => {
                                     </div>
                                 )}
                             </div>
-                            <div className="w-[700px]">
-                                <span className="text-2xl font-bold truncate w-full block ">{product.name}</span>
+                            <div className="w-[700px] flex flex-col">
+                                <span className="text-base font-bold truncate w-full block ">{product.name}</span>
                                 <div className="flex gap-10 items-center mt-[15px] mb-[27px] flex-grow">
                                     <Rating name="read-only" value={4} readOnly />
                                     <span className="text-rv font-medium">0 reviews</span>
@@ -103,8 +103,8 @@ const ShoesWithTag = ({ listProduct }: Props) => {
                                     </div>
                                 </div>
                                 <Border />
-                                <span className="text-2xl text-money font-bak my-[15px] block">${product.price}</span>
-                                <p className="text-sm text-justify mb-[11px] truncate w-full">{product.desc}</p>
+                                <span className="text-base text-money font-bak my-[15px] block">${product.price}</span>
+                                <p className="text-justify mb-[11px] truncate w-full">{product.desc}</p>
                                 <Border />
                                 <div className="flex mt-[10px]">
                                     <div className="flex-grow"></div>
