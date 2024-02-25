@@ -19,7 +19,34 @@ export const {
     updateEmailByUserID,
     updateSpentByUserID,
     updatePasswordByUserID,
+    forgotPassword,
 } = {
+
+    forgotPassword: async (userID, newPass) => {
+        try {
+            checkedObjectId(userID, 'User ID');
+            const result = await User.findById(userID).select('password');
+            checkedNull(result, "User don't exist !!!");
+
+            const salt = bcrypt.genSaltSync(10);
+            const newPassword = bcrypt.hashSync(newPass, salt);
+
+            await User.findByIdAndUpdate(userID, { $set: { password: newPassword } }, { new: true });
+
+            return {
+                success: true,
+                status: 200,
+                message: 'Update User Password Successful !!!',
+            };
+        } catch (err) {
+            return {
+                success: false,
+                status: err.status || 500,
+                message: err.message || 'Something went wrong in User Service !!!',
+            };
+        }
+    },
+
 
     updateSpentByUserID: async (userID, spent) => {
         try {
