@@ -18,11 +18,6 @@ export const LoginValidation = z.object({
     password: z.string().nonempty('Field required').min(6),
 });
 
-interface Props {
-    value: string;
-    parent: string;
-}
-
 export const RegisterValidation = z
     .object({
         email: z.string().nonempty('Field required').email({ message: 'Not email...' }),
