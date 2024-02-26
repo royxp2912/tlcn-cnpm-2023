@@ -22,16 +22,15 @@ export const {
     forgotPassword,
 } = {
 
-    forgotPassword: async (userID, newPass) => {
+    forgotPassword: async (email, newPass) => {
         try {
-            checkedObjectId(userID, 'User ID');
-            const result = await User.findById(userID).select('password');
+            const result = await User.findOne({ email: email });
             checkedNull(result, "User don't exist !!!");
 
             const salt = bcrypt.genSaltSync(10);
             const newPassword = bcrypt.hashSync(newPass, salt);
 
-            await User.findByIdAndUpdate(userID, { $set: { password: newPassword } }, { new: true });
+            await User.findOneAndUpdate({ email: email }, { $set: { password: newPassword } }, { new: true });
 
             return {
                 success: true,

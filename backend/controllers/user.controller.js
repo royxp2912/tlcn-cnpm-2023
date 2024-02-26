@@ -18,7 +18,7 @@ import {
 
 export const forgotUserPassword = async (req, res, next) => {
     try {
-        const { success, status, message } = await forgotPassword(req.body.user, req.body.newPass);
+        const { success, status, message } = await forgotPassword(req.body.email, req.body.newPass);
         if (!success) return next(createError(status, message));
 
         res.status(status).json({
