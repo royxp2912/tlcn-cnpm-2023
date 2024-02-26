@@ -16,8 +16,8 @@ const Header = () => {
     }
     console.log(user);
     return (
-        <div className="flex w-[calc(100vw - 260px)] px-5 py-4 items-center justify-between shadow-header ml-[2px] bg-white">
-            <div className="text-5xl flex items-center gap-1">
+        <div className="flex w-[calc(100vw - 260px)] px-5 py-2 items-center justify-between shadow-header ml-[2px] bg-white">
+            <div className="text-3xl flex items-center gap-1">
                 <span className="font-birsmark scale-x-[-1]">P</span>
                 <span className="font-fb">&</span>
                 <span className="font-birsmark">P</span>
