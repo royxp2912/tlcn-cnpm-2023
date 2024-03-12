@@ -194,6 +194,7 @@ export const findProductByColor = async (req, res, next) => {
 
 export const findProductByKeyword = async (req, res, next) => {
     try {
+        console.log("avsdaasd");
         const color = req.query.color;
         const brand = req.query.brand;
         const sort = req.query.sort;
@@ -222,7 +223,6 @@ export const findProductByKeyword = async (req, res, next) => {
 
         const { success, message, pages, data, status } = await findByKeyword(keyword, pageSize, pageNumber, brand, color);
         if (!success) return next(createError(status, message));
-
         res.status(status).json({
             success: success,
             message: message,

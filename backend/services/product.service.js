@@ -3,7 +3,7 @@ import Category from '../models/Category.js';
 import { checkedNull } from '../utils/handel_null.js';
 import { deleteAllByProID } from './comment.service.js';
 import { checkedObjectId } from '../utils/checkedOthers.js';
-import { createList, getListVarByProID, deleteListVarByProID, findProIDByColor, isColorInProduct, isStock } from './variant.service.js';
+import { createList, getListVarByProID, deleteListVarByProID, findProIDByColor, isColorInProduct, isStock, getOneByProID } from './variant.service.js';
 
 export const {
     hide,
@@ -271,6 +271,7 @@ export const {
     },
 
     findByKeywordAndSort: async (keyword, pageSize, pageNumber, brand, color, sort) => {
+        console.log("abcbcbausbcua");
         try {
             let result = [];
             if (isNaN(keyword)) {
@@ -741,12 +742,14 @@ export const {
         try {
             const result = await Product.findById(proID).select('_id');
             const final = await isStock(result._id);
+            checkedNull(result, "Product doesn't exist !!!");
 
             // Lấy variants thuộc product
             const { success, status, message, data } = await getListVarByProID(proID);
             if (!success) return { success, status, message };
 
-            checkedNull(result, "Product doesn't exist !!!");
+            const randomVar = await getOneByProID(proID);
+
 
             return {
                 success: true,
@@ -755,6 +758,7 @@ export const {
                 data: {
                     product: final,
                     variants: data,
+                    randomVar: randomVar.data,
                 },
             };
         } catch (err) {
