@@ -16,6 +16,7 @@ export const getProductById = createAsyncThunk(
     async (product: string, { rejectWithValue }) => {
         try {
             const res = await productsApi.getProductById(product);
+            console.log(res);
             return res;
         } catch (err: any) {
             return rejectWithValue(err);
@@ -86,6 +87,7 @@ export const productSlice = createSlice({
         brands: [],
         hotdeals: [],
         pages: {},
+        randomItem: {},
         loading: false,
         error: null as string | null,
     },
@@ -112,8 +114,9 @@ export const productSlice = createSlice({
         });
         builder.addCase(getProductById.fulfilled, (state, action) => {
             state.loading = true;
-            state.productDetail = action.payload.data.data.product;
+            state.productDetail = action.payload.data.data;
             state.variants = action.payload.data.data.variants;
+            state.randomItem = action.payload.data.data.randomVariant;
         });
         builder.addCase(getAllProductByCateId.pending, (state) => {
             state.loading = true;

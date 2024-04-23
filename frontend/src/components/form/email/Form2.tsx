@@ -73,7 +73,7 @@ const Form2 = ({
     };
 
     const handleResend = async () => {
-        const { data } = await axios.post('/auth/sendCode', {
+        const { data } = await axios.post('/auths/sendOTP', {
             email: email,
         });
         if (data.success) {

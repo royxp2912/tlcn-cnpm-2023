@@ -104,7 +104,7 @@ const Orders = () => {
                             const isActive = status === item;
                             return (
                                 <span
-                                    className={`w-[140px] h-max block pt-[10px] pb-[12px] font-semibold text-center uppercase hover:text-blue cursor-pointer ${
+                                    className={`w-[140px] text-base h-max block pt-[10px] pb-[12px] font-semibold text-center uppercase hover:text-blue cursor-pointer ${
                                         isActive && 'text-blue border-b-2 border-b-blue'
                                     }`}
                                     onClick={() => setStatus(item)}
@@ -117,7 +117,7 @@ const Orders = () => {
                 </div>
                 <div className="flex flex-col gap-5">
                     {orders.length === 0 ? (
-                        <span className="text-xl font-bold text-center block mt-[10px]">Nothing</span>
+                        <span className="text-base font-bold text-center block mt-[10px]">Nothing</span>
                     ) : (
                         orders.map((order) => (
                             <div

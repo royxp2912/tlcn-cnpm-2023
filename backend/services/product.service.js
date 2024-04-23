@@ -3,7 +3,15 @@ import Category from '../models/Category.js';
 import { checkedNull } from '../utils/handel_null.js';
 import { deleteAllByProID } from './comment.service.js';
 import { checkedObjectId } from '../utils/checkedOthers.js';
-import { createList, getListVarByProID, deleteListVarByProID, findProIDByColor, isColorInProduct, isStock } from './variant.service.js';
+import {
+    createList,
+    getListVarByProID,
+    deleteListVarByProID,
+    findProIDByColor,
+    isColorInProduct,
+    isStock,
+    getOneByProID,
+} from './variant.service.js';
 
 export const {
     hide,
@@ -29,16 +37,14 @@ export const {
     getQuantityHotDealByBrandName,
     getQuantityHotDealByEachBrand,
 } = {
-
     countByCateID: async (cateID) => {
         try {
             const totalProduct = await Product.find({ category: cateID });
-            const detail = await Category.findById(cateID)
-                .select("-createdAt -updatedAt -__v");
+            const detail = await Category.findById(cateID).select('-createdAt -updatedAt -__v');
             const result = {
                 ...detail._doc,
-                total: totalProduct.length
-            }
+                total: totalProduct.length,
+            };
 
             return result;
         } catch (err) {
@@ -196,7 +202,7 @@ export const {
                     listProduct.map((pro) =>
                         Product.findById(pro.product)
                             .populate({ path: 'category', select: 'name' })
-                            .select('-status -createdAt -updatedAt -__v')
+                            .select('-status -createdAt -updatedAt -__v'),
                     ),
                 );
 
@@ -220,7 +226,7 @@ export const {
             }
 
             if (!limitResult) return false;
-            const final = await Promise.all(limitResult.map(item => isStock(item._id)))
+            const final = await Promise.all(limitResult.map((item) => isStock(item._id)));
 
             return {
                 success: true,
@@ -251,7 +257,7 @@ export const {
             );
 
             const limitResult = result.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
-            const final = await Promise.all(limitResult.map(item => isStock(item._id)))
+            const final = await Promise.all(limitResult.map((item) => isStock(item._id)));
 
             if (!result) return false;
             return {
@@ -429,7 +435,7 @@ export const {
             }
 
             const final = semiFinal.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
-            const finalResult = await Promise.all(final.map(item => isStock(item._id)));
+            const finalResult = await Promise.all(final.map((item) => isStock(item._id)));
 
             return {
                 success: true,
@@ -449,10 +455,10 @@ export const {
 
     getAllByCateID: async (cateID, color, brand, sort, pageSize, pageNumber) => {
         try {
-            if (sort === "hot") {
+            if (sort === 'hot') {
                 const listProduct = await Product.find({ category: cateID })
                     .populate({ path: 'category', select: 'name' })
-                    .select("-createdAt -updatedAt -__v -status")
+                    .select('-createdAt -updatedAt -__v -status')
                     .sort({ sold: -1 });
 
                 let result = listProduct;
@@ -466,7 +472,7 @@ export const {
                 }
 
                 const final = semiFinal.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
-                const finalResult = await Promise.all(final.map(item => isStock(item._id)));
+                const finalResult = await Promise.all(final.map((item) => isStock(item._id)));
 
                 return {
                     success: true,
@@ -479,7 +485,7 @@ export const {
 
             const listProduct = await Product.find({ category: cateID })
                 .populate({ path: 'category', select: 'name' })
-                .select("-createdAt -updatedAt -__v -status")
+                .select('-createdAt -updatedAt -__v -status')
                 .sort({ createdAt: -1 });
 
             let result = listProduct;
@@ -493,7 +499,7 @@ export const {
             }
 
             const final = semiFinal.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
-            const finalResult = await Promise.all(final.map(item => isStock(item._id)));
+            const finalResult = await Promise.all(final.map((item) => isStock(item._id)));
 
             return {
                 success: true,
@@ -522,8 +528,7 @@ export const {
                         { brand: { $regex: keyword, $options: 'i' } },
                         { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
                     ],
-                })
-                    .select('_id brand');
+                }).select('_id brand');
             } else {
                 result = await Product.find({
                     $or: [
@@ -534,8 +539,7 @@ export const {
                         { price: keyword },
                         { category: { $in: await Category.find({ name: { $regex: keyword, $options: 'i' } }) } },
                     ],
-                })
-                    .select('_id brand');
+                }).select('_id brand');
             }
 
             if (!result) return false;
@@ -552,7 +556,7 @@ export const {
             }
 
             const final = semiFinal.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
-            const finalResult = await Promise.all(final.map(item => isStock(item._id)));
+            const finalResult = await Promise.all(final.map((item) => isStock(item._id)));
             return {
                 success: true,
                 status: 200,
@@ -592,10 +596,7 @@ export const {
     unHide: async (proID) => {
         try {
             checkedObjectId(proID, 'Product ID');
-            const oldProduct = await Product.findByIdAndUpdate(
-                proID,
-                { $set: { status: "Available" } }
-            );
+            const oldProduct = await Product.findByIdAndUpdate(proID, { $set: { status: 'Available' } });
             checkedNull(oldProduct, "Product doen't exist !!!");
 
             return {
@@ -615,10 +616,7 @@ export const {
     hide: async (proID) => {
         try {
             checkedObjectId(proID, 'Product ID');
-            const oldProduct = await Product.findByIdAndUpdate(
-                proID,
-                { $set: { status: "Hide" } }
-            );
+            const oldProduct = await Product.findByIdAndUpdate(proID, { $set: { status: 'Hide' } });
             checkedNull(oldProduct, "Product doen't exist !!!");
 
             return {
@@ -638,10 +636,7 @@ export const {
     updateImages: async (proID, images) => {
         try {
             checkedObjectId(proID, 'Product ID');
-            const oldProduct = await Product.findByIdAndUpdate(
-                proID,
-                { $push: { images: { $each: images } } }
-            );
+            const oldProduct = await Product.findByIdAndUpdate(proID, { $push: { images: { $each: images } } });
             checkedNull(oldProduct, "Product doen't exist !!!");
 
             return {
@@ -741,12 +736,13 @@ export const {
         try {
             const result = await Product.findById(proID).select('_id');
             const final = await isStock(result._id);
+            checkedNull(result, "Product doesn't exist !!!");
 
             // Lấy variants thuộc product
             const { success, status, message, data } = await getListVarByProID(proID);
             if (!success) return { success, status, message };
 
-            checkedNull(result, "Product doesn't exist !!!");
+            const randomVar = await getOneByProID(proID);
 
             return {
                 success: true,
@@ -755,6 +751,7 @@ export const {
                 data: {
                     product: final,
                     variants: data,
+                    randomVar: randomVar.data,
                 },
             };
         } catch (err) {
@@ -775,7 +772,7 @@ export const {
                 .select('_id')
                 .sort({ sold: -1 });
 
-            const result = await Promise.all(listProduct.map(item => isStock(item._id)));
+            const result = await Promise.all(listProduct.map((item) => isStock(item._id)));
 
             return {
                 success: true,
@@ -802,7 +799,7 @@ export const {
                 .select('_id')
                 .sort({ createdAt: -1 });
 
-            const result = await Promise.all(listProduct.map(item => isStock(item._id)));
+            const result = await Promise.all(listProduct.map((item) => isStock(item._id)));
 
             return {
                 success: true,
@@ -828,7 +825,7 @@ export const {
                 .skip(pageSize * (pageNumber - 1))
                 .select('_id');
 
-            const result = await Promise.all(listProduct.map(item => isStock(item._id)));
+            const result = await Promise.all(listProduct.map((item) => isStock(item._id)));
 
             return {
                 success: true,

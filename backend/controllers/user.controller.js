@@ -13,7 +13,23 @@ import {
     getAllUserByStatus,
     updateEmailByUserID,
     updatePasswordByUserID,
+    forgotPassword,
 } from "../services/user.service.js";
+
+export const forgotUserPassword = async (req, res, next) => {
+    try {
+        const { success, status, message } = await forgotPassword(req.body.email, req.body.password);
+        console.log("email: ", req.body.email);
+        if (!success) return next(createError(status, message));
+
+        res.status(status).json({
+            success,
+            message,
+        })
+    } catch (err) {
+        next(err);
+    }
+}
 
 export const updateUserEmail = async (req, res, next) => {
     try {

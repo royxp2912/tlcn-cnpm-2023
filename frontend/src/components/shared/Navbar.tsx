@@ -20,29 +20,39 @@ const Navbar = () => {
         return;
     }
     return (
-        <div className={` flex justify-center ${pathname === '/' ? 'text-white bg-bg' : 'text-bg bg-white'} font-bold`}>
-            <Link
-                href="/"
-                className={`w-[120px] h-10 text-center ${
-                    pathname === '/' ? 'text-orange border-orange border-b-2' : 'hover:text-blue '
-                }  `}
-            >
-                <span>Home</span>
-            </Link>
-            {categories &&
-                categories.map((category) => (
+        <div>
+            {pathname === '/cart' || pathname.startsWith('/user') ? (
+                ''
+            ) : (
+                <div
+                    className={` flex justify-center ${
+                        pathname === '/' ? 'text-white bg-bg' : 'text-bg bg-white'
+                    } text-base font-bold`}
+                >
                     <Link
-                        key={category._id}
-                        href={`/${category.name.toLowerCase().replace(/\s/g, '')}`}
+                        href="/"
                         className={`w-[120px] h-10 text-center ${
-                            pathname === `/${category.name.toLowerCase().replace(/\s/g, '')}`
-                                ? 'text-blue border-blue border-b-2'
-                                : 'hover:text-blue'
+                            pathname === '/' ? 'text-orange border-orange border-b-2' : 'hover:text-blue '
                         }  `}
                     >
-                        <span>{category.name}</span>
+                        <span>Home</span>
                     </Link>
-                ))}
+                    {categories &&
+                        categories.map((category) => (
+                            <Link
+                                key={category._id}
+                                href={`/${category.name.toLowerCase().replace(/\s/g, '')}`}
+                                className={`w-[120px] h-10 text-center ${
+                                    pathname === `/${category.name.toLowerCase().replace(/\s/g, '')}`
+                                        ? 'text-blue border-blue border-b-2'
+                                        : 'hover:text-blue'
+                                }  `}
+                            >
+                                <span>{category.name}</span>
+                            </Link>
+                        ))}
+                </div>
+            )}
         </div>
     );
 };

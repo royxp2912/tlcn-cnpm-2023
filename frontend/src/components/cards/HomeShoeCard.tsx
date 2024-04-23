@@ -1,39 +1,42 @@
 import { addItemToCartByUserId } from '@/slices/cartSlice';
 import { getColorOfSize } from '@/slices/variantSlice';
-import { ItemCart, Product, User, Variant, getSizeOfColor, variantColor } from '@/types/type';
+import { ItemCart, ItemCartFake, Product, RVariant, User, Variant, getQtyOfSizeColor } from '@/types/type';
 import { AppDispatch } from '@/utils/store';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
 type Props = {
     id: string;
+    items: RVariant;
+    setItems: Dispatch<SetStateAction<RVariant>>;
 };
 
-const HomeShoeCard = ({ id }: Props) => {
+const colors: { [key: string]: string } = {
+    Red: 'bg-[#FC3E39]',
+    Blue: 'bg-[#0000FF]',
+    Gray: 'bg-[#808080]',
+    Cyan: 'bg-[#00FFFF]',
+    Pink: 'bg-[#FFC0CB]',
+    Green: 'bg-[#00FF00]',
+    Black: 'bg-[#171717]',
+    White: 'bg-[#FFFFFF]',
+    Brown: 'bg-[#A52A2A]',
+    Purple: 'bg-[#800080]',
+    Yellow: 'bg-[#FFFF00]',
+    Orange: 'bg-[#FFA500]',
+    Silver: 'bg-[#C0C0C0]',
+};
+
+const HomeShoeCard = ({ id, setItems, items }: Props) => {
     const { productDetail, variants } = useSelector((state: any) => state.products) as {
         productDetail: Product;
         variants: Variant;
     };
-    const { variant }: { variant: variantColor[] } = useSelector((state: any) => state.variants);
-
-    const colors: { [key: string]: string } = {
-        Blue: 'bg-[#006CFF]',
-        Red: 'bg-[#FC3E39]',
-        Black: 'bg-[#171717]',
-        Pink: 'bg-[#FF00B4]',
-        Yellow: 'bg-[#FFF600]',
-        Wheat: 'bg-[#EFDFDF]',
-    };
-    const borders: { [key: string]: string } = {
-        Blue: 'border-[#006CFF]',
-        Red: 'border-[#FC3E39]',
-        Black: 'border-[#171717]',
-        Pink: 'border-[#FF00B4]',
-        Yellow: 'border-[#FFF600]',
-        Wheat: 'border-[#EFDFDF]',
+    const { quantity } = useSelector((state: any) => state.variants) as {
+        quantity: number;
     };
     const userString = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
     let user: User | null = null;
@@ -49,17 +52,13 @@ const HomeShoeCard = ({ id }: Props) => {
     const router = useRouter();
     const dispatch = useDispatch<AppDispatch>();
 
-    const [color, setColor] = useState<string>();
-    const [sizeQty, setSizeQty] = useState<variantColor>({
-        size: '',
-        quantity: 0,
-    });
+    // const [quantity, setQuantity] = useState<number>(1);
 
-    const handleSizeQty = (size: variantColor) => {
-        setSizeQty({
-            size: size.size,
-            quantity: size.quantity,
-        });
+    const handleSetSize = (newSize: string) => {
+        setItems({ size: newSize, color: '', quantity: 0, hex: '', image: '' });
+    };
+    const handleSetColor = (newColor: string, hex: string) => {
+        setItems({ ...items, color: newColor, hex: hex });
     };
 
     const handleAddToCart = async () => {
@@ -74,24 +73,23 @@ const HomeShoeCard = ({ id }: Props) => {
             return;
         }
 
-        if (!color || !sizeQty.size) {
+        if (!items.color || !items.size) {
             toast.error('Choose Color And Size');
             return;
         }
-        if (sizeQty.quantity === 0) {
+        if (quantity === 0) {
             toast.error('Out of stock');
             return;
         }
 
-        const item: ItemCart = {
-            user: idUser,
+        const item: ItemCartFake = {
+            user: user._id,
             product: id,
-            image: productDetail.images[0],
+            image: items.image,
             name: productDetail.name,
-            color: color as string,
-            size: sizeQty.size,
-            quantity: 1,
-            price: productDetail.price,
+            color: items.color,
+            size: items.size,
+            quantity: quantity,
         };
 
         const res = await dispatch(addItemToCartByUserId(item));
@@ -100,77 +98,62 @@ const HomeShoeCard = ({ id }: Props) => {
         }
     };
     useEffect(() => {
-        const item: getSizeOfColor = {
+        const item: getQtyOfSizeColor = {
             id: id,
-            color: color as string,
+            color: items.color,
+            size: items.size,
         };
         dispatch(getColorOfSize(item));
-    }, [color]);
-
+    }, [items.color]);
+    // console.log(variants.listColor);
     return (
         <div className="flex items-center pt-[60px] px-[212px] gap-14">
             <div className="w-5/12 flex flex-col">
-                <h1 className="font-black text-2xl text-white mb-2 uppercase">{productDetail.name}</h1>
+                <h1 className="font-black text-base text-white mb-2 uppercase">{productDetail.name}</h1>
                 <p className="text-gray text-[14px] text-justify">{productDetail.desc}</p>
 
                 <div className="flex items-center mt-8 mb-5">
-                    <span className="text-white-60 font-bold w-[60px]">Color:</span>
-                    <div className="flex gap-2">
-                        {variants.listColor &&
-                            variants.listColor.map((item) => (
+                    <span className="text-white-60 font-bold w-[60px]">Size:</span>
+                    <div className="text-size flex gap-1">
+                        {variants &&
+                            variants.listSize &&
+                            variants.listSize.map((item, i: number) => (
                                 <div
-                                    key={item}
-                                    className={`w-5 h-5 relative rounded-full cursor-pointer ${colors[item]}`}
-                                    onClick={() => {
-                                        setSizeQty((prev) => ({
-                                            ...prev,
-                                            quantity: 0,
-                                        }));
-                                        setColor(item);
-                                    }}
+                                    key={i}
+                                    className={`w-8 h-7 cursor-pointer ${
+                                        item === items.size ? 'bg-blue' : 'bg-[#8d9096] '
+                                    } rounded-md flex items-center justify-center font-bold`}
+                                    onClick={() => handleSetSize(item)}
                                 >
-                                    {color === item && (
-                                        <div
-                                            className={`absolute inset-[-4px] p-3 rounded-full border-2 ${borders[item]}`}
-                                        ></div>
-                                    )}
+                                    {item}
                                 </div>
                             ))}
                     </div>
                 </div>
                 <div className="flex items-center ">
-                    <span className="text-white-60 font-bold w-[60px]">Size:</span>
-                    <div className="text-size flex gap-1">
-                        {variant &&
-                            variant.map((item: variantColor, i: number) => (
+                    <span className="text-white-60 font-bold w-[60px]">Color:</span>
+                    <div className="flex gap-2">
+                        {variants &&
+                            variants.listColor &&
+                            variants.listColor.map((item, i) => (
                                 <div
                                     key={i}
-                                    className={`w-8 h-7 cursor-pointer ${
-                                        item.size === sizeQty.size ? 'bg-blue' : 'bg-[#8d9096] '
-                                    } rounded-md flex items-center justify-center font-bold`}
-                                    onClick={() => handleSizeQty(item)}
+                                    onClick={() => handleSetColor(item.color, item.hex)}
+                                    className={`w-5 h-5 relative rounded-full cursor-pointer ${colors[item.color]}`}
                                 >
-                                    {item.size}
+                                    <div
+                                        className={`absolute inset-[-4px] p-3 rounded-full border-2 ${
+                                            item.color === items.color ? 'border-blue' : ''
+                                        }`}
+                                    ></div>
                                 </div>
-                                // {/* <div className="w-8 h-7 bg-[#8d9096] rounded-md flex items-center justify-center font-bold">
-                                //     38
-                                // </div>
-                                // <div className="w-8 h-7 bg-[#8d9096] rounded-md flex items-center justify-center font-bold">
-                                //     38
-                                // </div>
-                                // <div className="w-8 h-7 bg-[#8d9096] rounded-md flex items-center justify-center font-bold">
-                                //     38
-                                // </div>
-                                // <div className="w-8 h-7 bg-[#8d9096] rounded-md flex items-center justify-center font-bold">
-                                //     38
-                                // </div> */}
                             ))}
                     </div>
                 </div>
-                <span className="text-4xl font-bak text-[#FFD6AE] mt-5 mb-2">$ {productDetail.price}</span>
+                <span className="font-bak text-[#FFD6AE] text-base mt-5 mb-2">$ {productDetail.price}</span>
                 <button
                     onClick={handleAddToCart}
-                    className="w-60 h-[50px] border-2 border-orange rounded-md text-lg font-bold text-orange cursor-pointer hover:opacity-60"
+                    className="w-60 h-[50px] border-2 border-orange rounded-md text-base font-bold text-orange cursor-pointer hover:opacity-60"
                 >
                     Buy Now
                 </button>

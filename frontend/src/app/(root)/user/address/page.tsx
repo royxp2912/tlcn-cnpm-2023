@@ -37,10 +37,8 @@ const Address = () => {
         dispatch(getAllAddressByUserId(id));
     }, [id, load]);
 
-    const handleDefault = async (id: string) => {
-        const { data } = await axios.patch('/address/default', {
-            address: id,
-        });
+    const handleDefault = async (adsId: string) => {
+        const { data } = await axios.patch(`/deliveryAddress/default/${adsId}`);
         if (data.success) {
             toast.success('Set default address success');
             setLoad((prev) => !prev);
@@ -49,10 +47,8 @@ const Address = () => {
         }
     };
 
-    const handleDelete = async (id: string) => {
-        const { data } = await axios.delete('/address/one', {
-            params: { address: id },
-        });
+    const handleDelete = async (adsId: string) => {
+        const { data } = await axios.delete(`/deliveryAddress/${adsId}`);
         if (data.success) {
             toast.success('Delete address success');
             setLoad((prev) => !prev);
@@ -82,7 +78,7 @@ const Address = () => {
             <div className="flex flex-col w-[1100px] shadow-lg rounded-lg gap-[10px] py-10 px-[50px]">
                 <div className="flex items-center justify-between mb-10">
                     <div className="flex flex-col">
-                        <span className="font-bold text-xl">Delivery Address</span>
+                        <span className="font-bold text-base">Delivery Address</span>
                         <span className="font-bold">Where you can receive your orders!!!</span>
                     </div>
                     <div

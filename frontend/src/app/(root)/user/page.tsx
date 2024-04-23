@@ -121,7 +121,7 @@ const Profile = () => {
         }
     };
     const handleChangeEmail = async () => {
-        const { data } = await axios.post('/auth/sendCode', {
+        const { data } = await axios.post('/auths/sendOTP', {
             email: email,
         });
         if (data.success) {

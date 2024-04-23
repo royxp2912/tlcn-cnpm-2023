@@ -1,16 +1,16 @@
-import { Cart, ItemCart, RemoveItemCart, itemCartRandomVari } from '@/types/type';
+import { Cart, ItemCart, ItemCartFake, RemoveItemCart, itemCartRandomVari } from '@/types/type';
 import axios from '../utils/axios';
 
 const cartsApi = {
     getCartByUserId: (userId: string) => {
-        const url = `/carts`;
-        return axios.get(url, { params: { user: userId } });
+        const url = `/carts/user/${userId}`;
+        return axios.get(url);
     },
     createCart: (user: string) => {
         const url = '/carts';
         return axios.post(url, user);
     },
-    addItemToCartByUserId: (item: ItemCart) => {
+    addItemToCartByUserId: (item: ItemCartFake) => {
         const url = `/carts/addToCart`;
         const cart = {
             user: item.user,
@@ -20,7 +20,6 @@ const cartsApi = {
             color: item.color,
             size: item.size,
             quantity: item.quantity,
-            price: item.price,
         };
         return axios.post(url, cart);
     },
@@ -35,7 +34,7 @@ const cartsApi = {
         });
     },
     addItemToCartRandomVariant: (item: itemCartRandomVari) => {
-        const url = '/carts/addToCart/randomVar';
+        const url = '/carts/addToCart/withoutVariant';
         return axios.post(url, item);
     },
 };

@@ -220,14 +220,24 @@ const CartShoe = ({
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>
                     <TableRow>
-                        <TableCell>Product</TableCell>
-                        <TableCell align="center">Color</TableCell>
-                        <TableCell align="center">Size</TableCell>
-                        <TableCell align="center">QTY</TableCell>
-                        <TableCell align="center">UNIT PRICE</TableCell>
-                        <TableCell align="center">TOTAL</TableCell>
-                        <TableCell align="center"></TableCell>
-                        <TableCell align="center"></TableCell>
+                        <TableCell className="text-base">Product</TableCell>
+                        <TableCell align="center" className="text-base">
+                            Color
+                        </TableCell>
+                        <TableCell align="center" className="text-base">
+                            Size
+                        </TableCell>
+                        <TableCell align="center" className="text-base">
+                            QTY
+                        </TableCell>
+                        <TableCell align="center" className="text-base">
+                            UNIT PRICE
+                        </TableCell>
+                        <TableCell align="center" className="text-base">
+                            TOTAL
+                        </TableCell>
+                        <TableCell align="center" className="text-base"></TableCell>
+                        <TableCell align="center" className="text-base"></TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>

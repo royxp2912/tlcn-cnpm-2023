@@ -28,11 +28,11 @@ type data = {
 };
 
 const unProp = {
-    setOpen2: () => { },
-    setLoad: () => { },
-    setChange: () => { },
+    setOpen2: () => {},
+    setLoad: () => {},
+    setChange: () => {},
     change: false,
-    setUpdate: () => { },
+    setUpdate: () => {},
 };
 
 const Register = () => {
@@ -46,7 +46,7 @@ const Register = () => {
             fullName: '',
             password: '',
             rePassword: '',
-            gender: '',
+            gender: undefined,
             birthDay: '',
         },
     });
@@ -56,7 +56,7 @@ const Register = () => {
     const [code, setCode] = useState<string>('');
     const [email, setEmail] = useState('');
 
-    const onSubmit = async (values: z.infer<typeof RegisterValidation>) => { };
+    const onSubmit = async (values: z.infer<typeof RegisterValidation>) => {};
 
     const handleOpen = async () => {
         const values = form.getValues();
@@ -70,13 +70,12 @@ const Register = () => {
         ) {
             return;
         }
-        const { data } = await axios.post('/auth/sendCode', {
+        const { data } = await axios.post('/auths/sendOTP', {
             email: values.email,
         });
-        console.log(data);
         if (data.success) {
             setEmail(values.email);
-            setCode(data.code);
+            setCode(data.data);
             setOpen(true);
         }
     };
@@ -85,8 +84,9 @@ const Register = () => {
         const submitForm = async () => {
             try {
                 if (!regis) return;
-
-                const res = await dispatch(signUp(form.getValues()));
+                const { rePassword, ...items } = form.getValues();
+                console.log(items);
+                const res = await dispatch(signUp(items));
 
                 if ((res.payload as { status: number }).status === 201) {
                     toast.success('Register Success');

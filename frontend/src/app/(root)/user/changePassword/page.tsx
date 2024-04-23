@@ -68,7 +68,7 @@ const ChangePassword = () => {
                 return;
             }
 
-            const { data } = await axios.patch('/users/password', item);
+            const { data } = await axios.patch('/users/update-password', item);
             console.log(data);
             if (data.success) {
                 toast.success('Update Password Success');
@@ -89,7 +89,7 @@ const ChangePassword = () => {
             <UserNav />
 
             <div className="flex flex-col items-center w-[1100px] shadow-lg rounded-lg gap-[10px] py-10">
-                <span className="font-bold text-2xl">Change Password</span>
+                <span className="font-bold text-base">Change Password</span>
                 <span className="font-medium">Your password must be at least 6 characters!!!</span>
                 <div className="relative">
                     <TextField

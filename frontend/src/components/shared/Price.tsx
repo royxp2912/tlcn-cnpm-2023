@@ -21,7 +21,7 @@ const Price = ({ minPrice, setMinPrice, maxPrice, setMaxPrice }: Props) => {
     const valuetext = (value: number) => `${value}`;
     return (
         <div className="p-5 bg-deal rounded-lg">
-            <span className="font-bold text-lg">Prices</span>
+            <span className="font-bold text-base">Prices</span>
             <div className="mt-5 mb-[10px] flex items-center justify-between ">
                 <span>Ranger: </span>
                 <span>

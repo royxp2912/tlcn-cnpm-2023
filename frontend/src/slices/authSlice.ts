@@ -14,6 +14,7 @@ export const signIn = createAsyncThunk('auth/signIn', async (user: SignIn, { rej
 export const signUp = createAsyncThunk('auth/signUp', async (user: SignUp, { rejectWithValue }) => {
     try {
         const res = await authApi.signUp(user);
+        console.log(res);
         return res;
     } catch (err: any) {
         return rejectWithValue(err);
@@ -38,9 +39,9 @@ export const refreshToken = createAsyncThunk('auth/refreshToken', async (_, { re
     }
 });
 
-export const logout = createAsyncThunk('auth/logout', async (userId: string, { rejectWithValue }) => {
+export const logout = createAsyncThunk('auth/logout', async (token: string, { rejectWithValue }) => {
     try {
-        const res = await authApi.logout(userId);
+        const res = await authApi.logout(token);
         return res;
     } catch (err: any) {
         return rejectWithValue(err);
@@ -68,8 +69,8 @@ export const authSlice = createSlice({
         builder.addCase(signIn.fulfilled, (state, action) => {
             state.loading = false;
             state.user = action.payload.data.data;
-            localStorage.setItem('token', action.payload.data.accessToken);
-            localStorage.setItem('user', JSON.stringify(action.payload.data.data));
+            localStorage.setItem('token', action.payload.data.data.token);
+            localStorage.setItem('user', JSON.stringify(action.payload.data.data.user));
         });
         builder.addCase(signUp.pending, (state) => {
             state.loading = true;
@@ -111,7 +112,7 @@ export const authSlice = createSlice({
         });
         builder.addCase(logout.fulfilled, (state, action) => {
             state.loading = false;
-            localStorage.removeItem('token');
+            localStorage.clear();
         });
     },
 });
