@@ -68,7 +68,7 @@ const ChangePassword = () => {
                 return;
             }
 
-            const { data } = await axios.patch('/users/password', item);
+            const { data } = await axios.patch('/users/update-password', item);
             console.log(data);
             if (data.success) {
                 toast.success('Update Password Success');

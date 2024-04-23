@@ -1,10 +1,10 @@
 import variantsApi from '@/apis/variants';
-import { User, getSizeOfColor, upAvatar, updatePassword } from '@/types/type';
+import { getQtyOfSizeColor } from '@/types/type';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 export const getColorOfSize = createAsyncThunk(
     'variants/getColorOfSize',
-    async (item: getSizeOfColor, { rejectWithValue }) => {
+    async (item: getQtyOfSizeColor, { rejectWithValue }) => {
         try {
             const res = await variantsApi.getColorOfSize(item);
             return res;
@@ -17,7 +17,7 @@ export const getColorOfSize = createAsyncThunk(
 export const variantSlice = createSlice({
     name: 'variants',
     initialState: {
-        variant: [],
+        quantity: Number,
         loading: false,
         error: null as string | null,
     },
@@ -32,7 +32,7 @@ export const variantSlice = createSlice({
         });
         builder.addCase(getColorOfSize.fulfilled, (state, action) => {
             state.loading = false;
-            state.variant = action.payload.data.data;
+            state.quantity = action.payload.data.data.quantity;
         });
     },
 });

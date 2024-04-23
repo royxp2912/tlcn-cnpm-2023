@@ -1,23 +1,10 @@
-import { getSizeOfColor } from '@/types/type';
+import { getQtyOfSizeColor } from '@/types/type';
 import axios from '../utils/axios';
 
 const variantsApi = {
-    getAllVariantByProductId: (product: string) => {
-        const url = '/variants/product';
-        return axios.get(url, { data: { product } });
-    },
-    getVariantById: (variant: string) => {
-        const url = '/variants';
-        return axios.get(url, { data: { variant } });
-    },
-    getColorOfSize: (item: getSizeOfColor) => {
-        const url = '/variants/product/size';
-        return axios.get(url, {
-            params: {
-                product: item.id,
-                color: item.color,
-            },
-        });
+    getColorOfSize: (item: getQtyOfSizeColor) => {
+        const url = `/variants/find/by-info?product=${item.id}&size=${item.size}&color=${item.color}`;
+        return axios.get(url);
     },
 };
 

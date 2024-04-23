@@ -37,10 +37,8 @@ const Address = () => {
         dispatch(getAllAddressByUserId(id));
     }, [id, load]);
 
-    const handleDefault = async (id: string) => {
-        const { data } = await axios.patch('/address/default', {
-            address: id,
-        });
+    const handleDefault = async (adsId: string) => {
+        const { data } = await axios.patch(`/deliveryAddress/default/${adsId}`);
         if (data.success) {
             toast.success('Set default address success');
             setLoad((prev) => !prev);
@@ -49,10 +47,8 @@ const Address = () => {
         }
     };
 
-    const handleDelete = async (id: string) => {
-        const { data } = await axios.delete('/address/one', {
-            params: { address: id },
-        });
+    const handleDelete = async (adsId: string) => {
+        const { data } = await axios.delete(`/deliveryAddress/${adsId}`);
         if (data.success) {
             toast.success('Delete address success');
             setLoad((prev) => !prev);

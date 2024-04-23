@@ -14,11 +14,7 @@ const DetailOrder = () => {
     console.log(id);
     useEffect(() => {
         const fetchData = async () => {
-            const { data } = await axios.get('/orders/detail', {
-                params: {
-                    order: id,
-                },
-            });
+            const { data } = await axios.get(`/orders/${id}`);
             setDetail(data.data);
         };
         fetchData();

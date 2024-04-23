@@ -2,15 +2,6 @@ import ordersApi from '@/apis/orders';
 import { Order, checkoutOrder, orderStatus, updateOrder } from '@/types/type';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-export const getAllOrder = createAsyncThunk('orders/getAllOrder', async (_, { rejectWithValue }) => {
-    try {
-        const res = await ordersApi.getAllOrder();
-        return res;
-    } catch (err: any) {
-        return rejectWithValue(err.res.data);
-    }
-});
-
 export const getAllOrderByUserId = createAsyncThunk(
     'orders/getAllOrderByUserId',
     async (userId: string, { rejectWithValue }) => {
@@ -64,21 +55,6 @@ export const cancelOrderByOrderId = createAsyncThunk(
     async (order: string, { rejectWithValue }) => {
         try {
             const res = await ordersApi.cancelOrderByOrderId(order);
-            return res;
-        } catch (err: any) {
-            return rejectWithValue(err.res.data);
-        }
-    },
-);
-
-export const comfirmPaymentOrderByOrderId = createAsyncThunk(
-    'orders/comfirmPaymentOrderByOrderId',
-    async (params: { userId: string; orderId: string }, { dispatch, rejectWithValue }) => {
-        try {
-            const { userId, orderId } = params;
-            const res = await ordersApi.comfirmPaymentOrderByOrderId(orderId);
-            await dispatch(getAllOrderByUserId(userId));
-            await dispatch(getOrderByOrderId(orderId));
             return res;
         } catch (err: any) {
             return rejectWithValue(err.res.data);
@@ -166,16 +142,6 @@ export const orderSlice = createSlice({
             state.error = action.error.message || null;
         });
         builder.addCase(cancelOrderByOrderId.fulfilled, (state, action) => {
-            state.loading = false;
-        });
-        builder.addCase(comfirmPaymentOrderByOrderId.pending, (state) => {
-            state.loading = true;
-        });
-        builder.addCase(comfirmPaymentOrderByOrderId.rejected, (state, action) => {
-            state.loading = false;
-            state.error = action.error.message || null;
-        });
-        builder.addCase(comfirmPaymentOrderByOrderId.fulfilled, (state, action) => {
             state.loading = false;
         });
         builder.addCase(returnOrder.pending, (state) => {

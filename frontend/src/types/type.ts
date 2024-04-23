@@ -6,8 +6,8 @@ export type SignIn = {
 };
 export type SignUp = {
     email: string;
-    fullName: string;
     password: string;
+    fullName: string;
     gender: string;
     birthDay: string;
 };
@@ -25,7 +25,6 @@ export type User = {
 export type upUser = {
     user: string;
     fullName: string;
-    gender: string;
     birthDay: string;
     phone: string;
 };
@@ -44,12 +43,14 @@ export type Category = {
     _id?: string;
     name: string;
     img: string;
+    total: number;
 };
 
 export type Product = {
     _id: string;
     name: string;
     images: string[];
+    image: string;
     desc: string;
     category: Category;
     brand: string;
@@ -59,16 +60,22 @@ export type Product = {
     status?: string;
     variant: Variant;
     isStock?: boolean;
+    isFavorite: boolean;
 };
 
 export type Variant = {
-    listColor: string[];
+    listColor: detailVariant[];
     listSize: string[];
-    quantity: number;
+};
+
+export type detailVariant = {
+    color: string;
+    hex: string;
+    image: string;
 };
 
 export type Address = {
-    _id: string;
+    _id?: string;
     user: string;
     receiver: string;
     phone: string;
@@ -76,7 +83,7 @@ export type Address = {
     districts: string;
     wards: string;
     specific: string;
-    default: boolean;
+    default?: boolean;
 };
 
 export type AddressLess = {
@@ -101,14 +108,26 @@ export type UpdateAddress = {
 };
 
 export type ItemCart = {
-    user?: string;
+    user: string;
+    product: string;
+    image: string;
+    name: string;
+    color: string;
+    hex: string;
+    size: string;
+    quantity: number;
+    price: number;
+    selected?: boolean;
+};
+
+export type ItemCartFake = {
+    user: string;
     product: string;
     image: string;
     name: string;
     color: string;
     size: string;
     quantity: number;
-    price: number;
 };
 
 export type Cart = {
@@ -121,7 +140,7 @@ export type Cart = {
 export type Order = {
     _id: string;
     items: ItemCart[];
-    userID: string;
+    user: string;
     deliveryAddress: Address;
     paymentMethod: string;
     total: number;
@@ -152,8 +171,9 @@ export type upAvatar = {
     user: string;
 };
 
-export type getSizeOfColor = {
+export type getQtyOfSizeColor = {
     id: string;
+    size: string;
     color: string;
 };
 
@@ -168,10 +188,8 @@ export type Brand = {
 };
 
 export type itemCartRandomVari = {
+    user: string;
     product: string;
-    image: string;
-    name: string;
-    price: number;
 };
 
 export type productByCate = {
@@ -193,4 +211,38 @@ export type findProduct = {
 export type orderStatus = {
     status: string;
     user: string;
+};
+
+export type RVariant = {
+    color: string;
+    hex: string;
+    image: string;
+    size: string;
+    quantity: number;
+};
+
+export type Comment = {
+    _id: string;
+    commentator: Commentator;
+    product: string;
+    rating: number;
+    like: number;
+    images: string;
+};
+export type Commentator = {
+    _id: string;
+    fullName: string;
+    avatar: string;
+};
+export type Coupon = {
+    _id: string;
+    code: string;
+    name: string;
+    value: number;
+    type: string;
+    maxDiscount: number;
+    minAmount: number;
+    validityDuration: 10;
+    startDate: string;
+    endDate: string;
 };

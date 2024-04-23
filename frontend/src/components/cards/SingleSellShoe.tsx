@@ -125,7 +125,7 @@ const SingleSellShoe = ({
                                       {/* Single Product */}
                                       <div className="bg-bg_sell relative overflow-hidden hover:scale-110">
                                           <Image
-                                              src={product.images[0]}
+                                              src={product.image}
                                               alt="Nike"
                                               width={292}
                                               height={236}
@@ -178,7 +178,7 @@ const SingleSellShoe = ({
                                       {/* Single Product */}
                                       <div className="bg-bg_sell relative overflow-hidden hover:scale-110">
                                           <Image
-                                              src={product.images[0]}
+                                              src={product.image}
                                               alt="Nike"
                                               width={292}
                                               height={236}
@@ -248,7 +248,7 @@ const SingleSellShoe = ({
                                 {/* Single Product */}
                                 <div className="bg-bg_sell relative overflow-hidden hover:scale-110">
                                     <Image
-                                        src={product.images[0]}
+                                        src={product.image}
                                         alt="Nike"
                                         width={292}
                                         height={236}
@@ -312,7 +312,7 @@ const SingleSellShoe = ({
                                 {/* Single Product */}
                                 <div className="bg-bg_sell relative overflow-hidden hover:scale-110">
                                     <Image
-                                        src={product.images[0]}
+                                        src={product.image}
                                         alt="Nike"
                                         width={292}
                                         height={236}
@@ -372,7 +372,7 @@ const SingleSellShoe = ({
                             {/* Single Product */}
                             <div className="bg-bg_sell relative overflow-hidden hover:scale-110">
                                 <Image
-                                    src={product.images[0]}
+                                    src={product.image}
                                     alt="Nike"
                                     width={292}
                                     height={236}

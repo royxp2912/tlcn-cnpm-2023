@@ -37,7 +37,7 @@ const ShoesWithTag = ({ listProduct }: Props) => {
 
     const handleAddtoCart = async (
         e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>,
-        { product, image, name, price }: itemCartRandomVari,
+        { product, user }: itemCartRandomVari,
     ) => {
         e.stopPropagation();
         if (!user) {
@@ -49,11 +49,8 @@ const ShoesWithTag = ({ listProduct }: Props) => {
             return;
         }
         const cart = {
-            user: idUser,
+            user,
             product,
-            image,
-            name,
-            price,
         };
 
         await dispatch(addItemToCartRandomVariant(cart));
@@ -114,9 +111,7 @@ const ShoesWithTag = ({ listProduct }: Props) => {
                                             onClick={(e) =>
                                                 handleAddtoCart(e, {
                                                     product: product._id,
-                                                    image: product.images[0],
-                                                    name: product.name,
-                                                    price: product.price,
+                                                    user: user?._id as string,
                                                 })
                                             }
                                         >

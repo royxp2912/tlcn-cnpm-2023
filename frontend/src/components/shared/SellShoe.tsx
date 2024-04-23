@@ -36,6 +36,7 @@ const SellShoe = () => {
 
         fetchData();
     }, [active, dispatch, setIsNext, productHots.length, products.length]);
+    console.log(products);
     return (
         <div className="py-5 px-10">
             <div className="flex justify-center mb-5 font-bold text-base gap-5 text-center">

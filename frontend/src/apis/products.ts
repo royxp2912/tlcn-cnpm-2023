@@ -3,64 +3,39 @@ import axios from '../utils/axios';
 
 const productsApi = {
     getAllProduct: () => {
-        const url = '/products';
+        const url = '/products?pageSize=5&pageNumber=1';
         return axios.get(url);
     },
     getProductById: (product: string) => {
-        const url = '/products/detail';
-        return axios.get(url, { params: { product: product } });
+        const url = `/products/${product}`;
+        return axios.get(url);
     },
     getAllProductByCateId: (category: productByCate) => {
-        const url = '/products/category';
-        return axios.get(url, {
-            params: {
-                category: category.category,
-                sort: category.sort,
-                brand: category.brand,
-                color: category.color,
-                pageSize: 6,
-                pageNumber: category.pageNumber,
-            },
-        });
-    },
-    createProduct: (product: Product) => {
-        const url = `/products`;
-        return axios.post(url, product);
-    },
-    updateProductByProductId: (productId: string) => {
-        const url = `/products/update/${productId}`;
-        return axios.patch(url);
-        // TODO admin
-    },
-    deleteProductByProductId: (prodcutId: string) => {
-        const url = `/products/${prodcutId}`;
-        return axios.delete(url);
-    },
-    deleteAllProduct: () => {
-        const url = '/products';
-        return axios.delete(url);
+        const url = `/products/find/by-category?category=${category.category}&pageSize=5`;
+        return axios.get(url);
+        // , {
+        //     params: {
+        //         category: category.category,
+        //         sort: category.sort,
+        //         brand: category.brand,
+        //         color: category.color,
+        //         pageSize: 6,
+        //         pageNumber: category.pageNumber,
+        //     },
+        // }
     },
     findProductByKeyword: (item: findProduct) => {
-        const url = '/products/search/keyword';
+        const url = `/products/find/by-keyword?keyword=${item.keyword}&pageSize=5&pageNumber=1`;
 
-        return axios.get(url, {
-            params: {
-                keyword: item.keyword,
-                brand: item.brand,
-                color: item.color,
-                sort: item.sort,
-                pageNumber: item.pageNumber,
-                pageSize: 5,
-            },
-        });
+        return axios.get(url);
     },
 
     getProductHotDeal: () => {
-        const url = '/products/search/hotDeal';
+        const url = '/products?pageSize=5&pageNumber=1';
         return axios.get(url);
     },
     getQtyOfBrand: () => {
-        const url = '/products/brand';
+        const url = '/products/brand/quantity';
         return axios.get(url);
     },
     getQtyHotDealOfBrand: () => {
@@ -72,6 +47,10 @@ const productsApi = {
         return axios.get(url, {
             params: { category: category.category, pageSize: 6, pageNumber: category.pageNumber },
         });
+    },
+    getFavoriteUser: (user: string) => {
+        const url = `/products/find/by-favorites?pageSize=5&pageNumber=1&user=${user}`;
+        return axios.get(url);
     },
 };
 

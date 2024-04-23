@@ -1,5 +1,5 @@
 import cartsApi from '@/apis/carts';
-import { Cart, ItemCart, RemoveItemCart, itemCartRandomVari } from '@/types/type';
+import { Cart, ItemCart, ItemCartFake, RemoveItemCart, itemCartRandomVari } from '@/types/type';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 export const getCartByUserId = createAsyncThunk(
@@ -25,7 +25,7 @@ export const createCart = createAsyncThunk('carts/createCart', async (user: stri
 
 export const addItemToCartByUserId = createAsyncThunk(
     'carts/addItemToCartByUserId',
-    async (item: ItemCart, { dispatch, rejectWithValue }) => {
+    async (item: ItemCartFake, { dispatch, rejectWithValue }) => {
         try {
             const res = await cartsApi.addItemToCartByUserId(item);
             await dispatch(getCartByUserId(item.user as string));

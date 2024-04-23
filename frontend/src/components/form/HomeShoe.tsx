@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { Rating } from '@mui/material';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import { useDispatch, useSelector } from 'react-redux';
-import { ItemCart, Product, User, itemCartRandomVari } from '@/types/type';
+import { ItemCart, Product, RVariant, User, itemCartRandomVari } from '@/types/type';
 import { AppDispatch } from '@/utils/store';
 import { getProductById } from '@/slices/productSlice';
 import { addItemToCartByUserId, addItemToCartRandomVariant } from '@/slices/cartSlice';
@@ -37,34 +37,37 @@ const HomeShoe = () => {
         }
     }
     const idUser = user?._id as string;
-
+    const [items, setItems] = useState<RVariant>({
+        color: '',
+        hex: '',
+        image: '',
+        quantity: 0,
+        size: '',
+    });
     useEffect(() => {
         if (productHots.length > 0) {
             setId(productHots[0]._id);
         }
+    }, [productHots]);
+    useEffect(() => {
         dispatch(getProductById(id));
+        let currentIndex = productHots.findIndex((productHot) => productHot._id === id);
+        console.log(currentIndex);
         const timeout = setTimeout(() => {
-            const currentIndex = productHots.findIndex((productHot) => productHot._id === id);
-            let nextIndex = currentIndex + 1;
-
-            if (nextIndex >= productHots.length) {
-                nextIndex = 0;
-
-                setCount((prevCount) => prevCount + 1);
+            if (currentIndex >= productHots.length - 1) {
+                currentIndex = 0;
+            } else {
+                currentIndex++;
             }
+            setCount(currentIndex);
+            setItems({ size: '', color: '', quantity: 0, hex: '', image: '' });
 
-            if (count === productHots.length) {
-                nextIndex = 0;
-                setCount(0);
-            }
-
-            const nextId = productHots[nextIndex]._id;
+            const nextId = productHots[currentIndex]._id;
             setId(nextId);
         }, 10000);
 
         return () => clearTimeout(timeout);
     }, [id, productHots, count]);
-
     useEffect(() => {
         if (productHots.length > 4) {
             setIsNext(true);
@@ -73,7 +76,7 @@ const HomeShoe = () => {
         }
     }, [productHots.length, setIsNext]);
 
-    const handleAddtoCart = async ({ product, image, name, price }: itemCartRandomVari) => {
+    const handleAddtoCart = async ({ product, user }: itemCartRandomVari) => {
         if (!user) {
             toast.error('Please login before add to cart', {
                 onClose: () => {
@@ -83,11 +86,8 @@ const HomeShoe = () => {
             return;
         }
         const cart = {
-            user: idUser,
+            user,
             product,
-            image,
-            name,
-            price,
         };
 
         await dispatch(addItemToCartRandomVariant(cart));
@@ -116,11 +116,9 @@ const HomeShoe = () => {
             setNext((prev) => prev - 1);
         }
     };
-    console.log(next);
-    console.log(back);
     return (
         <div className="bg-bg">
-            <HomeShoeCard id={id} />
+            <HomeShoeCard id={id} setItems={setItems} items={items} />
 
             <div className="flex items-center justify-between py-10 px-14 gap-16">
                 <div
@@ -139,7 +137,7 @@ const HomeShoe = () => {
                             >
                                 <div className="w-[100px] bg-pink h-full flex items-center relative rounded-tl-lg rounded-bl-lg">
                                     <Image
-                                        src={productHot.images[0]}
+                                        src={productHot.image}
                                         alt="Nike"
                                         height={120}
                                         width={120}
@@ -163,9 +161,7 @@ const HomeShoe = () => {
                                             e.stopPropagation();
                                             handleAddtoCart({
                                                 product: productHot._id,
-                                                image: productHot.images[0],
-                                                name: productHot.name,
-                                                price: productHot.price,
+                                                user: user?._id as string,
                                             });
                                         }}
                                     >

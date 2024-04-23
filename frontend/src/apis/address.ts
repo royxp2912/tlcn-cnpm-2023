@@ -3,29 +3,28 @@ import axios from '../utils/axios';
 
 const addressApi = {
     getAllAddressByUserId: (user: string) => {
-        const url = '/address/user';
+        const url = `/deliveryAddress/user/${user}`;
         const pageSize = 5;
         const pageNumber = 1;
-        return axios.get(url, { params: { user: user, pageSize: pageSize, pageNumber: pageNumber } });
+        return axios.get(url);
     },
     getAddressByAddressId: (address: string) => {
-        const url = '/address/detail';
+        const url = `/deliveryAddress/${address}`;
         const pageSize = 5;
         const pageNumber = 5;
-        return axios.get(url, { params: { address } });
+        return axios.get(url);
     },
     createAddress: (address: AddressLess) => {
-        const url = '/address';
+        const url = '/deliveryAddress';
         return axios.post(url, address);
     },
     updateAddressByAddressId: (address: UpdateAddress) => {
-        const url = '/address';
+        const url = '/deliveryAddress';
         return axios.put(url, address);
     },
     setDefaultAddressByAddressId: (address: Address) => {
-        const url = `/address/default`;
-        const id = address._id;
-        return axios.patch(url, id);
+        const url = `/deliveryAddress/default/${address._id}`;
+        return axios.patch(url);
     },
     unsetDefaultAddressByAddressId: (address: Address) => {
         const url = `/address/unDefault`;
@@ -33,13 +32,12 @@ const addressApi = {
         return axios.patch(url, id);
     },
     deleteAllAddressByUserId: (user: string) => {
-        const url = '/address/user';
-        return axios.delete(url, { params: { user } });
+        const url = `/deliveryAddress/user/${user}`;
+        return axios.delete(url);
     },
     deleteAddressByAddressId: (address: Address) => {
-        const url = '/address';
-        const id = address._id;
-        return axios.delete(url, { params: { id } });
+        const url = `/deliveryAddress/${address._id}`;
+        return axios.delete(url);
     },
 };
 
