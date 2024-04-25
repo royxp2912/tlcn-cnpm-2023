@@ -57,8 +57,8 @@ const Address = () => {
         }
     };
 
-    const handleUpdate = (id: string) => {
-        setAddressId(id);
+    const handleUpdate = (adsId: string) => {
+        setAddressId(adsId);
         setUpdate(true);
     };
     useEffect(() => {
@@ -107,19 +107,19 @@ const Address = () => {
                             <div className="flex gap-[10px] absolute top-[-14px] right-20">
                                 <div
                                     className="text-blue px-1 bg-white cursor-pointer hover:opacity-60"
-                                    onClick={() => handleUpdate(item._id)}
+                                    onClick={() => handleUpdate(item._id as string)}
                                 >
                                     <LoopOutlinedIcon />
                                 </div>
                                 <div
                                     className="text-red px-1 bg-white cursor-pointer hover:opacity-60"
-                                    onClick={() => handleDelete(item._id)}
+                                    onClick={() => handleDelete(item._id as string)}
                                 >
                                     <CloseOutlinedIcon />
                                 </div>
                                 <div
                                     className="text-[#FF00B4] px-1 bg-white cursor-pointer hover:opacity-60"
-                                    onClick={() => handleDefault(item._id)}
+                                    onClick={() => handleDefault(item._id as string)}
                                 >
                                     <DoneRoundedIcon />
                                 </div>

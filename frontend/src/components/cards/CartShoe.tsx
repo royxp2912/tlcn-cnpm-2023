@@ -11,12 +11,13 @@ import Image from 'next/image';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { useDispatch, useSelector } from 'react-redux';
-import { Cart, ItemCart, RemoveItemCart, User, Variant, variantColor } from '@/types/type';
+import { Cart, ItemCart, RemoveItemCart, RVariant, User, Variant, variantColor } from '@/types/type';
 import { AppDispatch } from '@/utils/store';
 import { removeItemFromCartByUserId } from '@/slices/cartSlice';
 import { toast } from 'react-toastify';
 import { getProductById } from '@/slices/productSlice';
 import { useRouter } from 'next/navigation';
+import { Preview } from '@mui/icons-material';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -38,12 +39,19 @@ type PriceMap = {
 };
 
 const colors: { [key: string]: string } = {
-    Blue: 'bg-[#006CFF]',
     Red: 'bg-[#FC3E39]',
+    Blue: 'bg-[#0000FF]',
+    Gray: 'bg-[#808080]',
+    Cyan: 'bg-[#00FFFF]',
+    Pink: 'bg-[#FFC0CB]',
+    Green: 'bg-[#00FF00]',
     Black: 'bg-[#171717]',
-    Pink: 'bg-[#FF00B4]',
-    Yellow: 'bg-[#FFF600]',
-    Wheat: 'bg-[#EFDFDF]',
+    White: 'bg-[#FFFFFF]',
+    Brown: 'bg-[#A52A2A]',
+    Purple: 'bg-[#800080]',
+    Yellow: 'bg-[#FFFF00]',
+    Orange: 'bg-[#FFA500]',
+    Silver: 'bg-[#C0C0C0]',
 };
 
 type Props = {
@@ -60,9 +68,9 @@ type Props = {
     setTotal: React.Dispatch<React.SetStateAction<number>>;
     setActive: React.Dispatch<React.SetStateAction<boolean>>;
     setProductId: React.Dispatch<React.SetStateAction<string>>;
-    setColor: React.Dispatch<React.SetStateAction<string>>;
-    setItemQty: React.Dispatch<React.SetStateAction<number>>;
-    setSizeQty: React.Dispatch<React.SetStateAction<variantColor>>;
+    items: RVariant;
+    setItems: React.Dispatch<React.SetStateAction<RVariant>>;
+    setManageQuantity: React.Dispatch<React.SetStateAction<number>>;
 };
 const CartShoe = ({
     cartItem,
@@ -78,9 +86,9 @@ const CartShoe = ({
     setTotal,
     setActive,
     setProductId,
-    setColor,
-    setItemQty,
-    setSizeQty,
+    items,
+    setItems,
+    setManageQuantity,
 }: Props) => {
     const dispatch = useDispatch<AppDispatch>();
     const { variants } = useSelector((state: any) => state.products) as {
@@ -207,14 +215,10 @@ const CartShoe = ({
     const handleChange = (p: string, c: string, s: string, q: number) => {
         setActive(true);
         setProductId(p);
-        setColor(c);
-        setItemQty(q);
-        setSizeQty((prev) => ({
-            ...prev,
-            size: s,
-        }));
+        setItems({ ...items, size: s, color: c });
+        setManageQuantity(q);
     };
-
+    console.log(cartItem);
     return (
         <TableContainer component={Paper} className="shadow-xl h-max">
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -275,7 +279,9 @@ const CartShoe = ({
                                     ))}
                                 </Select> */}
                                     <div className="flex justify-center items-center">
-                                        <div className={`w-6 h-6 rounded-full ${colors[item.color]}`}></div>
+                                        <div className="bg-gray rounded-full p-[1px]">
+                                            <div className={`w-6 h-6 rounded-full ${colors[item.color]} `}></div>
+                                        </div>
                                     </div>
                                 </TableCell>
                                 <TableCell align="center">{item.size}</TableCell>
