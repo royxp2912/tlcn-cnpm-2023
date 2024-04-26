@@ -84,6 +84,7 @@ const ShoesSinglePage = () => {
     const [isBack, setIsBack] = useState<boolean>(false);
     const [back, setBack] = useState<number>(0);
     const [next, setNext] = useState<number>(4);
+    const [isFirstRender, setIsFirstRender] = useState(true);
 
     const handleImage = (i: number) => {
         setNumber(i);
@@ -141,29 +142,35 @@ const ShoesSinglePage = () => {
             name: productDetail.name,
             color: items.color,
             size: items.size,
-            quantity: quantity,
+            quantity: manageQuantity,
         };
 
         const res = await dispatch(addItemToCartByUserId(item));
+        console.log(res);
         if ((res.payload as { status: number }).status === 201) {
             toast.success('Add item to cart success');
         }
     };
 
     useEffect(() => {
-        const item: getQtyOfSizeColor = {
-            id: id,
-            color: items.color,
-            size: items.size,
-        };
-        const fetchData = async () => {
-            const res: any = await dispatch(getColorOfSize(item));
-            if (res.payload.status === 200) {
-                setItems({ ...items, quantity: res.payload.data.data.quantity });
-            }
-        };
+        if (!isFirstRender) {
+            const item: getQtyOfSizeColor = {
+                id: id,
+                color: items.color,
+                size: items.size,
+            };
+            const fetchData = async () => {
+                const res: any = await dispatch(getColorOfSize(item));
+                console.log(res);
+                if ((res.payload as { status: number }).status === 200) {
+                    setItems({ ...items, quantity: res.payload.data.data.quantity });
+                }
+            };
 
-        fetchData();
+            fetchData();
+        } else {
+            setIsFirstRender(true);
+        }
     }, [flag]);
     console.log(quantity);
     const [count, setCount] = useState(0);

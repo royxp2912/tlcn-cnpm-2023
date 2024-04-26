@@ -1,11 +1,12 @@
 'use client';
+import Coupons from '@/components/cards/Coupons';
 import AddAddress from '@/components/form/AddAddress';
 import ListAddress from '@/components/form/ListAddress';
 import Border from '@/components/shared/Border';
 import { getAllAddressByUserId } from '@/slices/addressSlice';
 import { getCartByUserId } from '@/slices/cartSlice';
 import { createOrder } from '@/slices/orderSlice';
-import type { Address, Cart, ItemCart, Order, User, checkoutOrder } from '@/types/type';
+import type { Address, Cart, Coupon, ItemCart, Order, User, checkoutOrder } from '@/types/type';
 import axios from '@/utils/axios';
 import { AppDispatch } from '@/utils/store';
 import Image from 'next/image';
@@ -56,6 +57,10 @@ const Order = () => {
     const [load, setLoad] = useState<boolean>(false);
     const [change, setChange] = useState<boolean>(false);
     const [open, setOpen] = useState<boolean>(false);
+    const [active, setActive] = useState<boolean>(false);
+    const [listCoupons, setListCoupons] = useState<Coupon[]>();
+    const [discount, setDiscount] = useState<Coupon>();
+    let totalPay = totalPrice;
 
     const [pay, setPay] = useState<string>('');
     useEffect(() => {
@@ -75,6 +80,27 @@ const Order = () => {
         }
     }, [address.length]);
 
+    useEffect(() => {
+        const fetchCoupon = async () => {
+            const { data } = await axios.get(`/coupons/find/by-user?user=${id}`);
+            if (data.success) {
+                setListCoupons(data.data);
+            }
+        };
+        fetchCoupon();
+    }, []);
+
+    useEffect(() => {
+        if (discount) {
+            if (discount.type === 'percent') {
+                const money = totalPrice * discount.value;
+                totalPay = totalPrice - money;
+            } else {
+                totalPay = totalPrice - discount.value;
+            }
+        }
+    }, [discount]);
+
     const idAddress = datas?._id as string;
 
     const handleOrder = async () => {
@@ -93,7 +119,7 @@ const Order = () => {
                 userID: id,
                 deliveryAddress: idAddress,
                 paymentMethod: pay,
-                total: totalPrice,
+                total: totalPay,
             };
             console.log(item);
 
@@ -112,7 +138,7 @@ const Order = () => {
                 userID: id,
                 deliveryAddress: idAddress,
                 paymentMethod: 'COD',
-                total: totalPrice,
+                total: totalPay,
             };
             dispatch(createOrder(item));
             localStorage.removeItem('itemOrders');
@@ -210,7 +236,7 @@ const Order = () => {
                 <Border />
                 <div className="flex items-center justify-end mt-5 gap-5 font-bold">
                     <span>Total Price:</span>
-                    <span className="text-lg text-blue">${totalPrice}</span>
+                    <span className="text-lg text-blue">${totalPay}</span>
                 </div>
             </div>
             <div className="w-full p-5 shadow-xl rounded-lg flex gap-[50px] items-center font-bold">
@@ -232,6 +258,13 @@ const Order = () => {
                     COD
                 </button>
                 <div className="flex-grow"></div>
+                <button
+                    onClick={() => setActive(true)}
+                    className="w-[200px] h-10 text-white text-sm bg-blue opacity-50 hover:opacity-100"
+                >
+                    Discount
+                </button>
+                <span>Discount: </span>
                 <span className="opacity-50">Shipping fee: Free</span>
             </div>
             <div className="flex items-center justify-end w-full font-bold gap-5 text-white">
@@ -244,6 +277,9 @@ const Order = () => {
             </div>
             {change && <ListAddress setLoad={setLoad} address={address} setChange={setChange} />}
             {open && <AddAddress setLoad={setLoad} setOpen={setOpen} {...unProps} />}
+            {active && (
+                <Coupons setActive={setActive} listCoupons={listCoupons as Coupon[]} setDiscount={setDiscount} />
+            )}
         </div>
     );
 };

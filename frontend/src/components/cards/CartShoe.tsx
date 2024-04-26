@@ -13,7 +13,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { useDispatch, useSelector } from 'react-redux';
 import { Cart, ItemCart, RemoveItemCart, RVariant, User, Variant, variantColor } from '@/types/type';
 import { AppDispatch } from '@/utils/store';
-import { removeItemFromCartByUserId } from '@/slices/cartSlice';
+import { getCartByUserId, removeItemFromCartByUserId } from '@/slices/cartSlice';
 import { toast } from 'react-toastify';
 import { getProductById } from '@/slices/productSlice';
 import { useRouter } from 'next/navigation';
@@ -123,17 +123,16 @@ const CartShoe = ({
                     user: id,
                     product: product,
                 };
-
                 console.log(item);
-                const res = await dispatch(removeItemFromCartByUserId(item));
+                const { data } = await axios.delete(`/carts/removeFromCart?user=${item.user}&product=${item.product}`);
                 storedItemsArray = storedItemsArray.filter((item) => item.product !== product);
                 localStorage.setItem('itemOrders', JSON.stringify(storedItemsArray));
-                // if ((res.payload as { status: number }).status === 200) {
-                //     toast.success('Success');
-                // } else {
-                //     toast.error('Error');
-                // }
-                console.log(res);
+                if (data.success === 200) {
+                    dispatch(getCartByUserId(item.user));
+                    toast.success('Success');
+                } else {
+                    toast.error('Error');
+                }
             } catch (error) {
                 console.log(error);
             }

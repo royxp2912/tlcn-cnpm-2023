@@ -173,9 +173,7 @@ const Header = () => {
                                 pathname === '/' ? 'bg-orange' : 'bg-blue'
                             }`}
                         >
-                            <span className="text-white text-xs">
-                                {cartItem.items && cartItem.items.length ? cartItem.items.length : 0}
-                            </span>
+                            <span className="text-white text-xs">{cartItem.items && cartItem.items.length}</span>
                         </div>
                     </div>
 
