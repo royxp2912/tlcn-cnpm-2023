@@ -1,4 +1,5 @@
 'use client';
+import Review from '@/components/form/Review';
 import Border from '@/components/shared/Border';
 import Sure from '@/components/shared/Sure';
 import UserNav from '@/components/shared/UserNav';
@@ -8,7 +9,7 @@ import {
     getAllOrderByUserId,
     receivedOrder,
 } from '@/slices/orderSlice';
-import { Order, User, orderStatus } from '@/types/type';
+import { ItemCart, Order, User, orderStatus } from '@/types/type';
 import axios from '@/utils/axios';
 import { AppDispatch } from '@/utils/store';
 import Image from 'next/image';
@@ -39,6 +40,8 @@ const Orders = () => {
     const [open, setOpen] = useState<boolean>(false);
     const [current, setCurrent] = useState<string>('');
     const [orderId, setOrderId] = useState<string>('');
+    const [active, setActive] = useState<boolean>(false);
+    const [item, setItem] = useState<ItemCart>();
     const router = useRouter();
 
     useEffect(() => {
@@ -93,6 +96,12 @@ const Orders = () => {
         setOpen(true);
         setCurrent('Cancel');
     };
+    const handleReview = (e: MouseEvent<HTMLSpanElement>, product: ItemCart) => {
+        e.stopPropagation();
+
+        setActive(true);
+        setItem(product);
+    };
     return (
         <div className="flex justify-center px-20 mt-10 gap-5">
             <UserNav />
@@ -145,7 +154,10 @@ const Orders = () => {
                                                 <div className="w-full font-medium text-lg">
                                                     <div className="flex justify-between">
                                                         <span>{product.name}</span>
-                                                        <span className="text-blue text-[14px] opacity-60">
+                                                        <span
+                                                            className="text-blue text-[14px] opacity-60 hover:opacity-100"
+                                                            onClick={(e) => handleReview(e, product)}
+                                                        >
                                                             Submit a review
                                                         </span>
                                                     </div>
@@ -220,6 +232,7 @@ const Orders = () => {
                     current={current}
                 />
             )}
+            {active && <Review item={item as ItemCart} setActive={setActive} id={id} />}
         </div>
     );
 };

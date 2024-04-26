@@ -3,7 +3,7 @@ import CartShoe from '@/components/cards/CartShoe';
 import ChangeVariant from '@/components/form/ChangeVariant';
 import Border from '@/components/shared/Border';
 import { getCartByUserId } from '@/slices/cartSlice';
-import type { Cart, User, variantColor } from '@/types/type';
+import type { Cart, RVariant, User, variantColor } from '@/types/type';
 import axios from '@/utils/axios';
 import { AppDispatch } from '@/utils/store';
 import { useRouter } from 'next/navigation';
@@ -17,17 +17,20 @@ const Cart = () => {
     const router = useRouter();
     const [price, setPrice] = useState({});
     const [qty, setQty] = useState<number>(0);
-    const [quantity, setQuantity] = useState({});
+    const [quantityCart, setQuantityCart] = useState({});
     const [total, setTotal] = useState<number>(0);
     const [checkedAll, setCheckedAll] = useState(false);
     const [active, setActive] = useState<boolean>(false);
     const [productId, setProductId] = useState<string>('');
-    const [color, setColor] = useState<string>('');
-    const [itemQty, setItemQty] = useState<number>(0);
-    const [sizeQty, setSizeQty] = useState<variantColor>({
-        size: '',
+    const [items, setItems] = useState<RVariant>({
+        color: '',
+        hex: '',
+        image: '',
         quantity: 0,
+        size: '',
     });
+    const [manageQuantity, setManageQuantity] = useState(1);
+
     const [load, setLoad] = useState<boolean>(false);
 
     const [checkedItems, setCheckedItems] = React.useState<{ [key: string]: boolean }>({});
@@ -114,17 +117,17 @@ const Cart = () => {
                     setCheckedItems={setCheckedItems}
                     checkedAll={checkedAll}
                     setCheckedAll={setCheckedAll}
-                    quantity={quantity}
-                    setQuantity={setQuantity}
+                    quantityCart={quantityCart}
+                    setQuantityCart={setQuantityCart}
                     price={price}
                     setPrice={setPrice}
                     setQty={setQty}
                     setTotal={setTotal}
                     setActive={setActive}
                     setProductId={setProductId}
-                    setColor={setColor}
-                    setItemQty={setItemQty}
-                    setSizeQty={setSizeQty}
+                    items={items}
+                    setItems={setItems}
+                    setManageQuantity={setManageQuantity}
                 />
 
                 <div className="p-5 w-[310px] shadow-xl rounded-lg h-max">
@@ -155,14 +158,12 @@ const Cart = () => {
             </div>
             {active && (
                 <ChangeVariant
-                    color={color}
-                    itemQty={itemQty}
                     productId={productId}
                     setActive={setActive}
-                    setColor={setColor}
-                    setItemQty={setItemQty}
-                    setSizeQty={setSizeQty}
-                    sizeQty={sizeQty}
+                    items={items}
+                    setItems={setItems}
+                    setManageQuantity={setManageQuantity}
+                    manageQuantity={manageQuantity}
                     setLoad={setLoad}
                 />
             )}

@@ -2,55 +2,52 @@
 
 import { getProductById } from '@/slices/productSlice';
 import { getColorOfSize } from '@/slices/variantSlice';
-import { User, Variant, getSizeOfColor, variantColor } from '@/types/type';
+import { RVariant, User, Variant, getQtyOfSizeColor } from '@/types/type';
 import axios from '@/utils/axios';
 import { AppDispatch } from '@/utils/store';
-import React, { Dispatch, SetStateAction, useEffect } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
 const colors: { [key: string]: string } = {
-    Blue: 'bg-[#006CFF]',
     Red: 'bg-[#FC3E39]',
+    Blue: 'bg-[#0000FF]',
+    Gray: 'bg-[#808080]',
+    Cyan: 'bg-[#00FFFF]',
+    Pink: 'bg-[#FFC0CB]',
+    Green: 'bg-[#00FF00]',
     Black: 'bg-[#171717]',
-    Pink: 'bg-[#FF00B4]',
-    Yellow: 'bg-[#FFF600]',
-    Wheat: 'bg-[#EFDFDF]',
-};
-const borders: { [key: string]: string } = {
-    Blue: 'border-[#006CFF]',
-    Red: 'border-[#FC3E39]',
-    Black: 'border-[#171717]',
-    Pink: 'border-[#FF00B4]',
-    Yellow: 'border-[#FFF600]',
-    Wheat: 'border-[#EFDFDF]',
+    White: 'bg-[#FFFFFF]',
+    Brown: 'bg-[#A52A2A]',
+    Purple: 'bg-[#800080]',
+    Yellow: 'bg-[#FFFF00]',
+    Orange: 'bg-[#FFA500]',
+    Silver: 'bg-[#C0C0C0]',
 };
 type Props = {
     productId: string;
-    color: string;
-    setColor: Dispatch<SetStateAction<string>>;
-    sizeQty: variantColor;
-    setSizeQty: Dispatch<SetStateAction<variantColor>>;
-    itemQty: number;
-    setItemQty: Dispatch<SetStateAction<number>>;
     setActive: Dispatch<SetStateAction<boolean>>;
     setLoad: Dispatch<SetStateAction<boolean>>;
+    items: RVariant;
+    setItems: Dispatch<SetStateAction<RVariant>>;
+    setManageQuantity: Dispatch<SetStateAction<number>>;
+    manageQuantity: number;
 };
 
 const ChangeVariant = ({
     productId,
-    color,
-    setColor,
-    itemQty,
-    setItemQty,
-    sizeQty,
-    setSizeQty,
     setActive,
     setLoad,
+    items,
+    manageQuantity,
+    setItems,
+    setManageQuantity,
 }: Props) => {
     const { variants }: { variants: Variant } = useSelector((state: any) => state.products);
-    const { variant }: { variant: variantColor[] } = useSelector((state: any) => state.variants);
+    const { quantity }: { quantity: number } = useSelector((state: any) => state.variants);
+    const { loading } = useSelector((state: any) => state.variants);
     const dispatch = useDispatch<AppDispatch>();
+    console.log(loading);
 
     const userString = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
     let user: User | null = null;
@@ -62,37 +59,42 @@ const ChangeVariant = ({
         }
     }
     const id = user?._id as string;
+    const [flag, setFlag] = useState<boolean>(false);
+    const [isFirstRender, setIsFirstRender] = useState(true);
+    const [dispatchCount, setDispatchCount] = useState(0);
 
     const handleInsc = () => {
-        if (!color || !sizeQty.size) {
+        if (!items.color || !items.size) {
             toast.error('Choose Color And Size');
         } else {
-            if (itemQty === sizeQty.quantity) return;
-            setItemQty((prev) => prev + 1);
+            if (manageQuantity === items.quantity) return;
+            setManageQuantity((prev) => prev + 1);
         }
     };
     const handleDesc = () => {
-        if (!color || !sizeQty.size) toast.error('Choose Color And Size');
+        if (!items.color || !items.size) toast.error('Choose Color And Size');
         else {
-            if (itemQty === 1) return;
-            setItemQty((prev) => prev - 1);
+            if (manageQuantity === 1) return;
+            setManageQuantity((prev) => prev - 1);
         }
     };
 
-    const handleSizeQty = (size: variantColor) => {
-        setSizeQty({
-            size: size.size,
-            quantity: size.quantity,
-        });
+    const handleSetSize = (newSize: string) => {
+        setItems({ size: newSize, color: '', quantity: 0, hex: '', image: '' });
+    };
+    const handleSetColor = (newColor: string, hex: string) => {
+        setItems({ ...items, color: newColor, hex: hex });
+        setFlag((prev) => !prev);
+        console.log('Hi');
     };
 
     const handleChange = async () => {
-        const { data } = await axios.patch('/carts/update/variants', {
+        const { data } = await axios.patch('/carts/updateVariant', {
             user: id,
             product: productId,
-            color: color,
-            size: sizeQty.size,
-            quantity: itemQty,
+            color: items.color,
+            size: items.size,
+            quantity: manageQuantity,
         });
         if (data.success) {
             toast.success('Update variant success');
@@ -104,77 +106,82 @@ const ChangeVariant = ({
     };
 
     useEffect(() => {
-        const item: getSizeOfColor = {
-            id: productId,
-            color: color as string,
-        };
-        dispatch(getProductById(productId));
-        dispatch(getColorOfSize(item));
-        setSizeQty((prev) => ({
-            ...prev,
-            quantity: 0,
-        }));
-    }, [color]);
-    useEffect(() => {
-        const foundVariant = variant.find((v: variantColor) => v.size === sizeQty.size);
-        if (foundVariant) {
-            const { quantity } = foundVariant;
-            setSizeQty((prev: any) => ({
-                ...prev,
-                quantity: quantity,
-            }));
+        let isMounted = true;
+        if (!isFirstRender) {
+            const item: getQtyOfSizeColor = {
+                id: productId,
+                color: items.color,
+                size: items.size,
+            };
+
+            dispatch(getColorOfSize(item))
+                .then(() => {
+                    if (isMounted) {
+                        setDispatchCount((prevCount) => prevCount + 1);
+                    }
+                })
+                .catch((error) => {
+                    // Xử lý lỗi nếu có
+                });
         } else {
-            setSizeQty((prev: any) => ({
-                ...prev,
-                quantity: 0,
-            }));
+            setIsFirstRender(false);
         }
-    }, [variant, sizeQty.size]);
+    }, [flag]);
+    useEffect(() => {
+        dispatch(getProductById(productId));
+    }, []);
+    useEffect(() => {
+        if (dispatchCount > 0) {
+            setItems({ ...items, quantity: quantity });
+        }
+    }, [dispatchCount]);
 
     return (
         <div className="modal">
             <div className="flex flex-col bg-white modal-container ">
                 <div className="flex flex-col items-center ">
                     <div className="flex items-center mt-[25px] mb-5 w-full">
-                        <span className="font-medium flex-1">Color:</span>
-                        <div className="font-bold text-white flex gap-2">
-                            {variants.listColor &&
-                                variants.listColor.map((c) => (
-                                    <div
-                                        key={c}
-                                        className={`${colors[c]} relative  h-5 w-5 rounded-full cursor-pointer`}
-                                        onClick={() => setColor(c)}
-                                    >
-                                        {color === c && (
-                                            <div
-                                                className={`absolute inset-[-4px] p-3 rounded-full border-2 ${borders[c]}`}
-                                            ></div>
-                                        )}
-                                    </div>
-                                ))}
-                        </div>
-                    </div>
-                    <div className="flex items-center mt-[25px] mb-5 w-full">
                         <span className="font-medium flex-1">Size:</span>
                         <div className="font-bold text-white flex gap-1">
-                            {variant &&
-                                variant.map((size: variantColor, i: number) => (
+                            {variants &&
+                                variants.listSize &&
+                                variants.listSize.map((item, i: number) => (
                                     <div
                                         key={i}
-                                        className={`text-sm w-9 h-7 ${
-                                            sizeQty.size === size.size ? 'bg-blue' : 'bg-size2 '
-                                        } rounded-md flex items-center justify-center cursor-pointer`}
-                                        onClick={() => handleSizeQty(size)}
+                                        className={`text-sm w-9 h-7 cursor-pointer ${
+                                            item === items.size ? 'bg-blue' : 'bg-[#8d9096] '
+                                        } rounded-md flex items-center justify-center font-bold`}
+                                        onClick={() => handleSetSize(item)}
                                     >
-                                        {size.size}
+                                        {item}
                                     </div>
                                 ))}
                         </div>
                     </div>
 
+                    <div className="flex items-center mt-[25px] mb-5 w-full">
+                        <span className="font-medium flex-1">Color:</span>
+                        <div className="font-bold text-white flex gap-2">
+                            {variants &&
+                                variants.listColor &&
+                                variants.listColor.map((item, i) => (
+                                    <div
+                                        key={i}
+                                        onClick={() => handleSetColor(item.color, item.hex)}
+                                        className={`w-5 h-5 relative rounded-full cursor-pointer ${colors[item.color]}`}
+                                    >
+                                        <div
+                                            className={`absolute inset-[-4px] p-3 rounded-full border-2 ${
+                                                item.color === items.color ? 'border-blue' : ''
+                                            }`}
+                                        ></div>
+                                    </div>
+                                ))}
+                        </div>
+                    </div>
                     <div className="font-medium mb-[25px] flex w-full ">
                         <span className="flex-1">Availability:</span>
-                        <span>{sizeQty.quantity === 0 ? '' : sizeQty.quantity}</span>
+                        <span>{items.quantity === 0 ? '' : items.quantity}</span>
                     </div>
 
                     <div className="flex h-[50px] text-xl font-bold">
@@ -185,7 +192,7 @@ const ChangeVariant = ({
                             -
                         </span>
                         <span className="w-[62px] flex items-center justify-center bg-[#FAFBFB] rounded-md ">
-                            {itemQty}
+                            {manageQuantity}
                         </span>
                         <span
                             className="w-11 flex items-center justify-center bg-[#F6F7F8] rounded-tr-md rounded-br-md text-blue cursor-pointer"
@@ -203,7 +210,10 @@ const ChangeVariant = ({
                 </button>
                 <button
                     className="w-[200px] h-10 rounded-full bg-red text-white font-bold hover:bg-opacity-60 mt-5"
-                    onClick={() => setActive(false)}
+                    onClick={() => {
+                        setActive(false);
+                        setIsFirstRender(true);
+                    }}
                 >
                     Cancel
                 </button>

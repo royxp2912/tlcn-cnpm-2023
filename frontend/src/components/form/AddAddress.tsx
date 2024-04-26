@@ -1,22 +1,62 @@
 'use client';
-import { ChangeEvent, Dispatch, useState } from 'react';
+import { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from 'react';
 import TextField from '@mui/material/TextField';
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 import ClearRoundedIcon from '@mui/icons-material/ClearRounded';
-import { Address, AddressLess, UpdateAddress, User } from '@/types/type';
+import { Address, AddressLess, District, Province, UpdateAddress, User, Ward } from '@/types/type';
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/utils/store';
 import { createAddress, updateAddressByAddressId } from '@/slices/addressSlice';
+import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
+import axios from '@/utils/axios';
 type Props = {
-    setOpen: Dispatch<React.SetStateAction<boolean>>;
+    setOpen: Dispatch<SetStateAction<boolean>>;
     update: boolean;
-    setUpdate: Dispatch<React.SetStateAction<boolean>>;
+    setUpdate: Dispatch<SetStateAction<boolean>>;
     addressDetail: Address;
     addressId: string;
-    setLoad: Dispatch<React.SetStateAction<boolean>>;
+    setLoad: Dispatch<SetStateAction<boolean>>;
+    province: Province[] | undefined;
+    setProvince: Dispatch<SetStateAction<Province[] | undefined>>;
+    provinceID: string;
+    setProvinceID: Dispatch<SetStateAction<string>>;
+    districtID: string;
+    setDistrictID: Dispatch<SetStateAction<string>>;
+    district: District[] | undefined;
+    setDistrict: Dispatch<SetStateAction<District[] | undefined>>;
+    setAddressId: Dispatch<SetStateAction<string>>;
+    ward: Ward[] | undefined;
+    setWard: Dispatch<SetStateAction<Ward[] | undefined>>;
 };
-const AddAddress = ({ setOpen, update, setUpdate, addressDetail, addressId, setLoad }: Props) => {
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+    PaperProps: {
+        style: {
+            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+            width: 132,
+        },
+    },
+};
+const AddAddress = ({
+    setOpen,
+    update,
+    setUpdate,
+    addressDetail,
+    addressId,
+    setLoad,
+    province,
+    provinceID,
+    setProvinceID,
+    districtID,
+    setDistrictID,
+    district,
+    setDistrict,
+    setAddressId,
+    ward,
+    setWard,
+}: Props) => {
     const dispatch = useDispatch<AppDispatch>();
     const userString = localStorage.getItem('user');
     let user: User | null = null;
@@ -39,11 +79,28 @@ const AddAddress = ({ setOpen, update, setUpdate, addressDetail, addressId, setL
         wards: update ? addressDetail.wards : '',
         specific: update ? addressDetail.specific : '',
     });
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const handleChangeText = (e: ChangeEvent<HTMLInputElement>) => {
         setAddress((prev) => ({
             ...prev,
             [e.target.id]: e.target.value,
         }));
+    };
+    const handleChangeSelect = (e: SelectChangeEvent<string>) => {
+        const selectedProvince = province?.find((item) => item.province_name === e.target.value);
+        const selectedDistrict = district?.find((item) => item.district_name === e.target.value);
+        setAddress((prev) => ({
+            ...prev,
+            [e.target.name]: e.target.value,
+        }));
+
+        if (selectedProvince) {
+            setProvinceID(selectedProvince.province_id);
+        }
+        if (selectedDistrict) {
+            setDistrictID(selectedDistrict.district_id);
+        }
+
+        console.log(e.target.value);
     };
     const handleCheck = () => {
         if (
@@ -100,26 +157,38 @@ const AddAddress = ({ setOpen, update, setUpdate, addressDetail, addressId, setL
         if (update) {
             setUpdate(false);
             setOpen(false);
+            setAddressId('');
         } else {
             setOpen(false);
         }
     };
+    useEffect(() => {
+        const fetchDistrict = async () => {
+            const { data } = await axios.get(`https://vapi.vnappmob.com/api/province/district/${provinceID}`);
+            setDistrict(data.results);
+        };
+        fetchDistrict();
+    }, [provinceID]);
+    useEffect(() => {
+        const fetchWard = async () => {
+            const { data } = await axios.get(`https://vapi.vnappmob.com/api/province/ward/${districtID}`);
+            setWard(data.results);
+        };
+        fetchWard();
+    }, [districtID]);
+
     return (
         <div className="modal">
             <div className="modal-container">
                 <div className="flex items-center justify-between mb-[10px]">
                     <span className="font-bold text-xl">{update ? 'Update' : 'New'} Delivery Address</span>
-                    <ClearRoundedIcon
-                        onClick={() => setOpen(false)}
-                        fontSize="large"
-                        className="text-orange cursor-pointer"
-                    />
+                    <ClearRoundedIcon onClick={handleCancel} fontSize="large" className="text-orange cursor-pointer" />
                 </div>
                 <span className="font-medium">Where you want to receive your orders!!!</span>
                 <div className="flex gap-10 flex-col mt-10 mb-5">
                     <div className="flex gap-10 items-center">
                         <TextField
-                            onChange={handleChange}
+                            onChange={handleChangeText}
                             id="receiver"
                             label="Reveiver Name"
                             variant="outlined"
@@ -127,7 +196,7 @@ const AddAddress = ({ setOpen, update, setUpdate, addressDetail, addressId, setL
                             defaultValue={address.receiver}
                         />
                         <TextField
-                            onChange={handleChange}
+                            onChange={handleChangeText}
                             id="phone"
                             label="Phone Number"
                             variant="outlined"
@@ -136,34 +205,50 @@ const AddAddress = ({ setOpen, update, setUpdate, addressDetail, addressId, setL
                         />
                     </div>
                     <div className="flex gap-5">
-                        <TextField
-                            onChange={handleChange}
-                            id="province"
-                            label="Province / City"
-                            variant="outlined"
-                            className="w-[240px] h-[70px]"
-                            defaultValue={address.province}
-                        />
-                        <TextField
-                            onChange={handleChange}
-                            id="districts"
-                            label="District"
-                            variant="outlined"
-                            className="w-[240px] h-[70px]"
-                            defaultValue={address.districts}
-                        />
-                        <TextField
-                            onChange={handleChange}
-                            id="wards"
-                            label="Wards"
-                            variant="outlined"
-                            className="w-[240px] h-[70px]"
-                            defaultValue={address.wards}
-                        />
+                        <Select
+                            className="w-[240px] h-[56px]"
+                            value={address.province}
+                            name="province"
+                            MenuProps={MenuProps}
+                            onChange={handleChangeSelect}
+                        >
+                            {province?.map((item: Province) => (
+                                <MenuItem key={item.province_id} value={item.province_name}>
+                                    {item.province_name}
+                                </MenuItem>
+                            ))}
+                        </Select>
+
+                        <Select
+                            className="w-[240px] h-[56px]"
+                            value={address.districts}
+                            name="districts"
+                            MenuProps={MenuProps}
+                            onChange={handleChangeSelect}
+                        >
+                            {district?.map((item: District) => (
+                                <MenuItem key={item.district_id} value={item.district_name}>
+                                    {item.district_name}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                        <Select
+                            className="w-[240px] h-[56px]"
+                            value={address.wards}
+                            name="wards"
+                            MenuProps={MenuProps}
+                            onChange={handleChangeSelect}
+                        >
+                            {ward?.map((item: Ward) => (
+                                <MenuItem key={item.ward_id} value={item.ward_name}>
+                                    {item.ward_name}
+                                </MenuItem>
+                            ))}
+                        </Select>
                     </div>
                     <div>
                         <TextField
-                            onChange={handleChange}
+                            onChange={handleChangeText}
                             id="specific"
                             label="Specific Address"
                             variant="outlined"

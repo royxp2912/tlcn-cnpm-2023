@@ -41,6 +41,7 @@ export const removeItemFromCartByUserId = createAsyncThunk(
     async (item: RemoveItemCart, { dispatch, rejectWithValue }) => {
         try {
             const res = await cartsApi.removeItemFromCartByUserId(item);
+            console.log(res);
             await dispatch(getCartByUserId(item.user));
             return res;
         } catch (err: any) {
@@ -111,7 +112,7 @@ export const cartSlice = createSlice({
         });
         builder.addCase(removeItemFromCartByUserId.fulfilled, (state, action) => {
             state.loading = false;
-            state.cartItem = action.payload.data;
+            // state.cartItem = action.payload.data.data;
         });
         builder.addCase(addItemToCartRandomVariant.pending, (state) => {
             state.loading = true;

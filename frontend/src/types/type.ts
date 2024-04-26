@@ -246,3 +246,18 @@ export type Coupon = {
     startDate: string;
     endDate: string;
 };
+
+export type Province = {
+    province_id: string;
+    province_name: string;
+    province_type: string;
+};
+
+export type District = {
+    district_id: string;
+    district_name: string;
+};
+export type Ward = {
+    ward_id: string;
+    ward_name: string;
+};

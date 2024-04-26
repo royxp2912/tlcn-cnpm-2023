@@ -84,6 +84,7 @@ const ShoesSinglePage = () => {
     const [isBack, setIsBack] = useState<boolean>(false);
     const [back, setBack] = useState<number>(0);
     const [next, setNext] = useState<number>(4);
+    const [isFirstRender, setIsFirstRender] = useState(true);
 
     const handleImage = (i: number) => {
         setNumber(i);
@@ -104,12 +105,13 @@ const ShoesSinglePage = () => {
             setManageQuantity((prev) => prev - 1);
         }
     };
-
+    const [flag, setFlag] = useState(false);
     const handleSetSize = (newSize: string) => {
         setItems({ size: newSize, color: '', quantity: 0, hex: '', image: '' });
     };
     const handleSetColor = (newColor: string, hex: string) => {
         setItems({ ...items, color: newColor, hex: hex });
+        setFlag((prev) => !prev);
     };
 
     const handleAddToCart = async () => {
@@ -140,33 +142,51 @@ const ShoesSinglePage = () => {
             name: productDetail.name,
             color: items.color,
             size: items.size,
-            quantity: quantity,
+            quantity: manageQuantity,
         };
 
         const res = await dispatch(addItemToCartByUserId(item));
+        console.log(res);
         if ((res.payload as { status: number }).status === 201) {
             toast.success('Add item to cart success');
         }
     };
 
     useEffect(() => {
-        const item: getQtyOfSizeColor = {
-            id: id,
-            color: items.color,
-            size: items.size,
-        };
-        dispatch(getColorOfSize(item));
-        setItems({ ...items, quantity: quantity });
-    }, [items.color]);
+        if (!isFirstRender) {
+            const item: getQtyOfSizeColor = {
+                id: id,
+                color: items.color,
+                size: items.size,
+            };
+            const fetchData = async () => {
+                const res: any = await dispatch(getColorOfSize(item));
+                console.log(res);
+                if ((res.payload as { status: number }).status === 200) {
+                    setItems({ ...items, quantity: res.payload.data.data.quantity });
+                }
+            };
 
+            fetchData();
+        } else {
+            setIsFirstRender(true);
+        }
+    }, [flag]);
+    console.log(quantity);
+    const [count, setCount] = useState(0);
     useEffect(() => {
+        let mount = true;
         dispatch(getProductHotDeal()).unwrap();
-        dispatch(getProductById(id)).then(() => setItems(randomItem));
+        dispatch(getProductById(id)).then(() => {
+            if (mount) {
+                setCount((prev) => prev + 1);
+            }
+        });
     }, []);
 
     useEffect(() => {
-        setItems({ size: '', color: '', quantity: 0, hex: '', image: '' });
-    }, [items.size]);
+        setItems(randomItem);
+    }, [count]);
     console.log(items);
     return (
         <div className="flex flex-col items-center">

@@ -19,9 +19,7 @@ const Sure = ({ setOpen, setLoad, orderId, setOrderId, setCurrent, current }: Pr
     };
     const handleStatus = async () => {
         if (current === 'Received') {
-            const { data } = await axios.patch('/orders/received', {
-                order: orderId,
-            });
+            const { data } = await axios.patch(`/orders/received/${orderId}`);
             if (data.success) {
                 toast.success('Received order success');
                 setLoad((prev) => !prev);
@@ -32,9 +30,7 @@ const Sure = ({ setOpen, setLoad, orderId, setOrderId, setCurrent, current }: Pr
                 toast.error('Received order fail');
             }
         } else if (current === 'Return') {
-            const { data } = await axios.patch('/orders/return', {
-                order: orderId,
-            });
+            const { data } = await axios.patch(`/orders/return/${orderId}`);
             console.log(data);
 
             if (data.success) {
@@ -47,9 +43,7 @@ const Sure = ({ setOpen, setLoad, orderId, setOrderId, setCurrent, current }: Pr
                 toast.error('Return order fail');
             }
         } else {
-            const { data } = await axios.patch('/orders/cancel', {
-                order: orderId,
-            });
+            const { data } = await axios.patch(`/orders/cancel/${orderId}`);
             console.log(data);
 
             if (data.success) {

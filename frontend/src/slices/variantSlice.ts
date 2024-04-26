@@ -19,19 +19,21 @@ export const variantSlice = createSlice({
     initialState: {
         quantity: Number,
         loading: false,
-        error: null as string | null,
+        error: false,
     },
     reducers: {},
     extraReducers: (builder) => {
         builder.addCase(getColorOfSize.pending, (state) => {
             state.loading = true;
+            state.error = false;
         });
         builder.addCase(getColorOfSize.rejected, (state, action) => {
             state.loading = false;
-            state.error = action.error.message || null;
+            state.error = true;
         });
         builder.addCase(getColorOfSize.fulfilled, (state, action) => {
             state.loading = false;
+            state.error = false;
             state.quantity = action.payload.data.data.quantity;
         });
     },
