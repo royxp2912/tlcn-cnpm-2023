@@ -167,17 +167,16 @@ const Header = () => {
                                 pathname === '/' ? 'text-orange hover:text-blue' : 'text-blue hover:text-orange'
                             }`}
                         />
-                        {userString !== null && (
-                            <div
-                                className={`absolute top-[-8px] right-[-6px] border rounded-full w-4 h-4 border-white ${
-                                    pathname === '/' ? 'bg-orange' : 'bg-blue'
-                                }`}
-                            >
-                                <span className="text-white text-xs ml-[4px] absolute">
-                                    {cartItem.items && cartItem.items.length}
-                                </span>
-                            </div>
-                        )}
+
+                        <div
+                            className={`absolute top-[-8px] right-[-6px] border rounded-full w-4 h-4 border-white flex items-center justify-center ${
+                                pathname === '/' ? 'bg-orange' : 'bg-blue'
+                            }`}
+                        >
+                            <span className="text-white text-xs">
+                                {cartItem.items && cartItem.items.length ? cartItem.items.length : 0}
+                            </span>
+                        </div>
                     </div>
 
                     <PersonOutlineOutlinedIcon

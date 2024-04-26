@@ -18,6 +18,7 @@ import { toast } from 'react-toastify';
 import { getProductById } from '@/slices/productSlice';
 import { useRouter } from 'next/navigation';
 import { Preview } from '@mui/icons-material';
+import axios from '@/utils/axios';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -60,8 +61,8 @@ type Props = {
     setCheckedItems: React.Dispatch<React.SetStateAction<{ [key: string]: boolean }>>;
     checkedAll: boolean;
     setCheckedAll: React.Dispatch<React.SetStateAction<boolean>>;
-    quantity: { [product: string]: number };
-    setQuantity: React.Dispatch<React.SetStateAction<{ [product: string]: number }>>;
+    quantityCart: { [product: string]: number };
+    setQuantityCart: React.Dispatch<React.SetStateAction<{ [product: string]: number }>>;
     price: { [product: string]: number };
     setPrice: React.Dispatch<React.SetStateAction<{ [product: string]: number }>>;
     setQty: React.Dispatch<React.SetStateAction<number>>;
@@ -78,8 +79,8 @@ const CartShoe = ({
     setCheckedItems,
     checkedAll,
     setCheckedAll,
-    quantity,
-    setQuantity,
+    quantityCart,
+    setQuantityCart,
     price,
     setPrice,
     setQty,
@@ -94,6 +95,7 @@ const CartShoe = ({
     const { variants } = useSelector((state: any) => state.products) as {
         variants: Variant[];
     };
+    const { quantity }: { quantity: number } = useSelector((state: any) => state.variants);
 
     const router = useRouter();
 
@@ -181,7 +183,7 @@ const CartShoe = ({
                 }
             }
 
-            setQuantity(updatedQuantity);
+            setQuantityCart(updatedQuantity);
             setPrice(updatedPrice);
             return newState;
         });
@@ -198,10 +200,10 @@ const CartShoe = ({
     }, [checkedItems]);
 
     React.useEffect(() => {
-        const totalQuantity = Object.values(quantity).reduce((acc, curr) => acc + curr, 0) as number;
+        const totalQuantity = Object.values(quantityCart).reduce((acc, curr) => acc + curr, 0) as number;
 
         const totalPrice = Object.entries(price).reduce((acc, [product, productPrice]) => {
-            const productQuantity = quantity[product] || 0;
+            const productQuantity = quantityCart[product] || 0;
             return acc + productPrice * productQuantity;
         }, 0) as number;
         localStorage.setItem('totalPrice', JSON.stringify(totalPrice));
@@ -212,13 +214,20 @@ const CartShoe = ({
     // console.log(totalQuantity);
     // console.log(totalPrice);
 
-    const handleChange = (p: string, c: string, s: string, q: number) => {
-        setActive(true);
+    const handleChange = async (p: string, c: string, s: string, q: number) => {
         setProductId(p);
-        setItems({ ...items, size: s, color: c });
         setManageQuantity(q);
+        const { data } = await axios.get(`/variants/find/by-info?product=${p}&size=${s}&color=${c}`);
+        if (data.success) {
+            console.log(data.data.quantity);
+            setItems({ ...items, size: s, color: c, quantity: data.data.quantity });
+            if (data.data.quantity) {
+                console.log(data.data.quantity);
+                console.log(items.quantity);
+                setActive(true);
+            }
+        }
     };
-    console.log(cartItem);
     return (
         <TableContainer component={Paper} className="shadow-xl h-max">
             <Table sx={{ minWidth: 650 }} aria-label="simple table">

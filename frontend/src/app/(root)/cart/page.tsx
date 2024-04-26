@@ -17,7 +17,7 @@ const Cart = () => {
     const router = useRouter();
     const [price, setPrice] = useState({});
     const [qty, setQty] = useState<number>(0);
-    const [quantity, setQuantity] = useState({});
+    const [quantityCart, setQuantityCart] = useState({});
     const [total, setTotal] = useState<number>(0);
     const [checkedAll, setCheckedAll] = useState(false);
     const [active, setActive] = useState<boolean>(false);
@@ -117,8 +117,8 @@ const Cart = () => {
                     setCheckedItems={setCheckedItems}
                     checkedAll={checkedAll}
                     setCheckedAll={setCheckedAll}
-                    quantity={quantity}
-                    setQuantity={setQuantity}
+                    quantityCart={quantityCart}
+                    setQuantityCart={setQuantityCart}
                     price={price}
                     setPrice={setPrice}
                     setQty={setQty}

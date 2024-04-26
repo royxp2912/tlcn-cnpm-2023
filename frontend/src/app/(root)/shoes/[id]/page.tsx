@@ -104,12 +104,13 @@ const ShoesSinglePage = () => {
             setManageQuantity((prev) => prev - 1);
         }
     };
-
+    const [flag, setFlag] = useState(false);
     const handleSetSize = (newSize: string) => {
         setItems({ size: newSize, color: '', quantity: 0, hex: '', image: '' });
     };
     const handleSetColor = (newColor: string, hex: string) => {
         setItems({ ...items, color: newColor, hex: hex });
+        setFlag((prev) => !prev);
     };
 
     const handleAddToCart = async () => {
@@ -155,18 +156,30 @@ const ShoesSinglePage = () => {
             color: items.color,
             size: items.size,
         };
-        dispatch(getColorOfSize(item));
-        setItems({ ...items, quantity: quantity });
-    }, [items.color]);
+        const fetchData = async () => {
+            const res: any = await dispatch(getColorOfSize(item));
+            if (res.payload.status === 200) {
+                setItems({ ...items, quantity: res.payload.data.data.quantity });
+            }
+        };
 
+        fetchData();
+    }, [flag]);
+    console.log(quantity);
+    const [count, setCount] = useState(0);
     useEffect(() => {
+        let mount = true;
         dispatch(getProductHotDeal()).unwrap();
-        dispatch(getProductById(id)).then(() => setItems(randomItem));
+        dispatch(getProductById(id)).then(() => {
+            if (mount) {
+                setCount((prev) => prev + 1);
+            }
+        });
     }, []);
 
     useEffect(() => {
-        setItems({ size: '', color: '', quantity: 0, hex: '', image: '' });
-    }, [items.size]);
+        setItems(randomItem);
+    }, [count]);
     console.log(items);
     return (
         <div className="flex flex-col items-center">

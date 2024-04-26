@@ -24,14 +24,9 @@ const cartsApi = {
         return axios.post(url, cart);
     },
     removeItemFromCartByUserId: (item: RemoveItemCart) => {
-        const url = '/carts/remove';
+        const url = `/carts/removeFromCart?user=${item.user}&product=${item.product}`;
 
-        return axios.delete(url, {
-            params: {
-                user: item.user,
-                product: item.product,
-            },
-        });
+        return axios.delete(url);
     },
     addItemToCartRandomVariant: (item: itemCartRandomVari) => {
         const url = '/carts/addToCart/withoutVariant';

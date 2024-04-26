@@ -5,7 +5,7 @@ import { getColorOfSize } from '@/slices/variantSlice';
 import { RVariant, User, Variant, getQtyOfSizeColor } from '@/types/type';
 import axios from '@/utils/axios';
 import { AppDispatch } from '@/utils/store';
-import React, { Dispatch, SetStateAction, useEffect } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
@@ -45,8 +45,9 @@ const ChangeVariant = ({
 }: Props) => {
     const { variants }: { variants: Variant } = useSelector((state: any) => state.products);
     const { quantity }: { quantity: number } = useSelector((state: any) => state.variants);
-
+    const { loading } = useSelector((state: any) => state.variants);
     const dispatch = useDispatch<AppDispatch>();
+    console.log(loading);
 
     const userString = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
     let user: User | null = null;
@@ -58,6 +59,9 @@ const ChangeVariant = ({
         }
     }
     const id = user?._id as string;
+    const [flag, setFlag] = useState<boolean>(false);
+    const [isFirstRender, setIsFirstRender] = useState(true);
+    const [dispatchCount, setDispatchCount] = useState(0);
 
     const handleInsc = () => {
         if (!items.color || !items.size) {
@@ -80,6 +84,8 @@ const ChangeVariant = ({
     };
     const handleSetColor = (newColor: string, hex: string) => {
         setItems({ ...items, color: newColor, hex: hex });
+        setFlag((prev) => !prev);
+        console.log('Hi');
     };
 
     const handleChange = async () => {
@@ -100,15 +106,35 @@ const ChangeVariant = ({
     };
 
     useEffect(() => {
-        const item: getQtyOfSizeColor = {
-            id: id,
-            color: items.color,
-            size: items.size,
-        };
-        dispatch(getColorOfSize(item));
+        let isMounted = true;
+        if (!isFirstRender) {
+            const item: getQtyOfSizeColor = {
+                id: productId,
+                color: items.color,
+                size: items.size,
+            };
+
+            dispatch(getColorOfSize(item))
+                .then(() => {
+                    if (isMounted) {
+                        setDispatchCount((prevCount) => prevCount + 1);
+                    }
+                })
+                .catch((error) => {
+                    // Xử lý lỗi nếu có
+                });
+        } else {
+            setIsFirstRender(false);
+        }
+    }, [flag]);
+    useEffect(() => {
         dispatch(getProductById(productId));
-        setItems({ ...items, quantity: quantity });
-    }, [items.color]);
+    }, []);
+    useEffect(() => {
+        if (dispatchCount > 0) {
+            setItems({ ...items, quantity: quantity });
+        }
+    }, [dispatchCount]);
 
     return (
         <div className="modal">
@@ -184,7 +210,10 @@ const ChangeVariant = ({
                 </button>
                 <button
                     className="w-[200px] h-10 rounded-full bg-red text-white font-bold hover:bg-opacity-60 mt-5"
-                    onClick={() => setActive(false)}
+                    onClick={() => {
+                        setActive(false);
+                        setIsFirstRender(true);
+                    }}
                 >
                     Cancel
                 </button>

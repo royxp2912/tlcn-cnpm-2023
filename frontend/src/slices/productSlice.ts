@@ -16,7 +16,6 @@ export const getProductById = createAsyncThunk(
     async (product: string, { rejectWithValue }) => {
         try {
             const res = await productsApi.getProductById(product);
-            console.log(res);
             return res;
         } catch (err: any) {
             return rejectWithValue(err);

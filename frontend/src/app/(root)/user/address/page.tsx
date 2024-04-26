@@ -4,7 +4,7 @@ import UserNav from '@/components/shared/UserNav';
 import AddLocationAltOutlinedIcon from '@mui/icons-material/AddLocationAltOutlined';
 import LoopOutlinedIcon from '@mui/icons-material/LoopOutlined';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
-import type { Address, User } from '@/types/type';
+import type { Address, District, Province, User, Ward } from '@/types/type';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '@/utils/store';
 import { getAddressByAddressId, getAllAddressByUserId } from '@/slices/addressSlice';
@@ -28,7 +28,13 @@ const Address = () => {
     const [open, setOpen] = useState(false);
     const [load, setLoad] = useState(false);
     const [update, setUpdate] = useState(false);
+    const [fake, setFake] = useState(false);
     const [addressId, setAddressId] = useState('');
+    const [province, setProvince] = useState<Province[]>();
+    const [district, setDistrict] = useState<District[]>();
+    const [ward, setWard] = useState<Ward[]>();
+    const [provinceID, setProvinceID] = useState<string>('');
+    const [districtID, setDistrictID] = useState<string>('');
     const dispatch = useDispatch<AppDispatch>();
     const { address, addressDetail }: { address: Address[]; addressDetail: Address } = useSelector(
         (state: any) => state.address,
@@ -64,13 +70,58 @@ const Address = () => {
     useEffect(() => {
         if (addressId !== '') {
             const fetchData = async () => {
-                await dispatch(getAddressByAddressId(addressId));
-                setOpen(true);
+                const res: any = await dispatch(getAddressByAddressId(addressId));
+                if (res.payload.status === 200) {
+                    const selectedProvince = province?.find(
+                        (item) => item.province_name === res.payload.data.data.province,
+                    );
+                    if (selectedProvince) {
+                        setProvinceID(selectedProvince.province_id);
+                        const data = await axios.get(
+                            `https://vapi.vnappmob.com/api/province/district/${selectedProvince.province_id}`,
+                        );
+                        if (data.status === 200) {
+                            setDistrict(data.data.results);
+
+                            const selectedDistrict: District = data.data.results?.find(
+                                (item: District) => item.district_name === res.payload.data.data.districts,
+                            );
+                            console.log(selectedDistrict);
+                            if (selectedDistrict) {
+                                setDistrictID(selectedDistrict.district_id);
+                                const data = await axios.get(
+                                    `https://vapi.vnappmob.com/api/province/ward/${selectedDistrict.district_id}`,
+                                );
+                                if (data.status === 200) {
+                                    setWard(data.data.results);
+                                    setOpen(true);
+                                }
+                            }
+                        }
+                    }
+                }
             };
             fetchData();
         }
     }, [addressId]);
+    useEffect(() => {
+        const fetchProvince = async () => {
+            const data = await axios.get('https://vapi.vnappmob.com/api/province');
+            setProvince(data.data.results);
+            // console.log(data);
+        };
+        fetchProvince();
+    }, []);
 
+    // useEffect(() => {
+    //     if (update) {
+    //         const fetchDistrict = async () => {
+    //             const { data } = await axios.get(`https://vapi.vnappmob.com/api/province/district/${provinceID}`);
+    //             setDistrict(data.results);
+    //         };
+    //         fetchDistrict();
+    //     }
+    // }, [addressId]);
     return (
         <div className="flex justify-center px-20 mt-10 gap-5">
             <UserNav />
@@ -161,6 +212,17 @@ const Address = () => {
                     addressDetail={addressDetail}
                     addressId={addressId}
                     setLoad={setLoad}
+                    province={province}
+                    setProvince={setProvince}
+                    provinceID={provinceID}
+                    setProvinceID={setProvinceID}
+                    districtID={districtID}
+                    setDistrictID={setDistrictID}
+                    district={district}
+                    setDistrict={setDistrict}
+                    setAddressId={setAddressId}
+                    ward={ward}
+                    setWard={setWard}
                 />
             )}
         </div>
